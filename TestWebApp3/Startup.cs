@@ -33,7 +33,7 @@ namespace TestWebApp3
 				options.MinimumSameSitePolicy = SameSiteMode.None;
 			});
 
-			var connection = @"Server=(localdb)\MSSQLLocalDB;Database=SchoolDB;Trusted_Connection=True;ConnectRetryCount=0";
+			var connection = @"Server=.;Database=SchoolDB;Trusted_Connection=True;ConnectRetryCount=0";
 			services.AddDbContext<SchoolDbContext>(options => options.UseSqlServer(connection));
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
