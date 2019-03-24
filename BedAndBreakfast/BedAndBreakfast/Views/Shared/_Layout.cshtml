@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -7,13 +8,35 @@
 </head>
 <body>
 
-    <div class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
-            <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-            <li><a asp-area="" asp-controller="Home" asp-action="SignUp">Sign Up</a></li>
-            <li><a asp-area="" asp-controller="Home" asp-action="SignIn">Sign In</a></li>
-        </ul>
-    </div>
+    @{
+        if (User.Identity.IsAuthenticated)
+        {
+            <div>
+                <p>
+                    Hello @User.Identity.Name!
+                </p>
+            </div>
+            <hr />
+        }
+    }
+
+            <div>
+                <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <a asp-area="" asp-controller="Home" asp-action="SignIn">Sign In</a>
+                    <a asp-area="" asp-controller="Home" asp-action="SignUp">Sign Up</a>
+                }
+                else
+                {
+                    <a asp-area="" asp-controller="Home" asp-action="SignOut">Sign Out</a>
+                }
+
+
+
+            </div>
+    <hr />
 
     @RenderBody()
 

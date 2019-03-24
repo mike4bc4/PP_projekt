@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BedAndBreakfast.Data;
 using BedAndBreakfast.Models;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -61,7 +62,11 @@ namespace BedAndBreakfast
 
             services.ConfigureApplicationCookie(options =>
             {
+                // Redirecto to login page if signed out user tries to access private content.
                 options.LoginPath = "/SignIn";
+
+                // Cookie expires after 7 days or after signing out.
+                options.ExpireTimeSpan = TimeSpan.FromDays(7);
             });
 
 

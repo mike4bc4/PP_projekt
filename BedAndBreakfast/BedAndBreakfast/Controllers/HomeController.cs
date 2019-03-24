@@ -38,7 +38,7 @@ namespace BedAndBreakfast.Controllers
         // Removes signed in cookie.
         public async Task<IActionResult> SignOut() {
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
-            return View();
+            return RedirectToAction("Index", "Home");
         }
 
         // Default sing in method - called while user is redirected to login page.
@@ -61,17 +61,24 @@ namespace BedAndBreakfast.Controllers
                 return View();
             }
 
+            var a = User.Identity;
+
             var result = await _signInManager.PasswordSignInAsync(model.Login, model.Password, true, false);
 
             // Verify if user exists in db.
             // Handle user sign in cookie etc.
             if (result.Succeeded)
-                ViewBag.Message = $"Welcome {model.Login}";
+            {
+                return RedirectToAction("Index", "Home");
+            }
             else
+            {
                 ViewBag.Message = "Sign in failed.";
+                return View();
+            }
 
 
-            return View();
+            
         }
 
 
@@ -92,11 +99,15 @@ namespace BedAndBreakfast.Controllers
             }
 
             // Double check - user is only creted if it fits db restrictions definied in startup options.
-            var result = await _userManager.CreateAsync(new User
+
+            var addedUser = new User
             {
-                Email = model.EmailAddress,
-                UserName = model.Login
-            });
+                UserName = model.Login,
+                Email = model.EmailAddress
+            };
+
+            // Create user with password specified in form.
+            var result = await _userManager.CreateAsync(addedUser, model.Password);
 
 
             if (result.Succeeded)
