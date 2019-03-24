@@ -37,9 +37,7 @@ namespace BedAndBreakfast
             });
 
             // Connect to SQL server with default name.
-            var dbName = "BedAndBreakfastDB";
-            var connection = $"Server=.;Database={dbName};Trusted_Connection=True;ConnectRetryCount=0";
-            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connection));
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             // Add clasess like sign in manager which allows to handle user log in cookies etc.
             services.AddIdentity<User, IdentityRole>()

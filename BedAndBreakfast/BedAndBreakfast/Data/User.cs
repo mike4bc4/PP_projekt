@@ -11,7 +11,7 @@ namespace BedAndBreakfast.Models
         // Put additional user db fields in here.
 
         //public int ID { get; set; }
-        //public string FirstName { get; set; }
-        //public string LastName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
     }
 }

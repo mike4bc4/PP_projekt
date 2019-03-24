@@ -76,8 +76,6 @@ namespace BedAndBreakfast.Controllers
                 ViewBag.Message = "Sign in failed.";
                 return View();
             }
-
-
             
         }
 
@@ -103,7 +101,9 @@ namespace BedAndBreakfast.Controllers
             var addedUser = new User
             {
                 UserName = model.Login,
-                Email = model.EmailAddress
+                Email = model.EmailAddress,
+                FirstName = model.FirstName,
+                LastName = model.LastName
             };
 
             // Create user with password specified in form.
