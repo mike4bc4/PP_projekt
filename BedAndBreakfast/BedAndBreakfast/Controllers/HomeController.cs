@@ -8,6 +8,9 @@ using BedAndBreakfast.Models;
 using BedAndBreakfast.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Configuration;
+using BedAndBreakfast.Settings;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BedAndBreakfast.Controllers
 {
@@ -17,6 +20,7 @@ namespace BedAndBreakfast.Controllers
         protected AppDbContext _context;
         protected UserManager<User> _userManager;
         protected SignInManager<User> _signInManager;
+
 
         public HomeController(AppDbContext context, UserManager<User> userManager, SignInManager<User> signInManager) {
             _context = context;
@@ -32,6 +36,20 @@ namespace BedAndBreakfast.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        // Test authorization methods.
+        [Route("usr")]
+        [Authorize(Roles = Role.User + "," + Role.Admin)]
+        public IActionResult TestUserContenet() {
+            return Content("User private area.", "text/HTML");
+        }
+
+
+        [Route("adm")]
+        [Authorize(Roles = Role.Admin)]
+        public IActionResult TestAdminContenet() {
+            return Content("Administrator private area.", "text/HTML");
         }
 
         // Sign out method.
@@ -86,7 +104,7 @@ namespace BedAndBreakfast.Controllers
         }
 
         // Method which allows to create user and store it in db.
-        // This mehod starts up while sign up button is pressed.
+        // This method starts up while sign up button is pressed.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignUp(SignUpUserModel model) {
@@ -96,7 +114,7 @@ namespace BedAndBreakfast.Controllers
                 return View();
             }
 
-            // Double check - user is only creted if it fits db restrictions definied in startup options.
+            // Double check - user is only created if it fits db restrictions defined in startup options.
 
             var addedUser = new User
             {
@@ -109,10 +127,12 @@ namespace BedAndBreakfast.Controllers
             // Create user with password specified in form.
             var result = await _userManager.CreateAsync(addedUser, model.Password);
 
+            // Add user default User role.
+            await _userManager.AddToRoleAsync(addedUser, Role.User);
 
             if (result.Succeeded)
             {
-                ViewBag.Message = "User creted!";
+                ViewBag.Message = "User created!";
             }
             else {
                 ViewBag.Message = "User creation failed!";
@@ -120,7 +140,6 @@ namespace BedAndBreakfast.Controllers
 
             return View();
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
