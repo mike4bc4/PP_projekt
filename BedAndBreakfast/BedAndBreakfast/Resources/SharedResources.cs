@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BedAndBreakfast
 {
-    public class StringResources
+    public class SharedResources
     {
 
     }

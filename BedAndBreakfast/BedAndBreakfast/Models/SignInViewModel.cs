@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace BedAndBreakfast.Models
 {
-    public class SignInUserModel
+    public class SignInViewModel
     {
         [Display(Name = "Login")]
-        [Required(ErrorMessage = "Login is required.")]
+        [Required(ErrorMessage = "Required")]
         public string Login { get; set; }
 
         [Display(Name = "Password")]
-        [Required(ErrorMessage = "Password is required.")]
+        [Required(ErrorMessage = "Required")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }

@@ -20,10 +20,17 @@ namespace BedAndBreakfast.Controllers
 
         protected AppDbContext context;
         protected UserManager<User> userManager;
-        protected SignInManager<User> signInManager;
-        protected IStringLocalizer<StringResources> localizer;
 
-        public HomeController(AppDbContext context, UserManager<User> userManager, SignInManager<User> signInManager, IStringLocalizer<StringResources> localizer) {
+        protected SignInManager<User> signInManager;
+
+        /// <summary>
+        /// Reference to resource file localizer injection.
+        /// Change injected type to SharedResources to access global resource keys and values.
+        /// To access any value in resource file use: value = localizer["key"];
+        /// </summary>
+        protected IStringLocalizer<HomeController> localizer;
+
+        public HomeController(AppDbContext context, UserManager<User> userManager, SignInManager<User> signInManager, IStringLocalizer<HomeController> localizer) {
             this.context = context;
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -70,7 +77,7 @@ namespace BedAndBreakfast.Controllers
         // This method is called while user presses sign in button with filled form.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignIn(SignInUserModel model) {
+        public async Task<IActionResult> SignIn(SignInViewModel model) {
             // Remove any signed in user.
             // Just to make sure if any cookie was left.
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
@@ -110,7 +117,7 @@ namespace BedAndBreakfast.Controllers
         // This method starts up while sign up button is pressed.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignUp(SignUpUserModel model) {
+        public async Task<IActionResult> SignUp(SignUpViewModel model) {
             // Check if form data is correct.
             if (!ModelState.IsValid) {
                 // Default form messages are displayed on fail.

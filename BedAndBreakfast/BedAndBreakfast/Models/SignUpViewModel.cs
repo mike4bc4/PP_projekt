@@ -7,19 +7,15 @@ using System.Threading.Tasks;
 
 namespace BedAndBreakfast.Models
 {
-    public class SignUpUserModel
+    public class SignUpViewModel
     {
-        //protected IStringLocalizer<StringResources> localizer;
-        //public SignUpUserModel(IStringLocalizer<StringResources> _localizer) {
-        //    localizer = _localizer;
-        //}
 
         [Display(Name = "Login")]
-        [Required(ErrorMessage = "asd")]
+        [Required(ErrorMessage = "Required")]
         public string Login { get; set; }
 
         [Display(Name = "Email Address")]
-        [Required(ErrorMessage = "Email Address is required.")]
+        [Required(ErrorMessage = "Required")]
         [DataType(DataType.EmailAddress)]
         public string EmailAddress { get; set; }
 
@@ -29,16 +25,16 @@ namespace BedAndBreakfast.Models
         public string ConfirmEmailAddress { get; set; }
 
         [Display(Name = "First Name")]
-        [Required(ErrorMessage = "First Name is required.")]
+        [Required(ErrorMessage = "Required")]
         public string FirstName { get; set; }
 
         [Display(Name = "Last Name")]
-        [Required(ErrorMessage = "Last Name is required.")]
+        [Required(ErrorMessage = "Required")]
         public string LastName { get; set; }
 
         [Display(Name = "Password")]
         [DataType(DataType.Password)]
-        [Required(ErrorMessage = "Password is required.")]
+        [Required(ErrorMessage = "Required")]
         public string Password { get; set; }
 
         [Display(Name = "Confirm Password")]

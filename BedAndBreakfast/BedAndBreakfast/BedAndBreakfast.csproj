@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\StringResources.en-US.resx">
+    <EmbeddedResource Update="Resources\SharedResources.en-US.resx">
       <Generator></Generator>
     </EmbeddedResource>
   </ItemGroup>

@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 
 namespace BedAndBreakfast.Settings
 {
+    /// <summary>
+    /// This class is reference to settings stored in appsettings.json file.
+    /// </summary>
     public class AdminAccounts
     {
-        public Account Admin1 { get; set; }
+        public Account Admin { get; set; }
     }
 
     public class Account {

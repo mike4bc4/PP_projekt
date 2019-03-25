@@ -33,10 +33,8 @@ namespace BedAndBreakfast
             ConfigContainer.Configuration = configuration;
             ConfigContainer.adminAccounts = configuration.GetSection("AdminAccounts").Get<AdminAccounts>();
 
-
         }
 
-        
 
         /// <summary>
         /// This method should be used to create all roles necessary in this web application.
@@ -82,8 +80,6 @@ namespace BedAndBreakfast
             services.AddLocalization(options => {
                 options.ResourcesPath = "Resources";
             });
-
-
 
             // Connect to SQL server with default name.
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -137,7 +133,6 @@ namespace BedAndBreakfast
                 SupportedCultures = supportedCultures,
                 SupportedUICultures = supportedCultures
             });
-
 
 
             // Use authentication in this web application.
