@@ -20,7 +20,6 @@ namespace BedAndBreakfast.Controllers
 
         protected AppDbContext context;
         protected UserManager<User> userManager;
-
         protected SignInManager<User> signInManager;
 
         /// <summary>
@@ -62,94 +61,94 @@ namespace BedAndBreakfast.Controllers
             return Content("Administrator private area.", "text/HTML");
         }
 
-        // Sign out method.
-        // Removes signed in cookie.
-        public async Task<IActionResult> SignOut() {
-            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
-            return RedirectToAction("Index", "Home");
-        }
+        //// Sign out method.
+        //// Removes signed in cookie.
+        //public async Task<IActionResult> SignOut() {
+        //    await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+        //    return RedirectToAction("Index", "Home");
+        //}
 
-        // Default sing in method - called while user is redirected to login page.
-        public IActionResult SignIn() {
-            return View();
-        }
+        //// Default sing in method - called while user is redirected to login page.
+        //public IActionResult SignIn() {
+        //    return View();
+        //}
 
-        // This method is called while user presses sign in button with filled form.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignIn(SignInViewModel model) {
-            // Remove any signed in user.
-            // Just to make sure if any cookie was left.
-            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+        //// This method is called while user presses sign in button with filled form.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> SignIn(LogInViewModel model) {
+        //    // Remove any signed in user.
+        //    // Just to make sure if any cookie was left.
+        //    await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
 
-            // Form validation.
-            if (!ModelState.IsValid)
-            {
-                // Return simple view with form definied messages.
-                return View();
-            }
+        //    // Form validation.
+        //    if (!ModelState.IsValid)
+        //    {
+        //        // Return simple view with form definied messages.
+        //        return View();
+        //    }
 
-            var a = User.Identity;
+        //    var a = User.Identity;
 
-            var result = await signInManager.PasswordSignInAsync(model.Login, model.Password, true, false);
+        //    var result = await signInManager.PasswordSignInAsync(model.Login, model.Password, true, false);
 
-            // Verify if user exists in db.
-            // Handle user sign in cookie etc.
-            if (result.Succeeded)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                ViewBag.Message = "Sign in failed.";
-                return View();
-            }
+        //    // Verify if user exists in db.
+        //    // Handle user sign in cookie etc.
+        //    if (result.Succeeded)
+        //    {
+        //        return RedirectToAction("Index", "Home");
+        //    }
+        //    else
+        //    {
+        //        ViewBag.Message = "Sign in failed.";
+        //        return View();
+        //    }
             
-        }
+        //}
 
 
-        // This method is called while user is redirected to sign up page.
-        public IActionResult SignUp() {
-            return View();
-        }
+        //// This method is called while user is redirected to sign up page.
+        //public IActionResult SignUp() {
+        //    return View();
+        //}
 
-        // Method which allows to create user and store it in db.
-        // This method starts up while sign up button is pressed.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignUp(SignUpViewModel model) {
-            // Check if form data is correct.
-            if (!ModelState.IsValid) {
-                // Default form messages are displayed on fail.
-                return View();
-            }
+        //// Method which allows to create user and store it in db.
+        //// This method starts up while sign up button is pressed.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> SignUp(CreateAccountViewModel model) {
+        //    // Check if form data is correct.
+        //    if (!ModelState.IsValid) {
+        //        // Default form messages are displayed on fail.
+        //        return View();
+        //    }
 
-            // Double check - user is only created if it fits db restrictions defined in startup options.
+        //    // Double check - user is only created if it fits db restrictions defined in startup options.
 
-            var addedUser = new User
-            {
-                UserName = model.Login,
-                Email = model.EmailAddress,
-                FirstName = model.FirstName,
-                LastName = model.LastName
-            };
+        //    var addedUser = new User
+        //    {
+        //        UserName = model.Login,
+        //        Email = model.EmailAddress,
+        //        FirstName = model.FirstName,
+        //        LastName = model.LastName
+        //    };
 
-            // Create user with password specified in form.
-            var result = await userManager.CreateAsync(addedUser, model.Password);
+        //    // Create user with password specified in form.
+        //    var result = await userManager.CreateAsync(addedUser, model.Password);
 
-            // Add user default User role.
-            await userManager.AddToRoleAsync(addedUser, Role.User);
+        //    // Add user default User role.
+        //    await userManager.AddToRoleAsync(addedUser, Role.User);
 
-            if (result.Succeeded)
-            {
-                ViewBag.Message = "User created!";
-            }
-            else {
-                ViewBag.Message = "User creation failed!";
-            }
+        //    if (result.Succeeded)
+        //    {
+        //        ViewBag.Message = "User created!";
+        //    }
+        //    else {
+        //        ViewBag.Message = "User creation failed!";
+        //    }
 
-            return View();
-        }
+        //    return View();
+        //}
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

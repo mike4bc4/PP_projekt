@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BedAndBreakfast.Models
 {
-    public class SignInViewModel
+    public class LogInViewModel
     {
         [Display(Name = "Login")]
         [Required(ErrorMessage = "Required")]

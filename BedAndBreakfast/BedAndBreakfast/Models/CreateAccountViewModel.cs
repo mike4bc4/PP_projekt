@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BedAndBreakfast.Models
 {
-    public class SignUpViewModel
+    public class CreateAccountViewModel
     {
 
         [Display(Name = "Login")]

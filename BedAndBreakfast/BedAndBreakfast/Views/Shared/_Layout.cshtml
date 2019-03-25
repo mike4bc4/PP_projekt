@@ -25,12 +25,12 @@
 
                 @if (!User.Identity.IsAuthenticated)
                 {
-                    <a asp-area="" asp-controller="Home" asp-action="SignIn">Sign In</a>
-                    <a asp-area="" asp-controller="Home" asp-action="SignUp">Sign Up</a>
+                    <a asp-area="" asp-controller="Account" asp-action="Login">Log In</a>
+                    <a asp-area="" asp-controller="Account" asp-action="Create">Create Account</a>
                 }
                 else
                 {
-                    <a asp-area="" asp-controller="Home" asp-action="SignOut">Sign Out</a>
+                    <a asp-area="" asp-controller="Account" asp-action="Logout">Log Out</a>
                 }
 
 
