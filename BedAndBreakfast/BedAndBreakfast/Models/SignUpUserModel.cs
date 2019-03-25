@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Localization;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,8 +9,13 @@ namespace BedAndBreakfast.Models
 {
     public class SignUpUserModel
     {
+        //protected IStringLocalizer<StringResources> localizer;
+        //public SignUpUserModel(IStringLocalizer<StringResources> _localizer) {
+        //    localizer = _localizer;
+        //}
+
         [Display(Name = "Login")]
-        [Required(ErrorMessage = "Login is required.")]
+        [Required(ErrorMessage = "asd")]
         public string Login { get; set; }
 
         [Display(Name = "Email Address")]
@@ -19,7 +25,7 @@ namespace BedAndBreakfast.Models
 
         [Display(Name = "Confirm Email Address")]
         [DataType(DataType.EmailAddress)]
-        [Compare("EmailAddress", ErrorMessage = "Email Adress and Confirm Email Address does not match.")]
+        [Compare("EmailAddress", ErrorMessage = "Email Address and Confirm Email Address does not match.")]
         public string ConfirmEmailAddress { get; set; }
 
         [Display(Name = "First Name")]

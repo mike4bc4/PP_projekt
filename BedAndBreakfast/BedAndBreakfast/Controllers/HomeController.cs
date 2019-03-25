@@ -11,22 +11,25 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using BedAndBreakfast.Settings;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Localization;
 
 namespace BedAndBreakfast.Controllers
 {
     public class HomeController : Controller
     {
 
-        protected AppDbContext _context;
-        protected UserManager<User> _userManager;
-        protected SignInManager<User> _signInManager;
+        protected AppDbContext context;
+        protected UserManager<User> userManager;
+        protected SignInManager<User> signInManager;
+        protected IStringLocalizer<StringResources> localizer;
 
-
-        public HomeController(AppDbContext context, UserManager<User> userManager, SignInManager<User> signInManager) {
-            _context = context;
-            _userManager = userManager;
-            _signInManager = signInManager;
+        public HomeController(AppDbContext context, UserManager<User> userManager, SignInManager<User> signInManager, IStringLocalizer<StringResources> localizer) {
+            this.context = context;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+            this.localizer = localizer;
         }
+
 
         public IActionResult Index()
         {
@@ -81,7 +84,7 @@ namespace BedAndBreakfast.Controllers
 
             var a = User.Identity;
 
-            var result = await _signInManager.PasswordSignInAsync(model.Login, model.Password, true, false);
+            var result = await signInManager.PasswordSignInAsync(model.Login, model.Password, true, false);
 
             // Verify if user exists in db.
             // Handle user sign in cookie etc.
@@ -125,10 +128,10 @@ namespace BedAndBreakfast.Controllers
             };
 
             // Create user with password specified in form.
-            var result = await _userManager.CreateAsync(addedUser, model.Password);
+            var result = await userManager.CreateAsync(addedUser, model.Password);
 
             // Add user default User role.
-            await _userManager.AddToRoleAsync(addedUser, Role.User);
+            await userManager.AddToRoleAsync(addedUser, Role.User);
 
             if (result.Succeeded)
             {

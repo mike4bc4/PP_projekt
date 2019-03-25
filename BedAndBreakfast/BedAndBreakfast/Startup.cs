@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using BedAndBreakfast.Data;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -30,6 +32,7 @@ namespace BedAndBreakfast
             // Setup web application configuration references.
             ConfigContainer.Configuration = configuration;
             ConfigContainer.adminAccounts = configuration.GetSection("AdminAccounts").Get<AdminAccounts>();
+
 
         }
 
@@ -75,6 +78,13 @@ namespace BedAndBreakfast
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            // Resource files localization.
+            services.AddLocalization(options => {
+                options.ResourcesPath = "Resources";
+            });
+
+
+
             // Connect to SQL server with default name.
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -106,14 +116,29 @@ namespace BedAndBreakfast
                 options.ExpireTimeSpan = TimeSpan.FromDays(7);
             });
 
-            
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            // Share resources localization based on MVC folder structure setup.
+            services.AddMvc().AddDataAnnotationsLocalization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider services)
         {
+
+            // Resource cultures setup.
+            IList<CultureInfo> supportedCultures = new List<CultureInfo>{
+                                                    new CultureInfo("en-US"),
+                                                    new CultureInfo("pl-PL")
+            };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("en-US"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
+
+
 
             // Use authentication in this web application.
             app.UseAuthentication();
