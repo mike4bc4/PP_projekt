@@ -24,13 +24,22 @@ namespace BedAndBreakfast
             using (var scope = host.Services.CreateScope()) {
                 var services = scope.ServiceProvider;
 
+                // Perform database setup.
                 try
                 {
-                    var context = services.GetRequiredService<AppDbContext>();
-                    context.Database.EnsureCreated();
+                    var dbNotExists = services.GetRequiredService<AppDbContext>()
+                        .Database.EnsureCreated();
 
-                    // Add administrators accounts if db was successfully created.
-                    InitializeDb.AddAdminAccount(services.GetRequiredService<UserManager<User>>(), services).Wait();
+                    if (dbNotExists)
+                    {
+                        // Create user roles.
+                        // Call this method before creating any account.
+                        InitializeDb.CreateUserRoles(services.GetRequiredService<RoleManager<IdentityRole>>()).Wait();
+
+                        // Add administrators accounts if db was successfully created.
+                        InitializeDb.CreateAdminAccount(services.GetRequiredService<UserManager<User>>()).Wait();
+                    }
+
                 }
                 catch (Exception e) {
                     var logger = services.GetRequiredService<ILogger<Program>>();

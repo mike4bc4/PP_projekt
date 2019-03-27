@@ -36,35 +36,7 @@ namespace BedAndBreakfast
         }
 
 
-        /// <summary>
-        /// This method should be used to create all roles necessary in this web application.
-        /// </summary>
-        /// <param name="serviceProvider"></param>
-        /// <returns></returns>
-        public async Task CreateUserRoles(IServiceProvider serviceProvider) {
-
-            // Get proper services to create roles.
-            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();  
-
-            IdentityResult identityResult;
-
-            // Check if administrator, user and host exists and create them if not.
-            var roleCheck = await RoleManager.RoleExistsAsync(Role.Admin);
-            if (!roleCheck) {
-                identityResult = await RoleManager.CreateAsync(new IdentityRole(Role.Admin));
-            }
-
-            roleCheck = await RoleManager.RoleExistsAsync(Role.Host);
-            if (!roleCheck) {
-                identityResult = await RoleManager.CreateAsync(new IdentityRole(Role.Host));
-            }
-
-            roleCheck = await RoleManager.RoleExistsAsync(Role.User);
-            if (!roleCheck) {
-                identityResult = await RoleManager.CreateAsync(new IdentityRole(Role.User));
-            }
-
-        }
+        
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -137,9 +109,6 @@ namespace BedAndBreakfast
 
             // Use authentication in this web application.
             app.UseAuthentication();
-
-            // Add web service roles.
-            CreateUserRoles(services).Wait();
 
             if (env.IsDevelopment())
             {
