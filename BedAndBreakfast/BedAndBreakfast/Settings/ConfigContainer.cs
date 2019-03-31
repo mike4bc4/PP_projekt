@@ -14,5 +14,7 @@ namespace BedAndBreakfast.Settings
     {
         public static IConfiguration Configuration { get; set; }
         public static AdminAccounts adminAccounts { get; set; }
+        public static int RequiredAge { get; set; } = 18;
+        public static DateTime MinimumBirthDate { get; set; } = new DateTime(1900, 1, 1);
     }
 }

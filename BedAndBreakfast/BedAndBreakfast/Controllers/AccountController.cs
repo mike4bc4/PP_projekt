@@ -58,10 +58,11 @@ namespace BedAndBreakfast.Controllers
 
             // New user entity
             var addedUser = new User {
-                UserName = viewModel.Login,
+                UserName = viewModel.EmailAddress,
                 Email = viewModel.EmailAddress,
                 FirstName = viewModel.FirstName,
-                LastName = viewModel.LastName
+                LastName = viewModel.LastName,
+                BirthDate = viewModel.BirthDate
             };
 
             // Try to add user to database.
@@ -105,7 +106,6 @@ namespace BedAndBreakfast.Controllers
             {
                 return View();
             }
-
             var result = await signInManager.PasswordSignInAsync(viewModel.Login, viewModel.Password, true, false);
 
             // Redirect to home page if everything is fine.

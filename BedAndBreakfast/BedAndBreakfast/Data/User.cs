@@ -9,9 +9,8 @@ namespace BedAndBreakfast.Models
     public class User : IdentityUser
     {
         // Put additional user db fields in here.
-
-        //public int ID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public DateTime BirthDate { get; set; }
     }
 }

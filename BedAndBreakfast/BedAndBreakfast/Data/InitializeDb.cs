@@ -65,7 +65,6 @@ namespace BedAndBreakfast.Data
             {
                 identityResult = await roleManager.CreateAsync(new IdentityRole(Role.User));
             }
-
         }
     }
 }

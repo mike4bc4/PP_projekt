@@ -20,25 +20,30 @@
         }
     }
 
-            <div>
-                <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+    <div>
+        <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
 
-                @if (!User.Identity.IsAuthenticated)
-                {
-                    <a asp-area="" asp-controller="Account" asp-action="Login">Log In</a>
-                    <a asp-area="" asp-controller="Account" asp-action="Create">Create Account</a>
-                }
-                else
-                {
-                    <a asp-area="" asp-controller="Account" asp-action="Logout">Log Out</a>
-                }
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <a asp-area="" asp-controller="Account" asp-action="Login">Log In</a>
+            <a asp-area="" asp-controller="Account" asp-action="Create">Create Account</a>
+        }
+        else
+        {
+            <a asp-area="" asp-controller="Account" asp-action="Logout">Log Out</a>
+        }
 
 
 
-            </div>
+    </div>
     <hr />
 
     @RenderBody()
 
 </body>
 </html>
+
+@*Remote jQuery validation scripts.*@
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"></script>

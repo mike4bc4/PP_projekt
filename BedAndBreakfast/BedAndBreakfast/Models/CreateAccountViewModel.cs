@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Localization;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,20 +10,10 @@ namespace BedAndBreakfast.Models
 {
     public class CreateAccountViewModel
     {
-
-        [Display(Name = "Login")]
-        [Required(ErrorMessage = "Required")]
-        public string Login { get; set; }
-
         [Display(Name = "Email Address")]
         [Required(ErrorMessage = "Required")]
-        [DataType(DataType.EmailAddress)]
+        [DataType(DataType.EmailAddress, ErrorMessage = "InvalidEmail")]
         public string EmailAddress { get; set; }
-
-        [Display(Name = "Confirm Email Address")]
-        [DataType(DataType.EmailAddress)]
-        [Compare("EmailAddress", ErrorMessage = "Email Address and Confirm Email Address does not match.")]
-        public string ConfirmEmailAddress { get; set; }
 
         [Display(Name = "First Name")]
         [Required(ErrorMessage = "Required")]
@@ -37,9 +28,10 @@ namespace BedAndBreakfast.Models
         [Required(ErrorMessage = "Required")]
         public string Password { get; set; }
 
-        [Display(Name = "Confirm Password")]
-        [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "Password and Confirm Password does not match.")]
-        public string ConfirmPassword { get; set; }
+        [Display(Name = "Birth Date")]
+        [DataType(DataType.Date, ErrorMessage = "EmptyBirthDate")]
+        [Required(ErrorMessage = "Required")]
+        [Remote(action: "ValidBirthDate", controller: "Validation", ErrorMessage = "InvalidBirthDate")]
+        public DateTime BirthDate { get; set; }
     }
 }

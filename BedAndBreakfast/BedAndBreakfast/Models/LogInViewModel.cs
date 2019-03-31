@@ -8,8 +8,9 @@ namespace BedAndBreakfast.Models
 {
     public class LogInViewModel
     {
-        [Display(Name = "Login")]
+        [Display(Name = "Email Address")]
         [Required(ErrorMessage = "Required")]
+        [DataType(DataType.EmailAddress, ErrorMessage = "InvalidEmail")]
         public string Login { get; set; }
 
         [Display(Name = "Password")]
