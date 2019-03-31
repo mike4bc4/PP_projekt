@@ -21,14 +21,17 @@ namespace BedAndBreakfast.Controllers
         protected UserManager<User> userManager;
         protected IStringLocalizer<AccountController> localizer;
         protected SignInManager<User> signInManager;
+        protected AppDbContext context;
+
         /// <summary>
         /// Constructor is used to handle all code injections.
         /// </summary>
         /// <param name="userManager"></param>
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IStringLocalizer<AccountController> localizer) {
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IStringLocalizer<AccountController> localizer, AppDbContext context) {
             this.userManager = userManager;
             this.localizer = localizer;
             this.signInManager = signInManager;
+            this.context = context;
         }
 
 

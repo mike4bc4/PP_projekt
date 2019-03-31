@@ -12,7 +12,7 @@ namespace BedAndBreakfast.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 
-
+        // Tables
         public DbSet<User> Users { get; set; }
         public DbSet<Profile> Profiles { get; set; }
 
@@ -22,9 +22,14 @@ namespace BedAndBreakfast.Data
             base.OnModelCreating(modelBuilder);
 
             // Relationship definition
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Profile)
-                .WithOne(p => p.User);
+            //modelBuilder.Entity<User>()
+            //    .HasOne(u => u.Profile)
+            //    .WithOne(p => p.User);
+
+            modelBuilder.Entity<Profile>()
+                .HasOne(p => p.User)
+                .WithOne(u => u.Profile)
+                .HasForeignKey<User>(u => u.ProfileFK);
         }
 
     }

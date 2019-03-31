@@ -12,11 +12,12 @@ namespace BedAndBreakfast.Models
     public class User : IdentityUser
     {
         // Keys
-        //[Key]
-        //public int UserID { get; set; }
+
+        // Profile foreign key must allow null to create administrator account properly.
+        public int? ProfileFK { get; set; }
 
         // Data fields
-        [ForeignKey("ProfileFK")]
+
         public Profile Profile { get; set; }
 
         

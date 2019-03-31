@@ -78,7 +78,7 @@ namespace BedAndBreakfast
             services.ConfigureApplicationCookie(options =>
             {
                 // Redirect to login page if signed out user tries to access private content.
-                options.LoginPath = "/SignIn";
+                options.LoginPath = "/Account/Login";
 
                 // Cookie expires after 7 days or after signing out.
                 options.ExpireTimeSpan = TimeSpan.FromDays(7);

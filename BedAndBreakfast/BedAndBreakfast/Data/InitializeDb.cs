@@ -22,9 +22,10 @@ namespace BedAndBreakfast.Data
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
         public static async Task CreateAdminAccount(UserManager<User> userManager ) {
+
             var adminUser = new User
             {
-                UserName = ConfigContainer.adminAccounts.Admin.Login
+                UserName = ConfigContainer.adminAccounts.Admin.Login,
             };
 
             var result = await userManager.CreateAsync(adminUser, ConfigContainer.adminAccounts.Admin.Password);

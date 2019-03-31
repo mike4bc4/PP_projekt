@@ -1,0 +1,99 @@
+﻿
+@using BedAndBreakfast.Data;
+@model BedAndBreakfast.Models.EditProfileViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    var profile = (Profile)ViewData["Profile"];
+}
+
+<h2>Edit</h2>
+
+<h4>EditProfileViewModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" value="@profile.FirstName" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" value="@profile.LastName"/>
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label"></label>
+                <input asp-for="Gender" class="form-control" value="@profile.Gender"/>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BirthDate" class="control-label"></label>
+                <input asp-for="BirthDate" class="form-control" value="@profile.BirthDate.ToString("yyyy-MM-dd")"/>
+                <span asp-validation-for="BirthDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrefLanguage" class="control-label"></label>
+                <input asp-for="PrefLanguage" class="form-control" value="@profile.PrefLanguage"/>
+                <span asp-validation-for="PrefLanguage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrefCurrency" class="control-label"></label>
+                <input asp-for="PrefCurrency" class="form-control" value="@profile.PrefCurrency"/>
+                <span asp-validation-for="PrefCurrency" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Country" class="control-label"></label>
+                <input asp-for="Country" class="form-control" value="@profile.Country"/>
+                <span asp-validation-for="Country" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Region" class="control-label"></label>
+                <input asp-for="Region" class="form-control" value="@profile.Region"/>
+                <span asp-validation-for="Region" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="City" class="control-label"></label>
+                <input asp-for="City" class="form-control" value="@profile.City"/>
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Street" class="control-label"></label>
+                <input asp-for="Street" class="form-control" value="@profile.Street"/>
+                <span asp-validation-for="Street" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StreetNumber" class="control-label"></label>
+                <input asp-for="StreetNumber" class="form-control" value="@profile.Street" />
+                <span asp-validation-for="StreetNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PresonalDescription" class="control-label"></label>
+                <input asp-for="PresonalDescription" class="form-control" value="@profile.PresonalDescription"/>
+                <span asp-validation-for="PresonalDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="School" class="control-label"></label>
+                <input asp-for="School" class="form-control" value="@profile.School"/>
+                <span asp-validation-for="School" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Work" class="control-label"></label>
+                <input asp-for="Work" class="form-control" value="@profile.Work"/>
+                <span asp-validation-for="Work" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BackupEmailAddress" class="control-label"></label>
+                <input asp-for="BackupEmailAddress" class="form-control" value="@profile.BackupEmailAddress"/>
+                <span asp-validation-for="BackupEmailAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
