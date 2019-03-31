@@ -14,10 +14,18 @@ namespace BedAndBreakfast.Data
 
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Profile> Profiles { get; set; }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder) {
-        //    modelBuilder.Entity<User>().ToTable("User");
-        //}
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+
+            // This method must be called to map keys for user identity tables.
+            base.OnModelCreating(modelBuilder);
+
+            // Relationship definition
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Profile)
+                .WithOne(p => p.User);
+        }
 
     }
 }

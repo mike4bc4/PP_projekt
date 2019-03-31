@@ -56,15 +56,23 @@ namespace BedAndBreakfast.Controllers
                 return View();
             }
 
-            // New user entity
-            var addedUser = new User {
-                UserName = viewModel.EmailAddress,
-                Email = viewModel.EmailAddress,
+            // New profile entity related to user
+            var addedProfile = new Profile
+            {
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
                 BirthDate = viewModel.BirthDate
             };
 
+            // New user entity
+            var addedUser = new User {
+                UserName = viewModel.EmailAddress,
+                Email = viewModel.EmailAddress,
+                Profile = addedProfile
+            };
+
+            addedProfile.User = addedUser;
+       
             // Try to add user to database.
             var result = await userManager.CreateAsync(addedUser, viewModel.Password);
 
