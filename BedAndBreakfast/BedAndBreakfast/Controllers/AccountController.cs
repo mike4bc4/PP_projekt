@@ -77,12 +77,12 @@ namespace BedAndBreakfast.Controllers
             addedProfile.User = addedUser;
        
             // Try to add user to database.
-            var result = await userManager.CreateAsync(addedUser, viewModel.Password);
+            var createResult = await userManager.CreateAsync(addedUser, viewModel.Password);
 
             // Try to add to user role.
-            await userManager.AddToRoleAsync(addedUser, Role.User);
+            var addToRoleResult = await userManager.AddToRoleAsync(addedUser, Role.User);
 
-            if (result.Succeeded)
+            if (createResult.Succeeded && addToRoleResult.Succeeded)
             {
                 ViewBag.Message = localizer["CreateSuccess"];
                 return RedirectToAction("Login");

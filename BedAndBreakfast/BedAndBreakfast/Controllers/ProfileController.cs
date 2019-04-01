@@ -44,7 +44,34 @@ namespace BedAndBreakfast.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditProfileViewModel viewModel)
         {
-            // TODO: Change record in database.
+            if (!ModelState.IsValid) {
+                // Form validation error.
+                return RedirectToAction("Edit");
+            }
+
+            // Get user profile.
+            var userData = await userManager.GetUserAsync(HttpContext.User);
+            var profile = await context.Profiles.FindAsync(userData.ProfileFK);
+
+            // Update all profile fields.
+            profile.FirstName = viewModel.FirstName;
+            profile.LastName = viewModel.LastName;
+            profile.Gender = viewModel.Gender;
+            profile.BirthDate = viewModel.BirthDate;
+            profile.PrefLanguage = viewModel.PrefLanguage;
+            profile.PrefCurrency = viewModel.PrefCurrency;
+            profile.Country = viewModel.Country;
+            profile.Region = viewModel.Region;
+            profile.City = viewModel.City;
+            profile.Street = viewModel.Street;
+            profile.StreetNumber = viewModel.StreetNumber;
+            profile.PresonalDescription = viewModel.PresonalDescription;
+            profile.School = viewModel.School;
+            profile.Work = viewModel.Work;
+            profile.BackupEmailAddress = viewModel.BackupEmailAddress;
+
+            // Commit changes to database.
+            context.SaveChanges();
 
             return RedirectToAction("Edit");
         }

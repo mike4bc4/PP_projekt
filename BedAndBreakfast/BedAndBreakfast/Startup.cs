@@ -82,10 +82,13 @@ namespace BedAndBreakfast
                 options.ExpireTimeSpan = TimeSpan.FromDays(7);
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
             // Share resources localization based on MVC folder structure setup.
-            services.AddMvc().AddDataAnnotationsLocalization();
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddDataAnnotationsLocalization()
+                .AddViewLocalization();
+                
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

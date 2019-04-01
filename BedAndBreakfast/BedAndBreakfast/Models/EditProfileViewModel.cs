@@ -19,7 +19,6 @@ namespace BedAndBreakfast.Models
         [MaxLength(50, ErrorMessage = "TooLong")]
         public string LastName { get; set; }
 
-        // TODO: Change type to allow chose from list.
         [Display(Name = "Your gender")]
         public char? Gender { get; set; }
 
@@ -30,11 +29,9 @@ namespace BedAndBreakfast.Models
         [Remote("ValidBirthDate", "Validation", ErrorMessage = "InvalidBirthDate")]
         public DateTime BirthDate { get; set; }
 
-        // TODO: Change type to allow chose from list.
         [Display(Name = "Your preferred language")]
         public string PrefLanguage { get; set; }
 
-        // TODO: Change type to allow chose from list.
         [Display(Name = "Your preferred currency")]
         [DataType(DataType.Currency)]
         public string PrefCurrency { get; set; }
