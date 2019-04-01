@@ -36,8 +36,6 @@ namespace BedAndBreakfast
         }
 
 
-        
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -67,7 +65,7 @@ namespace BedAndBreakfast
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 5;
+                options.Password.RequiredLength = ConfigContainer.PasswordMinLength;
                 options.Password.RequiredUniqueChars = 0;
                 options.Password.RequireLowercase = true;
                 options.Password.RequireNonAlphanumeric = false;

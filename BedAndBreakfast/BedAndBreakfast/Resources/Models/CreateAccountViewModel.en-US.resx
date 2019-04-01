@@ -129,4 +129,10 @@
   <data name="Required" xml:space="preserve">
     <value>This field is required.</value>
   </data>
+  <data name="TooLong" xml:space="preserve">
+    <value>Inserted value is too long.</value>
+  </data>
+  <data name="TooShort" xml:space="preserve">
+    <value>Inserted value is too short.</value>
+  </data>
 </root>
