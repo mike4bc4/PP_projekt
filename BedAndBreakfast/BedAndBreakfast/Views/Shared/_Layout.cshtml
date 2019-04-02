@@ -21,27 +21,28 @@
         }
     }
 
-    <div>
-        <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+			<div>
+				<a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+				<a asp-area="" asp-controller="Help" asp-action="Search">Help</a>
 
-        @if (!User.Identity.IsAuthenticated)
-        {
-            <a asp-area="" asp-controller="Account" asp-action="Login">Log In</a>
-            <a asp-area="" asp-controller="Account" asp-action="Create">Create Account</a>
-        }
-        else
-        {
-            <a asp-area="" asp-controller="Account" asp-action="Logout">Log Out</a>
-            @*Do not display profile to administrator who does not have his profile*@
-            if (!User.IsInRole(Role.Admin))
-            {
-                <a asp-area="" asp-controller="Profile" asp-action="Edit">Profile</a>
-            }
-        }
+				@if (!User.Identity.IsAuthenticated)
+				{
+					<a asp-area="" asp-controller="Account" asp-action="Login">Log In</a>
+					<a asp-area="" asp-controller="Account" asp-action="Create">Create Account</a>
+				}
+				else
+				{
+					<a asp-area="" asp-controller="Account" asp-action="Logout">Log Out</a>
+					@*Do not display profile to administrator who does not have his profile*@
+					if (!User.IsInRole(Role.Admin))
+					{
+						<a asp-area="" asp-controller="Profile" asp-action="Edit">Profile</a>
+					}
+				}
 
 
 
-    </div>
+			</div>
     <hr />
 
     @RenderBody()
