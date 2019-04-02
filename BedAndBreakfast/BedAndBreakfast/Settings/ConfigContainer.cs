@@ -16,6 +16,8 @@ namespace BedAndBreakfast.Settings
         public static AdminAccounts adminAccounts { get; set; }
         public static int RequiredAge { get; set; } = 18;
         public static DateTime MinimumBirthDate { get; set; } = new DateTime(1900, 1, 1);
+
+		// These fields have to be const to use them in validation annotations.
         public const int PasswordMaxLength = 50;
         public const int PasswordMinLength = 5;
     }

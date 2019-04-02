@@ -8,7 +8,7 @@ namespace BedAndBreakfast.Data
     /// <summary>
     /// This class contains abbreviations for gender value stored in database.
     /// </summary>
-    public class ListedDbValues
+    public static class ListedDbValues
     {
         public enum Gender
         {
