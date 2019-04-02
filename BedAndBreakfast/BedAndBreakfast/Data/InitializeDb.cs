@@ -16,26 +16,27 @@ namespace BedAndBreakfast.Data
     public static class InitializeDb
     {
         /// <summary>
-        /// Creates administrator account based on login and password stored in appsettings.json file.
+        /// Creates predefined administrator accounts.
         /// </summary>
         /// <param name="userManager"></param>
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
-        public static async Task CreateAdminAccount(UserManager<User> userManager ) {
+        public static async Task CreateAdministratorAccounts(UserManager<User> userManager ) {
 
-            var adminUser = new User
-            {
-                UserName = ConfigContainer.adminAccounts.Admin.Login,
-            };
+            foreach (AdministartorLoginData admin in PredefinedAccountsContainer.administartorAccounts) {
+                var addedUser = new User {
+                    UserName = admin.login
+                };
 
-            var result = await userManager.CreateAsync(adminUser, ConfigContainer.adminAccounts.Admin.Password);
-
-            if (result.Succeeded)
-            {
-                await userManager.AddToRoleAsync(adminUser, Role.Admin);
-            }
-            else {
-                throw new Exception("Administrator account creation exception.");
+                var result = await userManager.CreateAsync(addedUser, admin.password);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(addedUser, Role.Admin);
+                }
+                else
+                {
+                    throw new Exception("Administrator account creation exception.");
+                }
             }
         }
 
@@ -66,6 +67,59 @@ namespace BedAndBreakfast.Data
             {
                 identityResult = await roleManager.CreateAsync(new IdentityRole(Role.User));
             }
+        }
+
+        /// <summary>
+        /// This is development feature. Use this method to populate database with test help pages.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static async Task CreateTestHelpPages(AppDbContext context) {
+
+            List<HelpTag> helpTags = new List<HelpTag>{
+                new HelpTag{Value = "help", },
+                new HelpTag{Value = "page"},
+                new HelpTag{Value = "first"},
+                new HelpTag{Value = "second"},
+                new HelpTag{Value = "1"},
+                new HelpTag{Value = "2"},
+                new HelpTag{Value = "test"},
+                new HelpTag{Value = "check"},
+            };
+
+            HelpPage helpPage1 = new HelpPage
+            {
+                Title = "Test help page 1",
+                Content = "Test help page 1 content",
+
+            };
+
+            HelpPage helpPage2 = new HelpPage
+            {
+                Title = "Test help page 2",
+                Content = "Test help page 2 content",
+            };
+
+            List<HelpPageHelpTag> hpht = new List<HelpPageHelpTag> {
+                new HelpPageHelpTag { HelpPage = helpPage1, HelpTag = helpTags[0] },
+                new HelpPageHelpTag { HelpPage = helpPage1, HelpTag = helpTags[1] },
+                new HelpPageHelpTag { HelpPage = helpPage1, HelpTag = helpTags[2] },
+                new HelpPageHelpTag { HelpPage = helpPage1, HelpTag = helpTags[3] },
+                new HelpPageHelpTag { HelpPage = helpPage2, HelpTag = helpTags[4] },
+                new HelpPageHelpTag { HelpPage = helpPage2, HelpTag = helpTags[5] },
+                new HelpPageHelpTag { HelpPage = helpPage2, HelpTag = helpTags[6] },
+                new HelpPageHelpTag { HelpPage = helpPage2, HelpTag = helpTags[7] }
+            };
+
+            foreach (HelpTag helpTag in helpTags) {
+                await context.AddAsync(helpTag);
+            }
+            await context.AddAsync(helpPage1);
+            await context.AddAsync(helpPage2);
+            foreach (HelpPageHelpTag helpPageHelpTag in hpht) {
+                await context.AddAsync(helpPageHelpTag);
+            }
+            await context.SaveChangesAsync();
         }
     }
 }

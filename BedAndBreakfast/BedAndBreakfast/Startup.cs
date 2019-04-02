@@ -28,11 +28,6 @@ namespace BedAndBreakfast
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
-            // Setup web application configuration references.
-            ConfigContainer.Configuration = configuration;
-            ConfigContainer.adminAccounts = configuration.GetSection("AdminAccounts").Get<AdminAccounts>();
-
         }
 
 
@@ -65,7 +60,7 @@ namespace BedAndBreakfast
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = false;
-                options.Password.RequiredLength = ConfigContainer.PasswordMinLength;
+                options.Password.RequiredLength = DbRestrictionsContainer.PasswordMinLength;
                 options.Password.RequiredUniqueChars = 0;
                 options.Password.RequireLowercase = true;
                 options.Password.RequireNonAlphanumeric = false;

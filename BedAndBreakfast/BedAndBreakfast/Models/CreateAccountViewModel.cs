@@ -27,8 +27,8 @@ namespace BedAndBreakfast.Models
         [Display(Name = "Password")]
         [DataType(DataType.Password)]
         [Required(ErrorMessage = "Required")]
-        [MinLength(ConfigContainer.PasswordMinLength, ErrorMessage = "TooShort")]
-        [MaxLength(ConfigContainer.PasswordMaxLength, ErrorMessage = "TooLong")]
+        [MinLength(DbRestrictionsContainer.PasswordMinLength, ErrorMessage = "TooShort")]
+        [MaxLength(DbRestrictionsContainer.PasswordMaxLength, ErrorMessage = "TooLong")]
         public string Password { get; set; }
 
         [Display(Name = "Birth Date")]

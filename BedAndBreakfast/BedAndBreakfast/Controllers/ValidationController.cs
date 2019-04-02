@@ -29,7 +29,7 @@ namespace BedAndBreakfast.Controllers
         /// <returns>True or false if date is incorrect which results in displaying error message on web page form.</returns>
         public JsonResult ValidBirthDate(string birthDate) {
             var date = DateTime.Parse(birthDate);
-            return Json(date > ConfigContainer.MinimumBirthDate && date < DateTime.Today.AddYears(-ConfigContainer.RequiredAge));
+            return Json(date > DbRestrictionsContainer.MinimumBirthDate && date < DateTime.Today.AddYears(-DbRestrictionsContainer.RequiredAge));
         }
     }
 }

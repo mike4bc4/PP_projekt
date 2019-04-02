@@ -27,8 +27,9 @@ namespace BedAndBreakfast
                 // Perform database setup.
                 try
                 {
-                    var dbNotExists = services.GetRequiredService<AppDbContext>()
-                        .Database.EnsureCreated();
+                    // Get database context from services.
+                    var context = services.GetRequiredService<AppDbContext>();
+                    var dbNotExists = context.Database.EnsureCreated();
 
                     if (dbNotExists)
                     {
@@ -37,7 +38,11 @@ namespace BedAndBreakfast
                         InitializeDb.CreateUserRoles(services.GetRequiredService<RoleManager<IdentityRole>>()).Wait();
 
                         // Add administrators accounts if db was successfully created.
-                        InitializeDb.CreateAdminAccount(services.GetRequiredService<UserManager<User>>()).Wait();
+                        InitializeDb.CreateAdministratorAccounts(services.GetRequiredService<UserManager<User>>()).Wait();
+
+                        // Create test help pages.
+                        InitializeDb.CreateTestHelpPages(context).Wait();
+
                     }
 
                 }

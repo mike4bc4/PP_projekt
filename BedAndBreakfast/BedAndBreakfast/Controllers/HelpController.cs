@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BedAndBreakfast.Controllers
 {
 	/// <summary>
-	/// This class shoudl be used to call methods realted to help pages like searching and displaying help page.
+	/// This class should be used to call methods related to help pages like searching and displaying help page.
 	/// </summary>
     public class HelpController : Controller
     {
@@ -24,7 +24,7 @@ namespace BedAndBreakfast.Controllers
 		/// <returns></returns>
 		public IActionResult Search() {
 			// TODO: Pass to ViewData list of FAQ
-			// View displays saerch box and FAQ
+			// View displays search box and FAQ
 
 			return View();
 		}
@@ -34,10 +34,11 @@ namespace BedAndBreakfast.Controllers
 		/// </summary>
 		/// <param name="searchString"></param>
 		/// <returns></returns>
+        [HttpPost]
 		public IActionResult Search(string searchString) {
 
 			// TODO: Return list of search results.
-			// TODO: Redirect to view which allows to choose result (hyperling which redirects to DisplayPage action with page reference)
+			// TODO: Redirect to view which allows to choose result (hyper link which redirects to DisplayPage action with page reference)
 			return View();
 		}
 
