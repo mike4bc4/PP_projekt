@@ -1,0 +1,26 @@
+﻿@using BedAndBreakfast.Data;
+@{
+    ViewData["Title"] = "DisplayPage";
+    HelpPage helpPage = (HelpPage)ViewData["helpPage"];
+}
+
+<h2>Display</h2>
+
+@*
+    This line of code is responsible for injecting HTML code of different file.
+*@
+
+@Html.Partial("SearchPart")
+
+
+@*
+    Here is displayed help page specified by user.
+*@
+<div>
+    <p>@helpPage.Title</p>
+</div>
+<div>
+    @helpPage.Content
+</div>
+
+

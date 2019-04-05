@@ -87,6 +87,18 @@ namespace BedAndBreakfast.Data
                 new HelpTag{Value = "check"},
             };
 
+            List<HelpPage> helpPages = new List<HelpPage> {
+                new HelpPage{Title = "Test page 3", Content = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                    Proin convallis venenatis felis id faucibus. Integer sit amet orci in nibh porttitor accumsan."},
+                new HelpPage{Title = "Test page 4", Content = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                    Proin convallis venenatis felis id faucibus. Integer sit amet orci in nibh porttitor accumsan."},
+                new HelpPage{Title = "Test page 5", Content = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                    Proin convallis venenatis felis id faucibus. Integer sit amet orci in nibh porttitor accumsan."},
+                new HelpPage{Title = "Test page 6", Content = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                    Proin convallis venenatis felis id faucibus. Integer sit amet orci in nibh porttitor accumsan."}
+
+            };
+
             HelpPage helpPage1 = new HelpPage
             {
                 Title = "Test help page 1",
@@ -123,6 +135,10 @@ namespace BedAndBreakfast.Data
             foreach (HelpPageHelpTag helpPageHelpTag in hpht) {
                 await context.AddAsync(helpPageHelpTag);
             }
+            foreach (HelpPage helpPage in helpPages) {
+                await context.AddAsync(helpPage);
+            }
+
             await context.SaveChangesAsync();
         }
     }

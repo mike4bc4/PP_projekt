@@ -1,0 +1,46 @@
+﻿
+@using BedAndBreakfast.Data;
+@{
+    ViewData["Title"] = "Search";
+    // Get list of help pages passed from controller action.
+    List<HelpPage> helpPages = (List<HelpPage>)ViewData["helpPages"];
+}
+
+<h2>Browse</h2>
+
+@*
+    This line of code is responsible for injecting HTML code of different file.  
+*@
+
+@Html.Partial("SearchPart")
+
+@*
+    This from returns set of pages (previously searched or not) as buttons.
+    If help page is selected page ID is returned to action which will display
+    whole content of page.
+*@
+@if (helpPages != null)
+{
+    foreach (HelpPage helpPage in helpPages)
+    {
+<div>
+    <button type="button" onclick="location.href='@Url.Action(action: "Display", values: new { hPage = helpPage.ID })'">
+
+        <h4>@helpPage.Title</h4>
+        <p>TODO: Get some short description form help page content.</p>
+    </button>
+</div>
+    }
+}
+else {
+<div>
+    <p>
+        No help pages found :(
+    </p>
+</div>
+}
+
+
+
+
+

@@ -10,6 +10,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Views\Help\Browse.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Update="Resources\SharedResources.en-US.resx">
       <Generator></Generator>
     </EmbeddedResource>
