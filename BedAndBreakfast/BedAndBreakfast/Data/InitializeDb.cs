@@ -49,24 +49,10 @@ namespace BedAndBreakfast.Data
         {
             IdentityResult identityResult;
 
-            // Check if administrator, user and host exists and create them if not.
-            var roleCheck = await roleManager.RoleExistsAsync(Role.Admin);
-            if (!roleCheck)
-            {
-                identityResult = await roleManager.CreateAsync(new IdentityRole(Role.Admin));
-            }
-
-            roleCheck = await roleManager.RoleExistsAsync(Role.Host);
-            if (!roleCheck)
-            {
-                identityResult = await roleManager.CreateAsync(new IdentityRole(Role.Host));
-            }
-
-            roleCheck = await roleManager.RoleExistsAsync(Role.User);
-            if (!roleCheck)
-            {
-                identityResult = await roleManager.CreateAsync(new IdentityRole(Role.User));
-            }
+            identityResult = await roleManager.CreateAsync(new IdentityRole(Role.Admin));
+            identityResult = await roleManager.CreateAsync(new IdentityRole(Role.Host));
+            identityResult = await roleManager.CreateAsync(new IdentityRole(Role.User));
+ 
         }
 
         /// <summary>

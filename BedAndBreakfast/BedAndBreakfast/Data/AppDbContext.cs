@@ -21,6 +21,7 @@ namespace BedAndBreakfast.Data
         public DbSet<HelpPageHelpTag> HelpPageHelpTags { get; set; }
         public DbSet<ReceiveMsgSetting> ReceiveMsgSettings { get; set; }
         public DbSet<MsgTypeDictionary> MsgTypeDictionaries { get; set; }
+        public DbSet<PrivacySetting> PrivacySettings { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
@@ -60,6 +61,12 @@ namespace BedAndBreakfast.Data
                 .HasMany(d => d.ReceiveMsgSettings)
                 .WithOne(s => s.MsgTypeDictionary)
                 .HasForeignKey(s => s.TypeFK);
+
+            // One setting has one user.
+            modelBuilder.Entity<PrivacySetting>()
+                .HasOne(s => s.User)
+                .WithOne(u => u.PrivacySetting)
+                .HasForeignKey<PrivacySetting>(s => s.UserFK);
 
         }
 

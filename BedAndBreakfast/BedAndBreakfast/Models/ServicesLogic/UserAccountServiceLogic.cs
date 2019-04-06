@@ -69,9 +69,15 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 return false;
             }
 
+
+            user.PrivacySetting = new PrivacySetting
+            {
+                User = user
+            };
+
             var createResult = await userManager.CreateAsync(user, viewModel.Password);
             var addToRoleResult = await userManager.AddToRoleAsync(user, Role.User);
-            var addUserSettings = IdentityResult.Success;
+            var addMsgSettingsResult = IdentityResult.Success;
 
             foreach (ReceiveMsgSetting setting in addedSettings)
             {
@@ -80,12 +86,21 @@ namespace BedAndBreakfast.Models.ServicesLogic
 
             if (await context.SaveChangesAsync() != PredefinedTablesContainer.MsgTypeDictionaries.Count())
             {
-                addUserSettings = IdentityResult.Failed();
+                addMsgSettingsResult = IdentityResult.Failed();
             }
 
-            return (createResult.Succeeded && addToRoleResult.Succeeded && addUserSettings.Succeeded);
+            return (createResult.Succeeded && addToRoleResult.Succeeded && addMsgSettingsResult.Succeeded);
         }
 
+        public static bool IsAccountLocked(AppDbContext context, LogInViewModel viewModel) {
+            User user = (from u in context.Users
+                         where u.UserName == viewModel.Login
+                         select u).FirstOrDefault();
+            if (user == null) {
+                return false;
+            }
+            return user.IsLocked;
+        }
 
     }
 }

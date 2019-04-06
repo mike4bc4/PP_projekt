@@ -20,7 +20,9 @@ namespace BedAndBreakfast.Models
 
         public Profile Profile { get; set; }
         public List<ReceiveMsgSetting> ReceiveMsgSettings { get; set; }
+        public PrivacySetting PrivacySetting { get; set; }
+        public bool IsLocked { get; set; } = false;
 
-        
+
     }
 }

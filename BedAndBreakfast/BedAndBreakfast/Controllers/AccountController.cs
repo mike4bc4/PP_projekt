@@ -7,6 +7,7 @@ using BedAndBreakfast.Models;
 using BedAndBreakfast.Models.ServicesLogic;
 using BedAndBreakfast.Settings;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
@@ -100,6 +101,12 @@ namespace BedAndBreakfast.Controllers
             {
                 return View();
             }
+
+            // Check if account is locked.
+            if (UserAccountServiceLogic.IsAccountLocked(context, viewModel)) {
+                return View("Locked");
+            }
+
             var result = await signInManager.PasswordSignInAsync(viewModel.Login, viewModel.Password, true, false);
 
             // Redirect to home page if everything is fine.
