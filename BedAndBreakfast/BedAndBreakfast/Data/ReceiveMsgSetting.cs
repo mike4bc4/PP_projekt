@@ -13,27 +13,6 @@ namespace BedAndBreakfast.Data
     /// </summary>
     public class ReceiveMsgSetting
     {
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public ReceiveMsgSetting() { }
-
-        /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="setting"></param>
-        public ReceiveMsgSetting(ReceiveMsgSetting setting) {
-            this.ID = setting.ID;
-            this.TypeFK = setting.TypeFK;
-            this.MsgTypeDictionary = setting.MsgTypeDictionary;
-            this.UserFK = setting.UserFK;
-            this.User = setting.User;
-            this.ByEmail = setting.ByEmail;
-            this.ByMobileApp = setting.ByMobileApp;
-            this.BySMS = setting.BySMS;
-            this.ByPhone = setting.ByPhone;
-        }
-
 
         [Key]
         public int ID { get; set; }
@@ -43,9 +22,9 @@ namespace BedAndBreakfast.Data
         [MaxLength(450)] 
         public string UserFK { get; set; }
         public User User { get; set; }
-        public bool ByEmail { get; set; }
-        public bool ByMobileApp { get; set; }
-        public bool BySMS { get; set; }
-        public bool ByPhone { get; set; }
+        public bool ByEmail { get; set; } = true;
+        public bool ByMobileApp { get; set; } = true;
+        public bool BySMS { get; set; } = false;
+        public bool ByPhone { get; set; } = false;
     }
 }

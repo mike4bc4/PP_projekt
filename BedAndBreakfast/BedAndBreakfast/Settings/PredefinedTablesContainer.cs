@@ -17,11 +17,5 @@ namespace BedAndBreakfast.Settings
             new MsgTypeDictionary{Code = "SRV", Name = "Service"}
         };
 
-        public static ReceiveMsgSetting DefaultReceiveMsgSetting = new ReceiveMsgSetting {
-            ByEmail = true,
-            ByMobileApp = true,
-            ByPhone = false,
-            BySMS = false,
-        };
     }
 }

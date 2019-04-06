@@ -50,13 +50,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
             List<ReceiveMsgSetting> settings = new List<ReceiveMsgSetting>();
             foreach (MsgTypeDictionary entity in context.MsgTypeDictionaries)
             {
-                ReceiveMsgSetting addedSetting = new ReceiveMsgSetting(PredefinedTablesContainer.DefaultReceiveMsgSetting)
-                {
-                    TypeFK = entity.Code,
-                    MsgTypeDictionary = entity,
-                    UserFK = user.Id,
-                    User = user
-                };
+                ReceiveMsgSetting addedSetting = new ReceiveMsgSetting();
                 settings.Add(addedSetting);
             }
             return settings;
