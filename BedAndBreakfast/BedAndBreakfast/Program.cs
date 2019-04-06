@@ -43,6 +43,9 @@ namespace BedAndBreakfast
                         // Create test help pages.
                         InitializeDb.CreateTestHelpPages(context).Wait();
 
+                        // Add message types.
+                        InitializeDb.CreateMsgTypeDisctionary(context).Wait();
+
                     }
 
                 }

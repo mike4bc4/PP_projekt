@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using BedAndBreakfast.Data;
 using BedAndBreakfast.Models;
+using BedAndBreakfast.Models.ServicesLogic;
+using BedAndBreakfast.Settings;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -52,37 +54,18 @@ namespace BedAndBreakfast.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateAccountViewModel viewModel) {
+        public IActionResult Create(CreateAccountViewModel viewModel) {
             // If basic syntax check returns false return to view with proper messages
             // defined in view model annotations.
             if (!ModelState.IsValid) {
                 return View();
             }
 
-            // New profile entity related to user
-            var addedProfile = new Profile
-            {
-                FirstName = viewModel.FirstName,
-                LastName = viewModel.LastName,
-                BirthDate = viewModel.BirthDate
-            };
-
-            // New user entity
-            var addedUser = new User {
-                UserName = viewModel.EmailAddress,
-                Email = viewModel.EmailAddress,
-                Profile = addedProfile
-            };
-
+            Profile addedProfile = UserAccountServiceLogic.CreateProfile(viewModel);
+            User addedUser = addedUser = UserAccountServiceLogic.CreateUser(viewModel, addedProfile);
             addedProfile.User = addedUser;
-       
-            // Try to add user to database.
-            var createResult = await userManager.CreateAsync(addedUser, viewModel.Password);
 
-            // Try to add to user role.
-            var addToRoleResult = await userManager.AddToRoleAsync(addedUser, Role.User);
-
-            if (createResult.Succeeded && addToRoleResult.Succeeded)
+            if (UserAccountServiceLogic.AddUserAndDependiencesToDB(addedUser, userManager, viewModel, context).Result)
             {
                 ViewBag.Message = localizer["CreateSuccess"];
                 return RedirectToAction("Login");

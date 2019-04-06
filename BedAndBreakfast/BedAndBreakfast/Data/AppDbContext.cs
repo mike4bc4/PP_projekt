@@ -19,6 +19,9 @@ namespace BedAndBreakfast.Data
         public DbSet<HelpPage> HelpPages { get; set; }
         public DbSet<HelpTag> HelpTags { get; set; }
         public DbSet<HelpPageHelpTag> HelpPageHelpTags { get; set; }
+        public DbSet<ReceiveMsgSetting> ReceiveMsgSettings { get; set; }
+        public DbSet<MsgTypeDictionary> MsgTypeDictionaries { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
@@ -45,6 +48,18 @@ namespace BedAndBreakfast.Data
                 .HasOne(hpht => hpht.HelpPage)
                 .WithMany(hp => hp.HelpPageHelpTag)
                 .HasForeignKey(hpht => hpht.HelpPageID);
+
+            // One user has multiple message settings.
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.ReceiveMsgSettings)
+                .WithOne(s => s.User)
+                .HasForeignKey(s => s.UserFK);
+
+            // One dictionary entity is type of multiple settings.
+            modelBuilder.Entity<MsgTypeDictionary>()
+                .HasMany(d => d.ReceiveMsgSettings)
+                .WithOne(s => s.MsgTypeDictionary)
+                .HasForeignKey(s => s.TypeFK);
 
         }
 

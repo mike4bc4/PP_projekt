@@ -19,7 +19,7 @@ namespace BedAndBreakfast.Models
         /// <param name="query">Raw string inserted by user.</param>
         /// <param name="context">Database context</param>
         /// <returns>List of pages descending by search score or null if query is incorrect.</returns>
-        public static List<HelpPage> findPagesByQueryTags(string query, AppDbContext context) {
+        public static List<HelpPage> FindPagesByQueryTags(string query, AppDbContext context) {
             if (string.IsNullOrEmpty(query)) {
                 return null;
             }
@@ -45,7 +45,6 @@ namespace BedAndBreakfast.Models
                           .OrderByDescending(g => g.score)
                           .ToList();
 
-
             // Get pages by score.
             List<HelpPage> pagesByScore = new List<HelpPage>();
             foreach (var result in data3)
@@ -56,6 +55,7 @@ namespace BedAndBreakfast.Models
             return pagesByScore;
 
         }
+       
 
         /// <summary>
         /// Finds few pages from top of database table sorted by descending order.
@@ -63,7 +63,7 @@ namespace BedAndBreakfast.Models
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static List<HelpPage> findTopPages(AppDbContext context) {
+        public static List<HelpPage> FindTopPages(AppDbContext context) {
             List<HelpPage> helpPages = context.HelpPages
                 .OrderBy(hp => hp.ID).Take(GeneralSettings.DefHelpPages)
                 .ToList();

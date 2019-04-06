@@ -19,6 +19,7 @@ namespace BedAndBreakfast.Models
         // Data fields
 
         public Profile Profile { get; set; }
+        public List<ReceiveMsgSetting> ReceiveMsgSettings { get; set; }
 
         
     }

@@ -27,7 +27,7 @@ namespace BedAndBreakfast.Controllers
 		/// </summary>
 		/// <returns></returns>
 		public IActionResult Browse() {
-            var helpPages = SearchEngine.findTopPages(context);
+            var helpPages = SearchEngine.FindTopPages(context);
             ViewData["helpPages"] = helpPages;
             return View();
 		}
@@ -40,7 +40,7 @@ namespace BedAndBreakfast.Controllers
         [HttpPost]
 		public IActionResult Search(string query) {
 
-            List<HelpPage> pagesByScore = SearchEngine.findPagesByQueryTags(query, context);
+            List<HelpPage> pagesByScore = SearchEngine.FindPagesByQueryTags(query, context);
 
             if (pagesByScore == null)
             {
@@ -53,12 +53,12 @@ namespace BedAndBreakfast.Controllers
             return View("Browse");
 		}
 
-		/// <summary>
-		/// Redirects to view with specified help page based on help page reference.
-		/// </summary>
-		/// <param name="pageID"></param>
-		/// <returns></returns>
-		public IActionResult Display(int hPage) {
+        /// <summary>
+        /// Redirects to view with specified help page based on help page reference.
+        /// </summary>
+        /// <param name="pageID"></param>
+        /// <returns></returns>
+        public IActionResult Display(int hPage) {
             var helpPage = context.HelpPages.Find(hPage);
             ViewData["helpPage"] = helpPage;
 			return View();
