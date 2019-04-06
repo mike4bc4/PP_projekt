@@ -56,18 +56,6 @@ namespace BedAndBreakfast.Data
         }
 
         /// <summary>
-        /// Adds predefined entities to message type dictionary.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public static async Task CreateMsgTypeDisctionary(AppDbContext context) {
-            foreach (MsgTypeDictionary type in PredefinedTablesContainer.MsgTypeDictionaries) {
-                await context.AddAsync(type);
-            }
-            await context.SaveChangesAsync();
-        }
-
-        /// <summary>
         /// This is development feature. Use this method to populate database with test help pages.
         /// </summary>
         /// <param name="context"></param>

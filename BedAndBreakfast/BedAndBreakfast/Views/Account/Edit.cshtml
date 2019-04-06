@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewData["Title"] = "Edit";
+
+    // This variable represents edit option.
+    // It will be null if no option selected.
+    string option = (string)ViewData["option"];
+}
+
+<h2>Edit</h2>
+@*
+Navigation bar    
+*@
+
+<div>
+    <button type="button" onclick="location.href='@Url.Action(action: "Edit", values: new { option = "Notifications" })'">
+        Notifications
+    </button>
+    <button type="button" onclick="location.href='@Url.Action(action: "Edit", values: new { option = "Privacy" })'">
+        Privacy
+    </button>
+    <button type="button" onclick="location.href='@Url.Action(action: "Edit", values: new { option = "Security" })'">
+        Security
+    </button>
+</div>
+
+
+
+@if (option != null)
+{
+    <partial name="EditOptions/@option" view-data="ViewData"/>
+}
+else {
+    <partial name="EditOptions/Notifications" view-data="ViewData"/>
+}
+
+
+

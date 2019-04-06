@@ -120,6 +120,54 @@ namespace BedAndBreakfast.Controllers
             }
         }
 
+        public async Task<IActionResult> Edit(string option) {
+            ViewData["option"] = option;
+            User currentUser = await userManager.GetUserAsync(HttpContext.User);
+            NotificationsSetting notificationsSettings = context.NotificationSettings.Where(s => s.User == currentUser).Single();
+
+
+            ViewData["notificationSettings"] = notificationsSettings;
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditNotifications(EditNotificationsViewModel viewModel) {
+            User currentUser = await userManager.GetUserAsync(HttpContext.User);
+            NotificationsSetting notificationsSettings = context.NotificationSettings.Where(s => s.User == currentUser).Single();
+
+            notificationsSettings.GeneralByEmail = viewModel.GeneralByEmail;
+            notificationsSettings.GeneralByMobileApp = viewModel.GeneralByMobileApp;
+            notificationsSettings.GeneralBySMS = viewModel.GeneralBySMS;
+            notificationsSettings.GeneralByPhone = viewModel.GeneralByPhone;
+
+            notificationsSettings.DiscountAnTipsByEmail = viewModel.DiscountAnTipsByEmail;
+            notificationsSettings.DiscountAnTipsMobileApp = viewModel.DiscountAnTipsMobileApp;
+            notificationsSettings.DiscountAnTipsBySMS = viewModel.DiscountAnTipsBySMS;
+            notificationsSettings.DiscountAnTipsByPhone = viewModel.DiscountAnTipsByPhone;
+
+            notificationsSettings.RemindByEmail = viewModel.RemindByEmail;
+            notificationsSettings.RemindByMobileApp = viewModel.RemindByMobileApp;
+            notificationsSettings.RemindBySMS = viewModel.RemindBySMS;
+            notificationsSettings.RemindByPhone = viewModel.RemindByPhone;
+
+            notificationsSettings.RulesAndCommunityByEmail = viewModel.RulesAndCommunityByEmail;
+            notificationsSettings.RulesAndCommunityByMobileApp = viewModel.RulesAndCommunityByMobileApp;
+            notificationsSettings.RulesAndCommunityBySMS = viewModel.RulesAndCommunityBySMS;
+            notificationsSettings.RulesAndCommunityByPhone = viewModel.RulesAndCommunityByPhone;
+
+            notificationsSettings.ServiceByEmail = viewModel.ServiceByEmail;
+            notificationsSettings.ServiceByMobileApp = viewModel.ServiceByMobileApp;
+            notificationsSettings.ServiceBySMS = viewModel.ServiceBySMS;
+            notificationsSettings.ServiceByPhone = viewModel.ServiceByPhone;
+
+            await context.SaveChangesAsync();
+
+            return RedirectToAction("Edit");
+        }
+
+
+               
         /// <summary>
         /// Logs user out then redirects to home page.
         /// Signing out is based on cookie authorization scheme.

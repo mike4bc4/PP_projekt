@@ -42,49 +42,24 @@ namespace BedAndBreakfast.Models.ServicesLogic
             return user;
         }
 
-        public static List<ReceiveMsgSetting> CreateReceiveMsgSettings(User user, AppDbContext context) {
-            if (user == null || context == null) {
-                return null;
-            }
-
-            List<ReceiveMsgSetting> settings = new List<ReceiveMsgSetting>();
-            foreach (MsgTypeDictionary entity in context.MsgTypeDictionaries)
-            {
-                ReceiveMsgSetting addedSetting = new ReceiveMsgSetting {
-                    User = user,
-                    UserFK = user.Id
-                };
-                settings.Add(addedSetting);
-            }
-            return settings;
-        }
 
         public async static Task<bool> AddUserAndDependiencesToDB(User user, UserManager<User> userManager, CreateAccountViewModel viewModel, AppDbContext context) {
 
-            List<ReceiveMsgSetting> addedSettings = CreateReceiveMsgSettings(user, context);
-            if (addedSettings == null) {
-                return false;
-            }
-
-
             user.PrivacySetting = new PrivacySetting
             {
-                User = user
+                User = user,
+                UserFK = user.Id
+            };
+            user.NotificationsSetting = new NotificationsSetting
+            {
+                User = user,
+                UserFK = user.Id
             };
 
             var createResult = await userManager.CreateAsync(user, viewModel.Password);
             var addToRoleResult = await userManager.AddToRoleAsync(user, Role.User);
             var addMsgSettingsResult = IdentityResult.Success;
 
-            foreach (ReceiveMsgSetting setting in addedSettings)
-            {
-                await context.AddAsync(setting);
-            }
-
-            if (await context.SaveChangesAsync() != PredefinedTablesContainer.MsgTypeDictionaries.Count())
-            {
-                addMsgSettingsResult = IdentityResult.Failed();
-            }
 
             return (createResult.Succeeded && addToRoleResult.Succeeded && addMsgSettingsResult.Succeeded);
         }

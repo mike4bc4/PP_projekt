@@ -1,0 +1,132 @@
+﻿@model BedAndBreakfast.Models.EditNotificationsViewModel
+@using BedAndBreakfast.Data;
+
+@{
+    ViewData["Title"] = "Notifications";
+    NotificationsSetting notificationsSettings =
+        (NotificationsSetting)ViewData["notificationSettings"];
+
+}
+
+<h2>Notifications</h2>
+
+<form asp-controller="Account" asp-action="EditNotifications">
+    <div>
+        <p>
+            General messages
+        </p>
+        <div>
+            <label asp-for="GeneralByEmail"></label>
+            <input asp-for="GeneralByEmail" value="true" checked="@notificationsSettings.GeneralByEmail" />
+        </div>
+        <div>
+            <label asp-for="GeneralByMobileApp"></label>
+            <input asp-for="GeneralByMobileApp" value="true" checked="@notificationsSettings.GeneralByMobileApp" />
+        </div>
+        <div>
+            <label asp-for="GeneralBySMS"></label>
+            <input asp-for="GeneralBySMS" value="true" checked="@notificationsSettings.GeneralBySMS" />
+        </div>
+        <div>
+            <label asp-for="GeneralByPhone"></label>
+            <input asp-for="GeneralByPhone" value="true" checked="@notificationsSettings.GeneralByPhone" />
+        </div>
+    </div>
+
+    <div>
+        <p>
+            Reminds
+        </p>
+        <div>
+            <label asp-for="RemindByEmail"></label>
+            <input asp-for="RemindByEmail" value="true" checked="@notificationsSettings.RemindByEmail" />
+        </div>
+        <div>
+            <label asp-for="RemindByMobileApp"></label>
+            <input asp-for="RemindByMobileApp" value="true" checked="@notificationsSettings.RemindByMobileApp" />
+        </div>
+        <div>
+            <label asp-for="RemindBySMS"></label>
+            <input asp-for="RemindBySMS" value="true" checked="@notificationsSettings.RemindBySMS" />
+        </div>
+        <div>
+            <label asp-for="RemindByPhone"></label>
+            <input asp-for="RemindByPhone" value="true" checked="@notificationsSettings.RemindByPhone" />
+        </div>
+    </div>
+
+    <div>
+        <p>
+            Discounts and tips
+        </p>
+        <div>
+            <label asp-for="DiscountAnTipsByEmail"></label>
+            <input asp-for="DiscountAnTipsByEmail" value="true" checked="@notificationsSettings.DiscountAnTipsByEmail" />
+        </div>
+        <div>
+            <label asp-for="DiscountAnTipsMobileApp"></label>
+            <input asp-for="DiscountAnTipsMobileApp" value="true" checked="@notificationsSettings.DiscountAnTipsMobileApp" />
+        </div>
+        <div>
+            <label asp-for="DiscountAnTipsBySMS"></label>
+            <input asp-for="DiscountAnTipsBySMS" value="true" checked="@notificationsSettings.DiscountAnTipsBySMS" />
+        </div>
+        <div>
+            <label asp-for="DiscountAnTipsByPhone"></label>
+            <input asp-for="DiscountAnTipsByPhone" value="true" checked="@notificationsSettings.DiscountAnTipsByPhone" />
+        </div>
+    </div>
+
+    <div>
+        <p>
+            Rules and community
+        </p>
+        <div>
+            <label asp-for="RulesAndCommunityByEmail"></label>
+            <input asp-for="RulesAndCommunityByEmail" value="true" checked="@notificationsSettings.RulesAndCommunityByEmail" />
+        </div>
+        <div>
+            <label asp-for="RulesAndCommunityByMobileApp"></label>
+            <input asp-for="RulesAndCommunityByMobileApp" value="true" checked="@notificationsSettings.RulesAndCommunityByMobileApp" />
+        </div>
+        <div>
+            <label asp-for="RulesAndCommunityBySMS"></label>
+            <input asp-for="RulesAndCommunityBySMS" value="true" checked="@notificationsSettings.RulesAndCommunityBySMS" />
+        </div>
+        <div>
+            <label asp-for="RulesAndCommunityByPhone"></label>
+            <input asp-for="RulesAndCommunityByPhone" value="true" checked="@notificationsSettings.RulesAndCommunityByPhone" />
+        </div>
+    </div>
+
+    <div>
+        <p>
+            Service
+        </p>
+        <div>
+            <label asp-for="ServiceByEmail"></label>
+            <input asp-for="ServiceByEmail" value="true" checked="@notificationsSettings.ServiceByEmail" />
+        </div>
+        <div>
+            <label asp-for="ServiceByMobileApp"></label>
+            <input asp-for="ServiceByMobileApp" value="true" checked="@notificationsSettings.ServiceByMobileApp" />
+        </div>
+        <div>
+            <label asp-for="ServiceBySMS"></label>
+            <input asp-for="ServiceBySMS" value="true" checked="@notificationsSettings.ServiceBySMS" />
+        </div>
+        <div>
+            <label asp-for="ServiceByPhone"></label>
+            <input asp-for="ServiceByPhone" value="true" checked="@notificationsSettings.ServiceByPhone" />
+        </div>
+    </div>
+
+    <input type="submit" value="Save" class="btn btn-default" />
+
+</form>
+
+
+
+
+
+
