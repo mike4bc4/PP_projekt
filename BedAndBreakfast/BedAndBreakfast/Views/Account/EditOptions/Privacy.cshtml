@@ -1,7 +1,21 @@
-﻿
+﻿@model BedAndBreakfast.Models.EditPrivacyViewModel
+@using BedAndBreakfast.Data;
+
 @{
     ViewData["Title"] = "Privacy";
+    PrivacySetting privacySettings = (PrivacySetting)ViewData["privacySettings"];
 }
 
 <h2>Privacy</h2>
 
+<form asp-action="EditPrivacy">
+    <div>
+        <label asp-for="ShowProfileToFriends"></label>
+        <input asp-for="ShowProfileToFriends" value="true" checked="@privacySettings.ShowProfileToFriends" />
+    </div>
+    <div>
+        <label asp-for="ShowProfileToWorld"></label>
+        <input asp-for="ShowProfileToWorld" value="true" checked="@privacySettings.ShowProfileToWorld" />
+    </div>
+    <input type="submit" value="Save" class="btn btn-default" />
+</form>

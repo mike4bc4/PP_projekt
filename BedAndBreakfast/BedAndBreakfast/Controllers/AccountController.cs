@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Localization;
 
 namespace BedAndBreakfast.Controllers
@@ -120,50 +121,100 @@ namespace BedAndBreakfast.Controllers
             }
         }
 
+        /// <summary>
+        /// This method provides user settings to view elements and allows
+        /// navigation in account settings by option parameter.
+        /// </summary>
+        /// <param name="option"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(string option) {
             ViewData["option"] = option;
-            User currentUser = await userManager.GetUserAsync(HttpContext.User);
-            NotificationsSetting notificationsSettings = context.NotificationSettings.Where(s => s.User == currentUser).Single();
 
-
-            ViewData["notificationSettings"] = notificationsSettings;
-
+            // Work with database only if necessary.
+            if (option == "Notifications" || option == null)
+            {
+                User currentUser = await userManager.GetUserAsync(HttpContext.User);
+                NotificationsSetting notificationsSettings = context.NotificationSettings.Where(s => s.User == currentUser).Single();
+                ViewData["notificationSettings"] = notificationsSettings;
+            }
+            else if (option == "Privacy")
+            {
+                User currentUser = await userManager.GetUserAsync(HttpContext.User);
+                PrivacySetting privacySettings = context.PrivacySettings.Where(s => s.User == currentUser).Single();
+                ViewData["privacySettings"] = privacySettings;
+            }
+            ViewBag.Message = TempData["message"];
             return View();
         }
 
+        /// <summary>
+        /// Takes returned view model and changes user settings in database
+        /// then redirects to viewing action to reload account settings.
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> EditNotifications(EditNotificationsViewModel viewModel) {
             User currentUser = await userManager.GetUserAsync(HttpContext.User);
             NotificationsSetting notificationsSettings = context.NotificationSettings.Where(s => s.User == currentUser).Single();
 
-            notificationsSettings.GeneralByEmail = viewModel.GeneralByEmail;
-            notificationsSettings.GeneralByMobileApp = viewModel.GeneralByMobileApp;
-            notificationsSettings.GeneralBySMS = viewModel.GeneralBySMS;
-            notificationsSettings.GeneralByPhone = viewModel.GeneralByPhone;
-
-            notificationsSettings.DiscountAnTipsByEmail = viewModel.DiscountAnTipsByEmail;
-            notificationsSettings.DiscountAnTipsMobileApp = viewModel.DiscountAnTipsMobileApp;
-            notificationsSettings.DiscountAnTipsBySMS = viewModel.DiscountAnTipsBySMS;
-            notificationsSettings.DiscountAnTipsByPhone = viewModel.DiscountAnTipsByPhone;
-
-            notificationsSettings.RemindByEmail = viewModel.RemindByEmail;
-            notificationsSettings.RemindByMobileApp = viewModel.RemindByMobileApp;
-            notificationsSettings.RemindBySMS = viewModel.RemindBySMS;
-            notificationsSettings.RemindByPhone = viewModel.RemindByPhone;
-
-            notificationsSettings.RulesAndCommunityByEmail = viewModel.RulesAndCommunityByEmail;
-            notificationsSettings.RulesAndCommunityByMobileApp = viewModel.RulesAndCommunityByMobileApp;
-            notificationsSettings.RulesAndCommunityBySMS = viewModel.RulesAndCommunityBySMS;
-            notificationsSettings.RulesAndCommunityByPhone = viewModel.RulesAndCommunityByPhone;
-
-            notificationsSettings.ServiceByEmail = viewModel.ServiceByEmail;
-            notificationsSettings.ServiceByMobileApp = viewModel.ServiceByMobileApp;
-            notificationsSettings.ServiceBySMS = viewModel.ServiceBySMS;
-            notificationsSettings.ServiceByPhone = viewModel.ServiceByPhone;
+            UserAccountServiceLogic.CopyNotificationSettings(notificationsSettings, viewModel);
 
             await context.SaveChangesAsync();
 
             return RedirectToAction("Edit");
+        }
+
+        /// <summary>
+        /// Takes returned view model and changes user settings in database
+        /// then redirects to viewing action to reload account settings. 
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> EditPrivacy(EditPrivacyViewModel viewModel) {
+            User currentUser = await userManager.GetUserAsync(HttpContext.User);
+            PrivacySetting privacySettings = context.PrivacySettings.Where(s => s.User == currentUser).Single();
+
+            privacySettings.ShowProfileToFriends = viewModel.ShowProfileToFriends;
+            privacySettings.ShowProfileToWorld = viewModel.ShowProfileToWorld;
+            await context.SaveChangesAsync();
+
+            return RedirectToAction("Edit", new { option = "Privacy"});
+        }
+
+        /// <summary>
+        /// Validates and changes user password.
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditSecurity(EditSecurityViewModel viewModel) {
+            // If inserted data does not match validation rules redirect back.
+            if (!ModelState.IsValid) {
+                return RedirectToAction("Edit", new { option = "Security" });
+            }
+
+            User currentUser = await userManager.GetUserAsync(HttpContext.User);
+
+            // Verify old password.
+            PasswordVerificationResult verificationResult = userManager
+                .PasswordHasher
+                .VerifyHashedPassword(currentUser, currentUser.PasswordHash, viewModel.CurrentPassword);
+
+            if (verificationResult != PasswordVerificationResult.Success) {
+                TempData["message"] = "Current password does not match";
+                return RedirectToAction("Edit", new { option = "Security" });
+            }
+
+            // Change password.
+            string resetToken = await userManager.GeneratePasswordResetTokenAsync(currentUser);
+            IdentityResult passwordChangeResult = await userManager.ResetPasswordAsync(currentUser, resetToken, viewModel.NewPassword);
+
+            TempData["message"] = "Password changed.";
+
+            return RedirectToAction("Edit", new { option = "Security" });
         }
 
 

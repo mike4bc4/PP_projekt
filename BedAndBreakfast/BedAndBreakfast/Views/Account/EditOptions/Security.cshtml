@@ -1,7 +1,27 @@
-﻿
+﻿@model BedAndBreakfast.Models.EditSecurityViewModel
+
 @{
     ViewData["Title"] = "Security";
 }
 
 <h2>Security</h2>
 
+<form asp-action="EditSecurity">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div>
+        <label asp-for="CurrentPassword"></label>
+        <input asp-for="CurrentPassword" />
+        <span asp-validation-for="CurrentPassword"></span>
+    </div>
+    <div>
+        <label asp-for="NewPassword"></label>
+        <input asp-for="NewPassword" />
+        <span asp-validation-for="NewPassword"></span>
+    </div>
+    <div>
+        <label asp-for="PrepeatNewPassword"></label>
+        <input asp-for="PrepeatNewPassword" />
+        <span asp-validation-for="PrepeatNewPassword"></span>
+    </div>
+    <input type="submit" value="Change" />
+</form>

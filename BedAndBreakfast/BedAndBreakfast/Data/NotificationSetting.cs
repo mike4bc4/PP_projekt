@@ -12,8 +12,7 @@ namespace BedAndBreakfast.Data
     /// messages that are received by user.
     /// </summary>
     public class NotificationsSetting
-    {
-
+    {   
         [Key]
         public int ID { get; set; }
         [MaxLength(450)] 

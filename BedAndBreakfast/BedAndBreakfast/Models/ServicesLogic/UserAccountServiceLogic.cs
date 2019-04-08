@@ -74,5 +74,33 @@ namespace BedAndBreakfast.Models.ServicesLogic
             return user.IsLocked;
         }
 
+        public static void CopyNotificationSettings(NotificationsSetting origin, EditNotificationsViewModel setting)
+        {
+            origin.GeneralByEmail = setting.GeneralByEmail;
+            origin.GeneralByMobileApp = setting.GeneralByMobileApp;
+            origin.GeneralBySMS = setting.GeneralBySMS;
+            origin.GeneralByPhone = setting.GeneralByPhone;
+
+            origin.DiscountAnTipsByEmail = setting.DiscountAnTipsByEmail;
+            origin.DiscountAnTipsMobileApp = setting.DiscountAnTipsMobileApp;
+            origin.DiscountAnTipsBySMS = setting.DiscountAnTipsBySMS;
+            origin.DiscountAnTipsByPhone = setting.DiscountAnTipsByPhone;
+
+            origin.RemindByEmail = setting.RemindByEmail;
+            origin.RemindByMobileApp = setting.RemindByMobileApp;
+            origin.RemindBySMS = setting.RemindBySMS;
+            origin.RemindByPhone = setting.RemindByPhone;
+
+            origin.RulesAndCommunityByEmail = setting.RulesAndCommunityByEmail;
+            origin.RulesAndCommunityByMobileApp = setting.RulesAndCommunityByMobileApp;
+            origin.RulesAndCommunityBySMS = setting.RulesAndCommunityBySMS;
+            origin.RulesAndCommunityByPhone = setting.RulesAndCommunityByPhone;
+
+            origin.ServiceByEmail = setting.ServiceByEmail;
+            origin.ServiceByMobileApp = setting.ServiceByMobileApp;
+            origin.ServiceBySMS = setting.ServiceBySMS;
+            origin.ServiceByPhone = setting.ServiceByPhone;
+        }
+
     }
 }
