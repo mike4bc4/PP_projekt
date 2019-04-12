@@ -82,6 +82,12 @@ namespace BedAndBreakfast
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddDataAnnotationsLocalization()
                 .AddViewLocalization();
+
+            // Here are polices defined for this web application.
+            services.AddAuthorization(options => {
+                options.AddPolicy(Policy.LoggedIn, policy => policy.RequireRole(Role.Host, Role.User));
+            });
+
                 
 
         }

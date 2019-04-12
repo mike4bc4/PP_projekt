@@ -127,6 +127,7 @@ namespace BedAndBreakfast.Controllers
         /// </summary>
         /// <param name="option"></param>
         /// <returns></returns>
+        [Authorize(Policy = Policy.LoggedIn)]
         public async Task<IActionResult> Edit(string option) {
             ViewData["option"] = option;
 
@@ -154,6 +155,7 @@ namespace BedAndBreakfast.Controllers
         /// <param name="viewModel"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize(Policy = Policy.LoggedIn)]
         public async Task<IActionResult> EditNotifications(EditNotificationsViewModel viewModel) {
             User currentUser = await userManager.GetUserAsync(HttpContext.User);
             NotificationsSetting notificationsSettings = context.NotificationSettings.Where(s => s.User == currentUser).Single();
@@ -172,6 +174,7 @@ namespace BedAndBreakfast.Controllers
         /// <param name="viewModel"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize(Policy = Policy.LoggedIn)]
         public async Task<IActionResult> EditPrivacy(EditPrivacyViewModel viewModel) {
             User currentUser = await userManager.GetUserAsync(HttpContext.User);
             PrivacySetting privacySettings = context.PrivacySettings.Where(s => s.User == currentUser).Single();
@@ -190,6 +193,7 @@ namespace BedAndBreakfast.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = Policy.LoggedIn)]
         public async Task<IActionResult> EditSecurity(EditSecurityViewModel viewModel) {
             // If inserted data does not match validation rules redirect back.
             if (!ModelState.IsValid) {
@@ -216,8 +220,6 @@ namespace BedAndBreakfast.Controllers
 
             return RedirectToAction("Edit", new { option = "Security" });
         }
-
-
                
         /// <summary>
         /// Logs user out then redirects to home page.
