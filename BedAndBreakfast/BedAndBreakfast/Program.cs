@@ -40,6 +40,9 @@ namespace BedAndBreakfast
                         // Add administrators accounts if db was successfully created.
                         InitializeDb.CreateAdministratorAccounts(services.GetRequiredService<UserManager<User>>()).Wait();
 
+                        // Add test users
+                        InitializeDb.CreateTestUsers(services.GetRequiredService<UserManager<User>>(), context);
+
                         // Create test help pages.
                         InitializeDb.CreateTestHelpPages(context).Wait();
 

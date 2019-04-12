@@ -15,5 +15,10 @@ namespace BedAndBreakfast.Settings
         /// Number of help pages displayed by default - without search query.
         /// </summary>
         public static int DefHelpPages { get; } = 5;
+
+        /// <summary>
+        /// Number of users displayed in administration user browser by default.
+        /// </summary>
+        public static int DefUsersDisplayed { get; } = 10;
     }
 }

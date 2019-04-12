@@ -43,7 +43,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
         }
 
 
-        public async static Task<bool> AddUserAndDependiencesToDB(User user, UserManager<User> userManager, CreateAccountViewModel viewModel, AppDbContext context) {
+        public async static Task<bool> AddUserAndDependenciesToDB(User user, UserManager<User> userManager, CreateAccountViewModel viewModel, AppDbContext context) {
 
             user.PrivacySetting = new PrivacySetting
             {
@@ -101,6 +101,8 @@ namespace BedAndBreakfast.Models.ServicesLogic
             origin.ServiceBySMS = setting.ServiceBySMS;
             origin.ServiceByPhone = setting.ServiceByPhone;
         }
+
+        
 
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BedAndBreakfast.Models;
+using BedAndBreakfast.Models.ServicesLogic;
 using BedAndBreakfast.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -126,6 +127,147 @@ namespace BedAndBreakfast.Data
             }
 
             await context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Populates database with test users and their profiles.
+        /// </summary>
+        /// <param name="userManager"></param>
+        /// <param name="context"></param>
+        public static void CreateTestUsers(UserManager<User> userManager, AppDbContext context) {
+            List<CreateAccountViewModel> usersData = new List<CreateAccountViewModel>
+            {
+                new CreateAccountViewModel
+                {
+                    BirthDate = new DateTime(1990,1,1),
+                    EmailAddress = "jan@kowalski.com",
+                    FirstName = "Jan",
+                    LastName = "Kowalski",
+                    Password = "testtest"
+                },
+                new CreateAccountViewModel
+                {
+                    BirthDate = new DateTime(1980,5,5),
+                    EmailAddress = "preston@dawis.com",
+                    FirstName = "Preston",
+                    LastName = "Davis",
+                    Password = "testtest"
+                },
+                new CreateAccountViewModel
+                {
+                    BirthDate = new DateTime(1970,8,15),
+                    EmailAddress = "andrew@walles.com",
+                    FirstName = "Andrew",
+                    LastName = "Walles",
+                    Password = "testtest"
+                },
+                new CreateAccountViewModel
+                {
+                    BirthDate = new DateTime(1992,12,1),
+                    EmailAddress = "brian@may.com",
+                    FirstName = "Brian",
+                    LastName = "May",
+                    Password = "testtest"
+                },
+                new CreateAccountViewModel
+                {
+                    BirthDate = new DateTime(1982,4,30),
+                    EmailAddress = "jack@tasack.com",
+                    FirstName = "Jack",
+                    LastName = "Tasack",
+                    Password = "testtest"
+                },
+                new CreateAccountViewModel
+                {
+                    BirthDate = new DateTime(1962,3,18),
+                    EmailAddress = "james@may.com",
+                    FirstName = "James",
+                    LastName = "May",
+                    Password = "testtest"
+                },
+                new CreateAccountViewModel
+                {
+                    BirthDate = new DateTime(1978,6,5),
+                    EmailAddress = "jim@raynor.com",
+                    FirstName = "Jim",
+                    LastName = "Raynor",
+                    Password = "testtest"
+                },
+                new CreateAccountViewModel
+                {
+                    BirthDate = new DateTime(1984,8,12),
+                    EmailAddress = "sarah@kerrigan.com",
+                    FirstName = "Sarah",
+                    LastName = "Kerrigan",
+                    Password = "testtest"
+                },
+                new CreateAccountViewModel
+                {
+                    BirthDate = new DateTime(1976,12,1),
+                    EmailAddress = "varian@vrynn.com",
+                    FirstName = "Varian",
+                    LastName = "Vrynn",
+                    Password = "testtest"
+                },
+                new CreateAccountViewModel
+                {
+                    BirthDate = new DateTime(1984,11,5),
+                    EmailAddress = "jaina@proudmore.com",
+                    FirstName = "Jaina",
+                    LastName = "Proudmore",
+                    Password = "testtest"
+                },
+                new CreateAccountViewModel
+                {
+                    BirthDate = new DateTime(1966,8,30),
+                    EmailAddress = "arthas@menethil.com",
+                    FirstName = "Arthas",
+                    LastName = "Menethil",
+                    Password = "testtest"
+                },
+                new CreateAccountViewModel
+                {
+                    BirthDate = new DateTime(1901,2,22),
+                    EmailAddress = "machete@cortez.com",
+                    FirstName = "Machete",
+                    LastName = "Cortez",
+                    Password = "testtest"
+                },
+                new CreateAccountViewModel
+                {
+                    BirthDate = new DateTime(1960,5,23),
+                    EmailAddress = "peter@griffin.com",
+                    FirstName = "Peter",
+                    LastName = "Griffin",
+                    Password = "testtest"
+                },
+                new CreateAccountViewModel
+                {
+                    BirthDate = new DateTime(1967,8,13),
+                    EmailAddress = "derwan@gosciwuj.com",
+                    FirstName = "Derwan",
+                    LastName = "Gościwuj",
+                    Password = "testtest"
+                },
+            };
+
+            List<Profile> profiles = new List<Profile>();
+            foreach (CreateAccountViewModel user in usersData) {
+                profiles.Add(UserAccountServiceLogic.CreateProfile(user));
+            }
+
+            List<User> users = new List<User>();
+            int i = 0;
+            foreach (CreateAccountViewModel userData in usersData) {
+                users.Add(UserAccountServiceLogic.CreateUser(userData, profiles[i]));
+                i++;
+            }
+            i = 0;
+
+            foreach (User user in users) {
+                UserAccountServiceLogic.AddUserAndDependenciesToDB(user, userManager, usersData[i], context).Wait();
+                i++;
+            }
         }
     }
 }

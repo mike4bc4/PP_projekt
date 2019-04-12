@@ -67,7 +67,7 @@ namespace BedAndBreakfast.Controllers
             User addedUser = addedUser = UserAccountServiceLogic.CreateUser(viewModel, addedProfile);
             addedProfile.User = addedUser;
 
-            if (UserAccountServiceLogic.AddUserAndDependiencesToDB(addedUser, userManager, viewModel, context).Result)
+            if (UserAccountServiceLogic.AddUserAndDependenciesToDB(addedUser, userManager, viewModel, context).Result)
             {
                 ViewBag.Message = localizer["CreateSuccess"];
                 return RedirectToAction("Login");

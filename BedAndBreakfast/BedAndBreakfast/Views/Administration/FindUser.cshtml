@@ -1,0 +1,70 @@
+﻿@model BedAndBreakfast.Models.FindUserViewModel
+
+@{
+    ViewData["Title"] = "FindUser";
+    List<FindUserViewModel> users = (List<FindUserViewModel>)ViewData["users"];
+}
+
+<h2>FindUser</h2>
+
+<hr />
+<div>
+    <form asp-action="FindUser">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div>
+            <label asp-for="FristName"></label>
+            <input asp-for="FristName" />
+            <span asp-validation-for="FristName"></span>
+        </div>
+        <div>
+            <label asp-for="LastName"></label>
+            <input asp-for="LastName" />
+            <span asp-validation-for="LastName"></span>
+        </div>
+        <div>
+            <label asp-for="UserName"></label>
+            <input asp-for="UserName" />
+            <span asp-validation-for="UserName"></span>
+        </div>
+        <div>
+            <label asp-for="IsLocked"></label>
+            <input asp-for="IsLocked" value="true" />
+        </div>
+        <div>
+            <input type="submit" value="Search" />
+        </div>
+    </form>
+</div>
+
+<div>
+    @if (users.Count() != 0)
+    {
+    <table border="1">
+        <tr>
+            <th><label asp-for="UserName"></label></th>
+            <th><label asp-for="FristName"></label></th>
+            <th><label asp-for="LastName"></label></th>
+            <th><label asp-for="IsLocked"></label></th>
+            <th></th>
+            <th></th>
+        </tr>
+        @foreach (FindUserViewModel user in users)
+        {
+        <tr>
+            <td>@user.UserName</td>
+            <td>@user.FristName</td>
+            <td>@user.LastName</td>
+            <td>@user.IsLocked</td>
+            <td><a asp-action="EditUser"  asp-route-option="account" asp-route-user="@user.UserName">Edit Account</a></td>
+            <td><a asp-action="EditUser"  asp-route-option="profile" asp-route-user="@user.UserName">Edit Profile</a></td>
+        </tr>
+
+        }
+    </table>
+    }
+    else
+    {
+        <p>No results</p>
+    }
+</div>
+

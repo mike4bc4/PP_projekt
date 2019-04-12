@@ -117,13 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="EmailAddressError" xml:space="preserve">
+    <value>Email address does not match the pattern.</value>
+  </data>
   <data name="Female" xml:space="preserve">
     <value>Female</value>
   </data>
   <data name="Male" xml:space="preserve">
     <value>Male</value>
   </data>
+  <data name="TooLong" xml:space="preserve">
+    <value>Inserted value is too long.</value>
+  </data>
   <data name="Unspecified" xml:space="preserve">
     <value>Not specified</value>
+  </data>
+  <data name="UserNameError" xml:space="preserve">
+    <value>User name does not match the pattern.</value>
   </data>
 </root>

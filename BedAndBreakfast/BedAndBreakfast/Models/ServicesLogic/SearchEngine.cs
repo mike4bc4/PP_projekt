@@ -1,5 +1,7 @@
 ﻿using BedAndBreakfast.Data;
+using BedAndBreakfast.Models.ServicesLogic;
 using BedAndBreakfast.Settings;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +21,10 @@ namespace BedAndBreakfast.Models
         /// <param name="query">Raw string inserted by user.</param>
         /// <param name="context">Database context</param>
         /// <returns>List of pages descending by search score or null if query is incorrect.</returns>
-        public static List<HelpPage> FindPagesByQueryTags(string query, AppDbContext context) {
-            if (string.IsNullOrEmpty(query)) {
+        public static List<HelpPage> FindPagesByQueryTags(string query, AppDbContext context)
+        {
+            if (string.IsNullOrEmpty(query))
+            {
                 return null;
             }
 
@@ -40,8 +44,8 @@ namespace BedAndBreakfast.Models
 
             // Group by page ID and count search score.
             var data3 = (from d in data2
-                          group d by d.ID into g
-                          select new { page = g.Key, score = g.Count() })
+                         group d by d.ID into g
+                         select new { page = g.Key, score = g.Count() })
                           .OrderByDescending(g => g.score)
                           .ToList();
 
@@ -55,20 +59,105 @@ namespace BedAndBreakfast.Models
             return pagesByScore;
 
         }
-       
+
 
         /// <summary>
-        /// Finds few pages from top of database table sorted by descending order.
+        /// Finds few pages from top of database table sorted by ascending order.
         /// Page amount is related to general application settings.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static List<HelpPage> FindTopPages(AppDbContext context) {
+        public static List<HelpPage> FindTopPages(AppDbContext context)
+        {
             List<HelpPage> helpPages = context.HelpPages
                 .OrderBy(hp => hp.ID).Take(GeneralSettings.DefHelpPages)
                 .ToList();
             return helpPages;
         }
+
+        /// <summary>
+        /// Finds few users from top of database table sorted by user names.
+        /// This is a deep search which also returns references to user profile.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static List<User> FindTopUsers(AppDbContext context)
+        {
+            List<User> users = context.Users
+                .Include(u => u.Profile)
+                .OrderBy(u => u.UserName).Take(GeneralSettings.DefUsersDisplayed)
+                .ToList();
+            return users;
+        }
+
+        public static List<User> FindUsersByViewModel(FindUserViewModel viewModel, AppDbContext context)
+        {
+            IQueryable<User> users = null;
+            // Search by user name.
+            if (viewModel.UserName != null)
+            {
+                users = (from u in context.Users.Include(u => u.Profile)
+                         where u.NormalizedUserName.Contains(viewModel.UserName.ToUpper())
+                         select u);
+            }
+            // Search by first name.
+            if (viewModel.FristName != null)
+            {
+                if (users != null)
+                {
+                    users = (from u in users
+                             where u.Profile.FirstName.ToUpper().Contains(viewModel.FristName.ToUpper())
+                             select u);
+                }
+                else
+                {
+                    users = (from u in context.Users.Include(u => u.Profile)
+                             where u.Profile.FirstName.ToUpper().Contains(viewModel.FristName.ToUpper())
+                             select u);
+                }
+            }
+            // Search by last name.
+            if (viewModel.LastName != null)
+            {
+                if (users != null)
+                {
+                    users = (from u in users
+                             where u.Profile.LastName.ToUpper().Contains(viewModel.LastName.ToUpper())
+                             select u);
+                }
+                else
+                {
+                    users = (from u in context.Users.Include(u => u.Profile)
+                             where u.Profile.LastName.ToUpper().Contains(viewModel.LastName.ToUpper())
+                             select u);
+                }
+            }
+            // Search by locked.
+            if (users != null)
+            {
+                users = (from u in users
+                         where u.IsLocked == viewModel.IsLocked
+                         select u);
+            }
+            else
+            {
+                users = (from u in context.Users.Include(u => u.Profile)
+                         where u.IsLocked == viewModel.IsLocked
+                         select u);
+            }
+
+            // To list mapping.
+            if (users != null)
+            {
+                return users.ToList();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        
 
     }
 }
