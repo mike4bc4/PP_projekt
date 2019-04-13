@@ -26,10 +26,11 @@
         @*Visible for everyone.*@
         <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
         <a asp-area="" asp-controller="Help" asp-action="Browse">Help</a>
-
         @*If user is not an administrator.*@
         @if (!User.IsInRole(Role.Admin))
         {
+
+
             @if (!User.Identity.IsAuthenticated)
             {
                 <a asp-area="" asp-controller="Account" asp-action="Login">Log In</a>

@@ -9,7 +9,7 @@
 <h2>Browse</h2>
 
 @*
-    This line of code is responsible for injecting HTML code of different file.  
+    This line of code is responsible for injecting HTML code of different file.
 *@
 
 <partial name="SearchPartial" />
@@ -23,21 +23,21 @@
 {
     foreach (HelpPage helpPage in helpPages)
     {
-<div>
-    <button type="button" onclick="location.href='@Url.Action(action: "Display", values: new { hPage = helpPage.ID })'">
-
-        <h4>@helpPage.Title</h4>
-        <p>TODO: Get some short description form help page content.</p>
-    </button>
-</div>
+        <div>
+            <a asp-action="Display" asp-route-hPage="@helpPage.ID">
+                <h4>@helpPage.Title</h4>
+            </a>
+            <p>TODO: Get some short description form help page content.</p>
+        </div>
     }
 }
-else {
-<div>
-    <p>
-        No help pages found :(
-    </p>
-</div>
+else
+{
+    <div>
+        <p>
+            No help pages found :(
+        </p>
+    </div>
 }
 
 

@@ -142,7 +142,11 @@ namespace BedAndBreakfast.Controllers
             return RedirectToAction("EditUser", new { user = viewModel.UserName, option = "Status" });
         }
 
-
+        /// <summary>
+        /// Allows administrator to change user's password.
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         public async Task<IActionResult> EditSecurity(EditUserViewModel viewModel) {
             // Do not perform any changes if model for passwords is not valid.
             if (ModelState.GetValidationState("NewPassword") != ModelValidationState.Valid

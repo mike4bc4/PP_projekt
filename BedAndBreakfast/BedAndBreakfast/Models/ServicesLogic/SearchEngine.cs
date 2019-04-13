@@ -31,6 +31,8 @@ namespace BedAndBreakfast.Models
             // Get normalized query tags.
             List<string> queryTags = StringManager.RemoveSpecials(query.ToUpper()).Split(' ').ToList();
 
+
+
             // Join many to many.
             var data1 = (from ht in context.HelpTags
                          join hthp in context.HelpPageHelpTags
@@ -40,7 +42,10 @@ namespace BedAndBreakfast.Models
                          select new { ht.Value, hp.ID });
 
             // Select by tags.
-            var data2 = data1.Where(d => queryTags.Contains(d.Value.ToUpper()));
+            var data2 = from d1 in data1
+                       from q in queryTags
+                       where d1.Value.ToUpper().Contains(q)
+                       select new { d1.Value, d1.ID };
 
             // Group by page ID and count search score.
             var data3 = (from d in data2
@@ -90,6 +95,14 @@ namespace BedAndBreakfast.Models
             return users;
         }
 
+        /// <summary>
+        /// Searches for user by data stored in view model. Filtering is done
+        /// step by step (user name > first name > last name > is locked). Note
+        /// that lock status is used only if it's true, else it is ignored.
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public static List<User> FindUsersByViewModel(FindUserViewModel viewModel, AppDbContext context)
         {
             IQueryable<User> users = null;
