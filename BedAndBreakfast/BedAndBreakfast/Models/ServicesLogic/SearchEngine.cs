@@ -170,6 +170,23 @@ namespace BedAndBreakfast.Models
             }
         }
 
+        /// <summary>
+        /// Allows to find all tags related to help page specified 
+        /// by id.
+        /// </summary>
+        /// <param name="helpPageID"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static List<HelpTag> FindTagsForHelpPage(int helpPageID, AppDbContext context) {
+            var helpPageHelpTags = context.HelpPageHelpTags.Where(hpht => hpht.HelpPageID == helpPageID);
+            List<HelpTag> helpTags = (from ht in context.HelpTags
+                                      join hpht in helpPageHelpTags
+                                      on ht.ID equals hpht.HelpTagID
+                                      select ht).ToList();
+            return helpTags;
+        }
+
+
         
 
     }

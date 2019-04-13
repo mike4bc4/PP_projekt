@@ -18,6 +18,29 @@ namespace BedAndBreakfast.Models
             return sb.ToString();
         }
 
+        public static string RemoveDuplicateWords(string str) {
+            List<string> words = str.Trim().Split(' ').ToList();
+            
+            for (int i = 0; i < words.Count(); i++) {
+                for (int j = 0; j < words.Count(); j++) {
+                    if (i != j && words[i] == words[j])
+                    {
+                        words[i] = string.Empty;
+                    }
+                }
+
+            }
+
+            string output = string.Empty;
+            for (int i = 0; i < words.Count(); i++)
+            {
+                if (string.IsNullOrEmpty(words[i])) {
+                    words.RemoveAt(i);
+                }
+                output += (words[i] + " ");
+            }
+            return output.TrimEnd();
+        }
 
 
     }

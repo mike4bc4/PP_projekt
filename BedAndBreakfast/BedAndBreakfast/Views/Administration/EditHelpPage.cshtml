@@ -1,0 +1,32 @@
+﻿@using BedAndBreakfast.Data;
+
+@{
+    ViewData["Title"] = "EditHelpPage";
+    HelpPage helpPage = (HelpPage)ViewData["helpPage"];
+    string helpTags = (string)ViewData["pageTags"];
+}
+
+<h2>EditHelpPage</h2>
+
+<form asp-action="EditHelpPage" method="post">
+    <input type="hidden" name="hPage" value="@helpPage.ID" />
+
+    <div>
+        <p>Help page tags:</p>
+        <input name="tags" value="@helpTags" style="width: 300px;"/>
+    </div>
+    <div>
+        <p>Help page title:</p>
+        <input name="title" value="@helpPage.Title" style="width: 300px;"/>
+    </div>
+    <div>
+        <p>Help page content:</p>
+        @Html.TextArea("content", helpPage.Content, new { rows = 25, cols = 50 })
+    </div>
+
+    <div>
+        <input type="submit" value="Save" />
+    </div>
+</form>
+
+

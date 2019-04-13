@@ -17,9 +17,11 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// </summary>
         /// <param name="users"></param>
         /// <returns></returns>
-        public static List<FindUserViewModel> MapUsersToViewModel(List<User> users) {
+        public static List<FindUserViewModel> MapUsersToViewModel(List<User> users)
+        {
             List<FindUserViewModel> viewModelUsers = new List<FindUserViewModel>();
-            foreach (User user in users) {
+            foreach (User user in users)
+            {
                 FindUserViewModel viewModelUser = new FindUserViewModel();
                 if (user.Profile != null)
                 {
@@ -31,7 +33,8 @@ namespace BedAndBreakfast.Models.ServicesLogic
                         IsLocked = user.IsLocked
                     };
                 }
-                else {
+                else
+                {
                     // Note that administrator does not have profile.
                     viewModelUser = new FindUserViewModel
                     {
@@ -52,7 +55,8 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public static EditUserContextViewModel MapUserToViewModel(User user) {
+        public static EditUserContextViewModel MapUserToViewModel(User user)
+        {
             EditUserContextViewModel viewModel = new EditUserContextViewModel();
             if (user.Profile != null)
             {
@@ -68,7 +72,8 @@ namespace BedAndBreakfast.Models.ServicesLogic
                     IsLocked = user.IsLocked
                 };
             }
-            else {
+            else
+            {
                 viewModel = new EditUserContextViewModel
                 {
                     UserName = user.UserName,
@@ -86,7 +91,8 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// <param name="newUserName"></param>
         /// <param name="context"></param>
         /// <returns>False if new user name is not unique.</returns>
-        public static async Task<bool> ChangeUserName(string currentUserName, string newUserName, AppDbContext context, UserManager<User> userManager) {
+        public static async Task<bool> ChangeUserName(string currentUserName, string newUserName, AppDbContext context, UserManager<User> userManager)
+        {
             IdentityResult updateResult;
             User user = context.Users.Where(u => u.UserName == currentUserName).Single();
             User userTmp = context.Users.Where(u => u.UserName == newUserName).SingleOrDefault();
@@ -97,12 +103,14 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 user.Email = newUserName;
                 updateResult = await userManager.UpdateAsync(user);
             }
-            else {
+            else
+            {
                 // Name not unique.
                 return false;
             }
 
-            if (!updateResult.Succeeded) {
+            if (!updateResult.Succeeded)
+            {
                 throw new Exception("Error occurred while changing user name in database.");
             }
 
@@ -115,17 +123,20 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// <param name="currentUserName"></param>
         /// <param name="context"></param>
         /// <returns>True if action succeeded, false or exception if failed.</returns>
-        public static async Task<bool> LockUser(string currentUserName, AppDbContext context) {
+        public static async Task<bool> LockUser(string currentUserName, AppDbContext context)
+        {
             User user = context.Users.Where(u => u.UserName == currentUserName).Single();
             if (user.IsLocked == false)
             {
                 user.IsLocked = true;
             }
-            else {
+            else
+            {
                 return false;
             }
             var updateResult = await context.SaveChangesAsync();
-            if (updateResult == 0) {
+            if (updateResult == 0)
+            {
                 throw new Exception("Error occurred while locking user in database.");
             }
             return true;
@@ -144,7 +155,8 @@ namespace BedAndBreakfast.Models.ServicesLogic
             {
                 user.IsLocked = false;
             }
-            else {
+            else
+            {
                 return false;
             }
             var updateResult = await context.SaveChangesAsync();
@@ -154,6 +166,84 @@ namespace BedAndBreakfast.Models.ServicesLogic
             }
             return true;
         }
+
+        /// <summary>
+        /// Updates help page content.
+        /// </summary>
+        /// <param name="pageId"></param>
+        /// <param name="newTitle"></param>
+        /// <param name="newContent"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static async Task<bool> UpdateHelpPage(int pageId, string newTags, string newTitle, string newContent, AppDbContext context)
+        {
+            if (newTags == null || newTitle == null || newContent == null)
+            {
+                return false;
+            }
+
+            HelpPage helpPage = await context.HelpPages.FindAsync(pageId);
+            helpPage.Title = newTitle;
+            helpPage.Content = newContent;
+
+            // Prepare tags string.
+            List<string> newTagsList = StringManager.RemoveDuplicateWords(StringManager.RemoveSpecials(newTags.ToUpper().Trim())).Split(' ').ToList();
+
+            // Find additions and deletions.
+            var deleteRange = (from hpht in context.HelpPageHelpTags
+                               where hpht.HelpPageID == pageId
+                               select hpht);
+            context.HelpPageHelpTags.RemoveRange(deleteRange);
+
+            List<HelpPageHelpTag> relationsToAdd = new List<HelpPageHelpTag>();
+            
+            foreach (string tag in newTagsList)
+            {
+                HelpTag existingTag = (from ht in context.HelpTags
+                                       where ht.Value.ToUpper() == tag
+                                       select ht).SingleOrDefault();
+                if (existingTag != null)
+                {
+                    relationsToAdd.Add(new HelpPageHelpTag
+                    {
+                        HelpPage = helpPage,
+                        HelpTag = existingTag,
+                    });
+                }
+                else
+                {       
+                    HelpTag newTag = new HelpTag
+                    {
+                        Value = tag
+                    };
+                    await context.HelpTags.AddAsync(newTag);
+
+                    relationsToAdd.Add(new HelpPageHelpTag
+                    {
+                        HelpPage = helpPage,
+                        HelpTag = newTag,
+                    });
+                }
+            }
+
+            // Add new many-to-many 
+            await context.HelpPageHelpTags.AddRangeAsync(relationsToAdd);
+
+            // Commit changes.
+
+            int updateResult = await context.SaveChangesAsync();
+
+            // Simple false return instead throwing database exception
+            // because then it would be necessary to check if title or 
+            // context has been changed. Note that content may be very large
+            // and comparing could have huge performance impact.
+            if (updateResult == 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
 
 
     }

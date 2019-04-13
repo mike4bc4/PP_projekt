@@ -28,6 +28,13 @@
                 <h4>@helpPage.Title</h4>
             </a>
             <p>TODO: Get some short description form help page content.</p>
+            @*If administrator uses help browser he can edit pages.*@
+            @if (User.IsInRole(Role.Admin))
+            {
+                <a asp-controller="Administration" asp-action="EditHelpPage" asp-route-hPage="@helpPage.ID">
+                    Edit this help page.
+                </a>
+            }
         </div>
     }
 }

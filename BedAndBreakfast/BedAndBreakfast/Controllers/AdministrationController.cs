@@ -105,7 +105,7 @@ namespace BedAndBreakfast.Controllers
             catch (Exception e) {
                 TempData["message"] = e.Message;
                 return RedirectToAction("EditUser", new { user = viewModel.UserName, option = "Username" });
-            }           
+            }
         }
 
         /// <summary>
@@ -168,6 +168,31 @@ namespace BedAndBreakfast.Controllers
             }
 
             return RedirectToAction("EditUser", new { user = viewModel.UserName, option = "Security" });
+        }
+
+        /// <summary>
+        /// Allows administrator to view and edit help page specified by id.
+        /// </summary>
+        /// <param name="hPage"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> EditHelpPage(int hPage, string tags, string title, string content) {
+
+            //Update page before refresh.
+            if (tags != null || title != null || content != null) {
+                await AdministrationServiceLogic.UpdateHelpPage(hPage, tags, title, content, context);
+            }
+
+            HelpPage helpPage = await context.HelpPages.FindAsync(hPage);
+            List<HelpTag> helpTags = SearchEngine.FindTagsForHelpPage(hPage, context);
+
+            string helpTagsString = string.Empty;
+            foreach (HelpTag tag in helpTags) {
+                helpTagsString += (tag.Value + " ");
+            }
+
+            ViewData["pageTags"] = helpTagsString;
+            ViewData["helpPage"] = helpPage;
+            return View();
         }
 
     }
