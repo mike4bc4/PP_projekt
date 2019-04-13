@@ -126,8 +126,17 @@
   <data name="Male" xml:space="preserve">
     <value>Male</value>
   </data>
+  <data name="PassNotMatch" xml:space="preserve">
+    <value>Password and repeat password does not match.</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>This field is required.</value>
+  </data>
   <data name="TooLong" xml:space="preserve">
     <value>Inserted value is too long.</value>
+  </data>
+  <data name="TooShort" xml:space="preserve">
+    <value>Inserted value is too short.</value>
   </data>
   <data name="Unspecified" xml:space="preserve">
     <value>Not specified</value>

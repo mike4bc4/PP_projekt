@@ -42,7 +42,8 @@ namespace BedAndBreakfast
             });
 
             // Resource files localization.
-            services.AddLocalization(options => {
+            services.AddLocalization(options =>
+            {
                 options.ResourcesPath = "Resources";
             });
 
@@ -81,14 +82,20 @@ namespace BedAndBreakfast
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddDataAnnotationsLocalization()
-                .AddViewLocalization();
+                .AddViewLocalization()
+                .AddDataAnnotationsLocalization(options =>
+                 {
+                     options.DataAnnotationLocalizerProvider = (type, factory) =>
+                         factory.Create(typeof(SharedResources));
+                 });
 
             // Here are polices defined for this web application.
-            services.AddAuthorization(options => {
+            services.AddAuthorization(options =>
+            {
                 options.AddPolicy(Policy.LoggedIn, policy => policy.RequireRole(Role.Host, Role.User));
             });
 
-                
+
 
         }
 

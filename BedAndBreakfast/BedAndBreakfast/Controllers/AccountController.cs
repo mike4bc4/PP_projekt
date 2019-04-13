@@ -215,9 +215,13 @@ namespace BedAndBreakfast.Controllers
             // Change password.
             string resetToken = await userManager.GeneratePasswordResetTokenAsync(currentUser);
             IdentityResult passwordChangeResult = await userManager.ResetPasswordAsync(currentUser, resetToken, viewModel.NewPassword);
-
-            TempData["message"] = "Password changed.";
-
+            if (passwordChangeResult.Succeeded)
+            {
+                TempData["message"] = "Password changed.";
+            }
+            else {
+                TempData["message"] = "Password change error.";
+            }
             return RedirectToAction("Edit", new { option = "Security" });
         }
                

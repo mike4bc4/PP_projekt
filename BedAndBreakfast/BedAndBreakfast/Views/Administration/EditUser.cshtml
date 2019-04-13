@@ -1,0 +1,61 @@
+﻿@model BedAndBreakfast.Models.EditUserContextViewModel
+
+@{
+    ViewData["Title"] = "EditUser";
+    string option = (string)ViewData["option"];
+    ViewData["currentUser"] = Model.UserName;
+}
+
+<h2>EditUser</h2>
+
+<h4>@ViewBag.Message</h4>
+
+<div>
+    <div>
+        <label asp-for="UserName"></label>
+        <input asp-for="UserName" readonly />
+    </div>
+    <div>
+        <label asp-for="FirstName"></label>
+        <input asp-for="FirstName" readonly />
+    </div>
+    <div>
+        <label asp-for="LastName"></label>
+        <input asp-for="LastName" readonly />
+    </div>
+    <div>
+        <label asp-for="Gender"></label>
+        <input asp-for="Gender" readonly />
+    </div>
+    <div>
+        <label asp-for="BirthDate"></label>
+        <input asp-for="BirthDate" readonly />
+    </div>
+    <div>
+        <label asp-for="FullAddress"></label>
+        <input asp-for="FullAddress" readonly />
+    </div>
+    <div>
+        <label asp-for="BackupEmail"></label>
+        <input asp-for="BackupEmail" readonly />
+    </div>
+    <div>
+        <label asp-for="IsLocked"></label>
+        <input asp-for="IsLocked" disabled />
+    </div>
+</div>
+
+
+<a asp-action="EditUser" asp-route-user="@Model.UserName" asp-route-option="Username">Change Username</a>
+<a asp-action="EditUser" asp-route-user="@Model.UserName" asp-route-option="Security">Change Password</a>
+<a asp-action="EditUser" asp-route-user="@Model.UserName" asp-route-option="Status">Change Status</a>
+
+@if (option == null)
+{
+    <partial name="EditOptions/Username" model="new BedAndBreakfast.Models.EditUserViewModel();" view-data="ViewData" />
+}
+else
+{
+    <partial name="EditOptions/@option" model="new BedAndBreakfast.Models.EditUserViewModel();" view-data="ViewData" />
+}
+

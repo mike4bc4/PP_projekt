@@ -46,7 +46,6 @@
             <th><label asp-for="LastName"></label></th>
             <th><label asp-for="IsLocked"></label></th>
             <th></th>
-            <th></th>
         </tr>
         @foreach (FindUserViewModel user in users)
         {
@@ -55,8 +54,7 @@
             <td>@user.FristName</td>
             <td>@user.LastName</td>
             <td>@user.IsLocked</td>
-            <td><a asp-action="EditUser"  asp-route-option="account" asp-route-user="@user.UserName">Edit Account</a></td>
-            <td><a asp-action="EditUser"  asp-route-option="profile" asp-route-user="@user.UserName">Edit Profile</a></td>
+            <td><a asp-action="EditUser" asp-route-user="@user.UserName">Edit</a></td>
         </tr>
 
         }

@@ -1,0 +1,22 @@
+﻿@model BedAndBreakfast.Models.EditUserViewModel
+
+
+@{
+    ViewData["Title"] = "Username";
+    
+}
+
+<h2>Username</h2>
+
+<form asp-action="EditUsername">
+
+    <input asp-for="UserName" value="@ViewData["currentUser"]" type="hidden" />
+
+    <label asp-for="NewUserName"></label>
+    <input asp-for="NewUserName" />
+    <span asp-validation-for="NewUserName"></span>
+
+    <input type="submit" value="Change"/>
+
+</form>
+

@@ -132,14 +132,14 @@ namespace BedAndBreakfast.Models
                              select u);
                 }
             }
-            // Search by locked.
-            if (users != null)
+            // Search by locked but only if option is used.
+            if (users != null && viewModel.IsLocked)
             {
                 users = (from u in users
                          where u.IsLocked == viewModel.IsLocked
                          select u);
             }
-            else
+            else if(viewModel.IsLocked)
             {
                 users = (from u in context.Users.Include(u => u.Profile)
                          where u.IsLocked == viewModel.IsLocked

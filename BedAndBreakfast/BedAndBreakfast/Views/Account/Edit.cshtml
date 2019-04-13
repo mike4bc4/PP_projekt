@@ -16,17 +16,10 @@ Navigation bar
 *@
 
 <div>
-    <button type="button" onclick="location.href='@Url.Action(action: "Edit", values: new { option = "Notifications" })'">
-        Notifications
-    </button>
-    <button type="button" onclick="location.href='@Url.Action(action: "Edit", values: new { option = "Privacy" })'">
-        Privacy
-    </button>
-    <button type="button" onclick="location.href='@Url.Action(action: "Edit", values: new { option = "Security" })'">
-        Security
-    </button>
+    <a asp-action="Edit" asp-route-option="Notifications">Notifications</a>
+    <a asp-action="Edit" asp-route-option="Privacy">Privacy</a>
+    <a asp-action="Edit" asp-route-option="Security">Security</a>
 </div>
-
 
 
 @if (option != null)
