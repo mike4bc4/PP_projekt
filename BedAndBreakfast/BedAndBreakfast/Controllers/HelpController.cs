@@ -23,24 +23,33 @@ namespace BedAndBreakfast.Controllers
 
 		/// <summary>
 		/// Displays search page. And passes default number of first help pages in database
-        /// or less if there is not enough of them.
+        /// or less if there is not enough of them. If administrator uses this action
+        /// he will also see locked pages.
 		/// </summary>
 		/// <returns></returns>
-		public IActionResult Browse() {
+		public IActionResult Browse(string message) {
             var helpPages = SearchEngine.FindTopPages(context);
             ViewData["helpPages"] = helpPages;
+
+            // Display message received message
+            ViewBag.Message = message;
             return View();
 		}
 
-		/// <summary>
-		/// Performs search for help pages in database.
-		/// </summary>
-		/// <param name="searchString"></param>
-		/// <returns></returns>
+        /// <summary>
+        /// Performs search for help pages in database. If administrator 
+        /// uses this action he will also see locked pages.
+        /// </summary>
+        /// <param name="searchString"></param>
+        /// <returns></returns>
         [HttpPost]
-		public IActionResult Search(string query) {
+		public IActionResult Search(string query, bool isLocked) {
 
-            List<HelpPage> pagesByScore = SearchEngine.FindPagesByQueryTags(query, context);
+            // Remember browsed query.
+            ViewData["query"] = query;
+            ViewData["isLocked"] = isLocked;
+
+            List<HelpPage> pagesByScore = SearchEngine.FindPagesByQueryTags(query, context, isLocked);
 
             if (pagesByScore == null)
             {

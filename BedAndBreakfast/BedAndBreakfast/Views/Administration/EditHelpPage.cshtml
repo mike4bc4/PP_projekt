@@ -1,4 +1,5 @@
-﻿@using BedAndBreakfast.Data;
+﻿@model BedAndBreakfast.Models.EditHelpPageViewModel
+@using BedAndBreakfast.Data;
 
 @{
     ViewData["Title"] = "EditHelpPage";
@@ -8,20 +9,27 @@
 
 <h2>EditHelpPage</h2>
 
+<h4>@ViewBag.Message</h4>
+
 <form asp-action="EditHelpPage" method="post">
     <input type="hidden" name="hPage" value="@helpPage.ID" />
-
+    <input asp-for="WasEdited" value="true" type="hidden" />
     <div>
-        <p>Help page tags:</p>
-        <input name="tags" value="@helpTags" style="width: 300px;"/>
+        <label asp-for="IsLocked"></label>
+        <input asp-for="IsLocked" value="true" checked="@helpPage.IsLocked" />
     </div>
     <div>
-        <p>Help page title:</p>
-        <input name="title" value="@helpPage.Title" style="width: 300px;"/>
+        <label asp-for="Tags"></label>
+        <input asp-for="Tags" value="@helpTags" style="width: 300px;" />
+        <span asp-validation-for="Tags"></span>
     </div>
     <div>
-        <p>Help page content:</p>
-        @Html.TextArea("content", helpPage.Content, new { rows = 25, cols = 50 })
+        <label asp-for="Title"></label>
+        <input asp-for="Title" value="@helpPage.Title" style="width: 300px;" />
+    </div>
+    <div>
+        <label asp-for="Content"></label>
+        @Html.TextArea("Content", helpPage.Content, new { rows = 25, cols = 50 })
     </div>
 
     <div>

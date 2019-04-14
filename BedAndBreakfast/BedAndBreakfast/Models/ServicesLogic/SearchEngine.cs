@@ -21,10 +21,14 @@ namespace BedAndBreakfast.Models
         /// <param name="query">Raw string inserted by user.</param>
         /// <param name="context">Database context</param>
         /// <returns>List of pages descending by search score or null if query is incorrect.</returns>
-        public static List<HelpPage> FindPagesByQueryTags(string query, AppDbContext context)
+        public static List<HelpPage> FindPagesByQueryTags(string query, AppDbContext context, bool findLocked = false)
         {
             if (string.IsNullOrEmpty(query))
             {
+                if (findLocked == true)
+                    // If nothing to find but locked pages should be displayed
+                    // return top pages with locked ones.
+                    return FindTopPages(context, true);
                 return null;
             }
 
@@ -43,9 +47,9 @@ namespace BedAndBreakfast.Models
 
             // Select by tags.
             var data2 = from d1 in data1
-                       from q in queryTags
-                       where d1.Value.ToUpper().Contains(q)
-                       select new { d1.Value, d1.ID };
+                        from q in queryTags
+                        where d1.Value.ToUpper().Contains(q)
+                        select new { d1.Value, d1.ID };
 
             // Group by page ID and count search score.
             var data3 = (from d in data2
@@ -58,7 +62,16 @@ namespace BedAndBreakfast.Models
             List<HelpPage> pagesByScore = new List<HelpPage>();
             foreach (var result in data3)
             {
-                pagesByScore.Add(context.HelpPages.Find(result.page));
+                if (findLocked)
+                {
+                    pagesByScore.Add(context.HelpPages.Find(result.page));
+                }
+                else {
+                    HelpPage page = context.HelpPages.Find(result.page);
+                    if (!page.IsLocked) {
+                        pagesByScore.Add(page);
+                    }
+                }
             }
 
             return pagesByScore;
@@ -69,14 +82,25 @@ namespace BedAndBreakfast.Models
         /// <summary>
         /// Finds few pages from top of database table sorted by ascending order.
         /// Page amount is related to general application settings.
+        /// By default locked pages are not displayed.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static List<HelpPage> FindTopPages(AppDbContext context)
+        public static List<HelpPage> FindTopPages(AppDbContext context, bool findLocked = false)
         {
-            List<HelpPage> helpPages = context.HelpPages
-                .OrderBy(hp => hp.ID).Take(GeneralSettings.DefHelpPages)
-                .ToList();
+            List<HelpPage> helpPages = new List<HelpPage>();
+            if (findLocked == false)
+            {
+                helpPages = context.HelpPages
+                        .Where(hp => hp.IsLocked == false)
+                        .OrderBy(hp => hp.ID).Take(GeneralSettings.DefHelpPages)
+                        .ToList();
+            }
+            else {
+                helpPages = context.HelpPages
+                        .OrderBy(hp => hp.ID).Take(GeneralSettings.DefHelpPages)
+                        .ToList();
+            }
             return helpPages;
         }
 
@@ -152,7 +176,7 @@ namespace BedAndBreakfast.Models
                          where u.IsLocked == viewModel.IsLocked
                          select u);
             }
-            else if(viewModel.IsLocked)
+            else if (viewModel.IsLocked)
             {
                 users = (from u in context.Users.Include(u => u.Profile)
                          where u.IsLocked == viewModel.IsLocked
@@ -177,7 +201,8 @@ namespace BedAndBreakfast.Models
         /// <param name="helpPageID"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static List<HelpTag> FindTagsForHelpPage(int helpPageID, AppDbContext context) {
+        public static List<HelpTag> FindTagsForHelpPage(int helpPageID, AppDbContext context)
+        {
             var helpPageHelpTags = context.HelpPageHelpTags.Where(hpht => hpht.HelpPageID == helpPageID);
             List<HelpTag> helpTags = (from ht in context.HelpTags
                                       join hpht in helpPageHelpTags
@@ -187,7 +212,8 @@ namespace BedAndBreakfast.Models
         }
 
 
-        
+
+
 
     }
 }

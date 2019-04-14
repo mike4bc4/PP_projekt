@@ -17,10 +17,19 @@ namespace BedAndBreakfast.Data
 
 		public List<HelpPageHelpTag> HelpPageHelpTag { get; set; }
 
+        [Required]
         [MaxLength(DbRestrictionsContainer.MaxHelpPageTitleSize)]
         public string Title { get; set; }
 
+        [Required]
         [MaxLength(DbRestrictionsContainer.MaxHelpPageSize)]
 		public string Content { get; set; }
-	}
+
+        /// <summary>
+        /// By default each page is not locked but can
+        /// be deactivated so it will not appear in
+        /// users browser.
+        /// </summary>
+        public bool IsLocked { get; set; } = false;
+    }
 }

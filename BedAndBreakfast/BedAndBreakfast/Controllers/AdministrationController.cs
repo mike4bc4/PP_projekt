@@ -175,11 +175,12 @@ namespace BedAndBreakfast.Controllers
         /// </summary>
         /// <param name="hPage"></param>
         /// <returns></returns>
-        public async Task<IActionResult> EditHelpPage(int hPage, string tags, string title, string content) {
+        public async Task<IActionResult> EditHelpPage(int hPage, EditHelpPageViewModel viewModel) {
 
             //Update page before refresh.
-            if (tags != null || title != null || content != null) {
-                await AdministrationServiceLogic.UpdateHelpPage(hPage, tags, title, content, context);
+            if (viewModel.WasEdited && ModelState.IsValid) {
+                await AdministrationServiceLogic.UpdateHelpPage(hPage, viewModel, context);
+                ViewBag.Message = "Help page saved.";
             }
 
             HelpPage helpPage = await context.HelpPages.FindAsync(hPage);
@@ -194,6 +195,27 @@ namespace BedAndBreakfast.Controllers
             ViewData["helpPage"] = helpPage;
             return View();
         }
+
+        public async Task<IActionResult> AddHelpPage() {
+            HelpPage helpPage = new HelpPage
+            {
+                Content = "New Page",
+                IsLocked = true,
+                Title = "New Page"
+            };
+
+            await context.HelpPages.AddAsync(helpPage);
+            int addResult = await context.SaveChangesAsync();
+            if (addResult != 0)
+            {
+                return RedirectToAction("EditHelpPage", new { hPage =  helpPage.ID});
+            }
+            else {
+                return RedirectToPage("../Help/Browse", new { message = "Fail" });
+            }
+        }
+
+
 
     }
 }

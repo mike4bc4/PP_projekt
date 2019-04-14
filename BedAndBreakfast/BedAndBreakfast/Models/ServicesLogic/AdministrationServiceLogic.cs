@@ -175,19 +175,20 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// <param name="newContent"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static async Task<bool> UpdateHelpPage(int pageId, string newTags, string newTitle, string newContent, AppDbContext context)
+        public static async Task<bool> UpdateHelpPage(int pageId, EditHelpPageViewModel viewModel, AppDbContext context)
         {
-            if (newTags == null || newTitle == null || newContent == null)
+            if (viewModel == null)
             {
                 return false;
             }
 
             HelpPage helpPage = await context.HelpPages.FindAsync(pageId);
-            helpPage.Title = newTitle;
-            helpPage.Content = newContent;
+            helpPage.Title = viewModel.Title;
+            helpPage.Content = viewModel.Content;
+            helpPage.IsLocked = viewModel.IsLocked;
 
             // Prepare tags string.
-            List<string> newTagsList = StringManager.RemoveDuplicateWords(StringManager.RemoveSpecials(newTags.ToUpper().Trim())).Split(' ').ToList();
+            List<string> newTagsList = StringManager.RemoveDuplicateWords(StringManager.RemoveSpecials(viewModel.Tags.ToUpper().Trim())).Split(' ').ToList();
 
             // Find additions and deletions.
             var deleteRange = (from hpht in context.HelpPageHelpTags
@@ -243,8 +244,6 @@ namespace BedAndBreakfast.Models.ServicesLogic
             }
             return true;
         }
-
-
 
     }
 }

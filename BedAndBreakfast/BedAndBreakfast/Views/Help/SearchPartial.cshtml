@@ -1,13 +1,45 @@
-﻿
+﻿@using BedAndBreakfast.Data;
+
+@{ 
+    bool isLocked = false;
+    string query = string.Empty;
+    if (ViewData["isLocked"] != null) {
+        isLocked = (bool)ViewData["isLocked"];
+    }
+    if (ViewData["query"] != null) {
+        query = (string)ViewData["query"];
+    }
+}
+
 @*
     This form redirects to search action in help controller which returns
     help pages based on search query.
 *@
 <form asp-action="Search">
     <div>
-        <input type="search" name="query" />
-        <button>Search</button>
+
+
+
+        <div>
+            <input type="search" name="query" value="@query"/>
+        </div>
+
+        @if (User.IsInRole(Role.Admin))
+        {
+            <div>
+                Display locked pages
+                <input type="checkbox" name="isLocked" value="true" checked="@isLocked" />
+            </div>
+        }
+        else
+        {
+            <input type="hidden" name="isLocked" value="false" />
+        }
+        <div>
+            <button>Search</button>
+        </div>
     </div>
+
 
 </form>
 
