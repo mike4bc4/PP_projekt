@@ -92,7 +92,7 @@ namespace BedAndBreakfast
             // Here are polices defined for this web application.
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(Policy.LoggedIn, policy => policy.RequireRole(Role.Host, Role.User));
+                options.AddPolicy(Policy.LoggedInUser, policy => policy.RequireRole(Role.Host, Role.User));
             });
 
 

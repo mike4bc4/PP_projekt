@@ -10,6 +10,6 @@ namespace BedAndBreakfast.Data
     /// </summary>
     public static class Policy
     {
-        public const string LoggedIn = "LoggedInUser";
+        public const string LoggedInUser = "LoggedInUserPolicy";
     }
 }

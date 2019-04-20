@@ -20,7 +20,7 @@ namespace BedAndBreakfast.Models
         public string LastName { get; set; }
 
         [Display(Name = "Your gender")]
-        public char? Gender { get; set; }
+        public string Gender { get; set; }
 
         // TODO: Should be this field editable only by administrator?
         [Display(Name = "Your date of birth")]

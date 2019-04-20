@@ -14,7 +14,7 @@ namespace BedAndBreakfast.Controllers
     /// This class should be used to call all methods responsible for user web profile.
     /// Note that only authorized users may access this set of functions.
     /// </summary>
-    [Authorize(Policy = Policy.LoggedIn)]
+    [Authorize(Policy = Policy.LoggedInUser)]
     public class ProfileController : Controller
     {
         protected AppDbContext context;

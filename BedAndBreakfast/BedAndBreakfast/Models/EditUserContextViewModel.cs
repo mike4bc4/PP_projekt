@@ -22,7 +22,7 @@ namespace BedAndBreakfast.Models
         public string LastName { get; set; }
 
         [Display(Name = "Gender")]
-        public char? Gender { get; set; }
+        public string Gender { get; set; }
 
         // As it's readonly date is presented as string which is short date value.
         [Display(Name = "Birth date")]

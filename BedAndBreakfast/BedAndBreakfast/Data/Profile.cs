@@ -27,7 +27,8 @@ namespace BedAndBreakfast.Data
         [MaxLength(50)]
         public string LastName { get; set; }
 
-        public char? Gender { get; set; }
+        [MaxLength(50)]
+        public string Gender { get; set; }
 
         [Required]
         [DataType(DataType.Date)]

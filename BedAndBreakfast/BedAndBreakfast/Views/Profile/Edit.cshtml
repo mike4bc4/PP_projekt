@@ -13,40 +13,10 @@
 
 @*Objects for drop-down select lists*@
 @{
-    List<SelectListItem> genders = new List<SelectListItem>();
 
-    foreach (ListedDbValues.Gender gender in Enum.GetValues(typeof(ListedDbValues.Gender)))
-    {
-        genders.Add(new SelectListItem {
-            Text = Localizer[gender.ToString()].Value,
-            Value = ((char)gender).ToString(),
-            Selected = (profile.Gender == (char)gender)
-        });
-    }
-
-    List<SelectListItem> currencies = new List<SelectListItem>();
-
-    foreach (ListedDbValues.Currency currency in Enum.GetValues(typeof(ListedDbValues.Currency)))
-    {
-        currencies.Add(new SelectListItem
-        {
-            Text = currency.ToString(),
-            Value = currency.ToString(),
-            Selected = (profile.PrefCurrency == currency.ToString())
-        });
-    }
-
-    List<SelectListItem> languages = new List<SelectListItem>();
-
-    foreach (ListedDbValues.Language language in Enum.GetValues(typeof(ListedDbValues.Language)))
-    {
-        languages.Add(new SelectListItem
-        {
-            Text = language.ToString(),
-            Value = language.ToString(),
-            Selected = (profile.PrefLanguage == language.ToString())
-        });
-    }
+    List<SelectListItem> genders = ListedDbValues.CreateListOfItems<ListedDbValues.Gender>(profile.Gender);
+    List<SelectListItem> currencies = ListedDbValues.CreateListOfItems<ListedDbValues.Currency>(profile.PrefCurrency);
+    List<SelectListItem> languages = ListedDbValues.CreateListOfItems<ListedDbValues.Language>(profile.PrefLanguage);
 }
 
 <h2>Edit</h2>

@@ -26,6 +26,20 @@
         @*Visible for everyone.*@
         <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
         <a asp-area="" asp-controller="Help" asp-action="Browse">Help</a>
+
+
+        @*Visible for everyone except host*@
+        @if (!User.IsInRole(Role.Host))
+        {
+            <a asp-area="" asp-controller="Hosting" asp-action="BecomeHost">Become a Host</a>
+        }
+        @*Visible for host only*@
+        else if(User.IsInRole(Role.Host))
+        {
+            <a asp-area="" asp-controller="Hosting" asp-action="">My hosted places</a>
+        }
+
+
         @*If user is not an administrator.*@
         @if (!User.IsInRole(Role.Admin))
         {
