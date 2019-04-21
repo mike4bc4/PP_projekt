@@ -13,10 +13,12 @@ namespace BedAndBreakfast.Data
 		/// <summary>
 		/// Type of payment e.g. Paypal or bank transfer.
 		/// </summary>
+		[MaxLength(100)]
 		public string Type { get; set; }
 		/// <summary>
 		/// Data related to payment method like account number or paypal link.
 		/// </summary>
+		[MaxLength(200)]
 		public string Data { get; set; }
 		//TODO: hash account number?
 

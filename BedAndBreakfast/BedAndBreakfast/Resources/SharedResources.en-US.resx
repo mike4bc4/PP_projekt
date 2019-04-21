@@ -123,6 +123,9 @@
   <data name="Female" xml:space="preserve">
     <value>Female</value>
   </data>
+  <data name="InvalidAnnouncementDate" xml:space="preserve">
+    <value>From date should be earlier  than to date and later than current date.</value>
+  </data>
   <data name="Male" xml:space="preserve">
     <value>Male</value>
   </data>

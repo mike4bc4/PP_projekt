@@ -1,7 +1,15 @@
-﻿
+﻿@using BedAndBreakfast.Data;
+
 @{
-    ViewData["Title"] = "TypeSelection";
+	ViewData["Title"] = "TypeSelection";
 }
 
 <h2>TypeSelection</h2>
+
+@foreach (ListedDbValues.AnnouncementType announcement in Enum.GetValues(typeof(ListedDbValues.AnnouncementType)))
+{
+	<a asp-controller="Hosting" asp-action="UpdateAnnouncementSection" asp-route-value="@announcement.ToString()" asp-route-target="SubtypeSelection">
+		@announcement.ToString()
+	</a>
+}
 

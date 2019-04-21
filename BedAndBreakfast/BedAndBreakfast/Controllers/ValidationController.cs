@@ -31,5 +31,30 @@ namespace BedAndBreakfast.Controllers
             var date = DateTime.Parse(birthDate);
             return Json(date > DbRestrictionsContainer.MinimumBirthDate && date < DateTime.Today.AddYears(-DbRestrictionsContainer.RequiredAge));
         }
+
+		/// <summary>
+		/// Checks if date from is earlier than date to and in 
+		/// from date is later today.
+		/// </summary>
+		/// <param name="from"></param>
+		/// <param name="to"></param>
+		/// <returns></returns>
+		public JsonResult ValidAnnouncementDate(DateTime from, DateTime to) {
+			if (DateTime.Compare(from, DateTime.Today) <= 0) {
+				return Json(false);
+			}
+
+			if (DateTime.Compare(from, to) > 0)
+			{
+				return Json(false);
+			}
+			else if (DateTime.Compare(from, to) < 0)
+			{
+				return Json(true);
+			}
+			else {
+				return Json(false);
+			}
+		}
     }
 }

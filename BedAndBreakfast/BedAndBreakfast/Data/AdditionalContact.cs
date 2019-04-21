@@ -13,7 +13,9 @@ namespace BedAndBreakfast.Data
 	{
 		[Key]
 		public int ID { get; set; }
+		[MaxLength(100)]
 		public string Type { get; set; }
+		[MaxLength(200)]
 		public string Data { get; set; }
 		public List<AnnouncementToContact> AnnouncementToContacts { get; set; }
 	}

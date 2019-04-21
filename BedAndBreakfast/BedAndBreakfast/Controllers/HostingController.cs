@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BedAndBreakfast.Data;
+using BedAndBreakfast.Models;
+using BedAndBreakfast.Models.ServicesLogic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +33,7 @@ namespace BedAndBreakfast.Controllers
             }
 			// If user is logged in...
 
-
+			//return View();
 			
 
 
@@ -40,6 +42,11 @@ namespace BedAndBreakfast.Controllers
 			return View("../Shared/UnderConstruction");
         }
 
+
+		public IActionResult UpdateAnnouncementSection() {
+
+			return View("../Shared/UnderConstruction");
+		}
 
 
 
