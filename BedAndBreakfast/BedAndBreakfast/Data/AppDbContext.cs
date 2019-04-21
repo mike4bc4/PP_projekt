@@ -81,6 +81,10 @@ namespace BedAndBreakfast.Data
 
 			// Multiple announcements may have multiple additional contacts
 			modelBuilder.Entity<AnnouncementToContact>()
+				.HasKey(ac => new { ac.AdditionalContactID, ac.AnnouncementID });
+				
+
+			modelBuilder.Entity<AnnouncementToContact>()
 				.HasOne(ac => ac.Announcement)
 				.WithMany(a => a.AnnouncementToContacts)
 				.HasForeignKey(ac => ac.AnnouncementID);
@@ -91,6 +95,9 @@ namespace BedAndBreakfast.Data
 				.HasForeignKey(ac => ac.AdditionalContactID);
 
 			// Multiple announcements may have multiple payment methods
+			modelBuilder.Entity<AnnouncementToPayment>()
+				.HasKey(ap => new { ap.AnnouncementID, ap.PaymentMethodID });
+
 			modelBuilder.Entity<AnnouncementToPayment>()
 				.HasOne(ap => ap.Announcement)
 				.WithMany(a => a.AnnouncementToPayments)
