@@ -74,15 +74,32 @@ namespace BedAndBreakfast.Data
 
 		public enum HouseSharedPart {
 			Exterior,
-			OneRoom,
-			MultipleRooms,
-			OneRoomWithBathroom,
-			MultipleRoomsWithBathroom,
-			WholeFloor,
-			WholeFloorWithBathroom,
-			WholeHouse,
+			Room,
+			Rooms,
+			RoomWithBathroom,
+			RoomsWithBathroom,
+			Floor,
+			FloorWithBathroom,
+			House,
+			Other,
 			NotApplicable
 		}
+
+		public enum ContactType {
+			EmailAddress,
+			PhoneNumber,
+			Other
+		}
+
+		public enum PaymentMethod {
+			PayPal,
+			BankTransfer,
+			Other
+		}
+
+
+
+
 
 		public static List<SelectListItem> CreateListOfItems<T>(string currentlySelectedValue) {
             List<SelectListItem> list = new List<SelectListItem>();

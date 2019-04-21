@@ -22,9 +22,14 @@ namespace BedAndBreakfast.Data
         public DbSet<NotificationsSetting> NotificationSettings { get; set; }
         public DbSet<PrivacySetting> PrivacySettings { get; set; }
 		public DbSet<Address> Addresses { get; set; }
+		public DbSet<Announcement> Announcements { get; set; }
+		public DbSet<AdditionalContact> AdditionalContacts { get; set; }
+		public DbSet<PaymentMethod> PaymentMethods { get; set; }
+		public DbSet<AnnouncementToContact> AnnouncementToContacts { get; set; }
+		public DbSet<AnnouncementToPayment> AnnouncementToPayments { get; set; }
 
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
             // This method must be called to map keys for user identity tables.
             base.OnModelCreating(modelBuilder);
@@ -67,9 +72,38 @@ namespace BedAndBreakfast.Data
 				.HasOne(p => p.Address)
 				.WithOne(a => a.Profile)
 				.HasForeignKey<Profile>(p => p.AddressFK);
-			
 
-        }
+			// Each user has many announcements
+			modelBuilder.Entity<User>()
+				.HasMany(u => u.Announcements)
+				.WithOne(a => a.User)
+				.HasForeignKey(a => a.UserFK);
 
-    }
+			// Multiple announcements may have multiple additional contacts
+			modelBuilder.Entity<AnnouncementToContact>()
+				.HasOne(ac => ac.Announcement)
+				.WithMany(a => a.AnnouncementToContacts)
+				.HasForeignKey(ac => ac.AnnouncementID);
+
+			modelBuilder.Entity<AnnouncementToContact>()
+				.HasOne(ac => ac.AdditionalContact)
+				.WithMany(a => a.AnnouncementToContacts)
+				.HasForeignKey(ac => ac.AdditionalContactID);
+
+			// Multiple announcements may have multiple payment methods
+			modelBuilder.Entity<AnnouncementToPayment>()
+				.HasOne(ap => ap.Announcement)
+				.WithMany(a => a.AnnouncementToPayments)
+				.HasForeignKey(ap => ap.AnnouncementID);
+
+			modelBuilder.Entity<AnnouncementToPayment>()
+				.HasOne(ap => ap.PaymentMethod)
+				.WithMany(a => a.AnnouncementToPayments)
+				.HasForeignKey(ap => ap.PaymentMethodID);
+
+
+
+		}
+
+	}
 }

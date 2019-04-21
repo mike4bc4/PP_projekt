@@ -44,21 +44,6 @@ namespace BedAndBreakfast.Data
 
 		public Address Address { get; set; }
 
-		//[MaxLength(50)]
-		//public string Country { get; set; }
-
-		//[MaxLength(50)]
-		//public string Region { get; set; }
-
-		//[MaxLength(50)]
-		//public string City { get; set; }
-
-		//[MaxLength(50)]
-		//public string Street { get; set; }
-
-		//[MaxLength(10)]
-		//public string StreetNumber { get; set; }
-
 		[MaxLength(1024)]
         public string PresonalDescription { get; set; }
 

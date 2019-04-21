@@ -1,10 +1,20 @@
 ﻿
 @{
-    ViewData["Title"] = "PublishPlace";
+	ViewData["Title"] = "PublishPlace";
 
+	string partialViewName = (string)ViewData["partialViewName"];
 }
 
 <h2>PublishPlace</h2>
+
+@if (partialViewName == null)
+{
+	<partial name="TypeSelection" view-data="ViewData" />
+}
+else
+{
+	<partial name="partialViewName" view-data="ViewData" />
+}
 
 
 

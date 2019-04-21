@@ -22,7 +22,8 @@ namespace BedAndBreakfast.Models
         public NotificationsSetting NotificationsSetting { get; set; }
         public PrivacySetting PrivacySetting { get; set; }
         public bool IsLocked { get; set; } = false;
+		public List<Announcement> Announcements { get; set; }
 
 
-    }
+	}
 }

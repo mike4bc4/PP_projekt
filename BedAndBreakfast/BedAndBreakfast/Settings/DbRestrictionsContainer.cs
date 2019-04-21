@@ -18,6 +18,7 @@ namespace BedAndBreakfast.Settings
         public const int PasswordMinLength = 5;
         public const int MaxTagLength = 10;
         public const int MaxHelpPageSize = 8192;
+		public const int MaxAnnouncementDescSize = 8192;
         public const int MaxHelpPageTitleSize = 512;
     }
 }
