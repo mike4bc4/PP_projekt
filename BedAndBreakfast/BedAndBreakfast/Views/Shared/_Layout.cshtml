@@ -31,12 +31,12 @@
         @*Visible for everyone except host*@
         @if (!User.IsInRole(Role.Host))
         {
-            <a asp-area="" asp-controller="Hosting" asp-action="BecomeHost">Become a Host</a>
+            <a asp-area="" asp-controller="Hosting" asp-action="PublishPlace">Become a Host</a>
         }
         @*Visible for host only*@
         else if(User.IsInRole(Role.Host))
         {
-            <a asp-area="" asp-controller="Hosting" asp-action="">My hosted places</a>
+            //<a asp-area="" asp-controller="Hosting" asp-action="PublishPlace">My hosted places</a>
         }
 
 

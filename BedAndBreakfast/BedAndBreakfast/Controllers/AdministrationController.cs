@@ -70,6 +70,7 @@ namespace BedAndBreakfast.Controllers
 
             User currentUser = context.Users
                     .Include(u => u.Profile)
+					.Include(u => u.Profile.Address)
                     .Where(u => u.UserName == user)
                     .Single();
 

@@ -19,11 +19,12 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 return null;
             }
 
-            var profile = new Profile
-            {
-                FirstName = viewModel.FirstName,
-                LastName = viewModel.LastName,
-                BirthDate = viewModel.BirthDate
+			var profile = new Profile
+			{
+				FirstName = viewModel.FirstName,
+				LastName = viewModel.LastName,
+				BirthDate = viewModel.BirthDate,
+				Address = new Address()
             };
             return profile;
         }

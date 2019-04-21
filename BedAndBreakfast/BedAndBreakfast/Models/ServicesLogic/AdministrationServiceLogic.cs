@@ -67,7 +67,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
                     LastName = user.Profile.LastName,
                     Gender = user.Profile.Gender,
                     BirthDate = user.Profile.BirthDate.ToShortDateString(),
-                    FullAddress = $"{user.Profile.Street} {user.Profile.StreetNumber} {user.Profile.City} {user.Profile.Region} {user.Profile.Country}",
+                    FullAddress = $"{user.Profile.Address.Street} {user.Profile.Address.StreetNumber} {user.Profile.Address.City} {user.Profile.Address.Region} {user.Profile.Address.Country}",
                     BackupEmail = user.Profile.BackupEmailAddress,
                     IsLocked = user.IsLocked
                 };

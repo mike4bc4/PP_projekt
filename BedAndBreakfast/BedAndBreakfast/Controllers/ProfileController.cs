@@ -7,6 +7,7 @@ using BedAndBreakfast.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BedAndBreakfast.Controllers
 {
@@ -30,8 +31,8 @@ namespace BedAndBreakfast.Controllers
         /// </summary>
         /// <returns></returns>
         public async Task<IActionResult> Edit() {
-            var userData = await userManager.GetUserAsync(HttpContext.User);
-            var profile = await context.Profiles.FindAsync(userData.ProfileFK);
+            User userData = await userManager.GetUserAsync(HttpContext.User);
+			Profile profile = context.Profiles.Include(p => p.Address).Where(p => p.User == userData).First();
             ViewData["Profile"] = profile;
             return View();
         }
@@ -49,22 +50,22 @@ namespace BedAndBreakfast.Controllers
                 return RedirectToAction("Edit");
             }
 
-            // Get user profile.
-            var userData = await userManager.GetUserAsync(HttpContext.User);
-            var profile = await context.Profiles.FindAsync(userData.ProfileFK);
+			// Get user profile.
+			User userData = await userManager.GetUserAsync(HttpContext.User);
+			Profile profile = context.Profiles.Include(p => p.Address).Where(p => p.User == userData).First();
 
-            // Update all profile fields.
-            profile.FirstName = viewModel.FirstName;
+			// Update all profile fields.
+			profile.FirstName = viewModel.FirstName;
             profile.LastName = viewModel.LastName;
             profile.Gender = viewModel.Gender;
             profile.BirthDate = viewModel.BirthDate;
             profile.PrefLanguage = viewModel.PrefLanguage;
             profile.PrefCurrency = viewModel.PrefCurrency;
-            profile.Country = viewModel.Country;
-            profile.Region = viewModel.Region;
-            profile.City = viewModel.City;
-            profile.Street = viewModel.Street;
-            profile.StreetNumber = viewModel.StreetNumber;
+            profile.Address.Country = viewModel.Country;
+            profile.Address.Region = viewModel.Region;
+            profile.Address.City = viewModel.City;
+            profile.Address.Street = viewModel.Street;
+            profile.Address.StreetNumber = viewModel.StreetNumber;
             profile.PresonalDescription = viewModel.PresonalDescription;
             profile.School = viewModel.School;
             profile.Work = viewModel.Work;

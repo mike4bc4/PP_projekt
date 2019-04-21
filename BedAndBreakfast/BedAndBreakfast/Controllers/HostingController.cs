@@ -19,13 +19,8 @@ namespace BedAndBreakfast.Controllers
             this.authorizationService = authorizationService;
         }
 
-        /// <summary>
-        /// This action is visible for everyone except host. Authorization is solved internally
-        /// so only logged in users may access this action. Note that host is also considered as logged
-        /// in user so if he will force call this action it will work similar to hosting a place or event.
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IActionResult> BecomeHost() {
+        
+        public async Task<IActionResult> PublishPlace() {
 
             var authorizationResult = await authorizationService.AuthorizeAsync(User, Policy.LoggedInUser);
             // If user is not logged in...
@@ -34,20 +29,17 @@ namespace BedAndBreakfast.Controllers
                 TempData["RedirectPage"] = "../Home/Index"; 
                 return RedirectToAction("Login", "Account");
             }
-            // If user is logged in...
-            
+			// If user is logged in...
 
 
-            return View("../Shared/UnderConstruction");
+			
+
+
+
+
+			return View("../Shared/UnderConstruction");
         }
 
-
-        [Authorize(Roles = Role.Host)]
-        public async Task<IActionResult> Host() {
-
-
-            return View("../Shared/UnderConstruction");
-        }
 
 
 

@@ -37,8 +37,54 @@ namespace BedAndBreakfast.Data
             es_ES
         }
 
+		/// <summary>
+		/// Represents types of announcements that user may be host of.
+		/// </summary>
+		public enum AnnouncementType {
+			House,
+			Entertainment,
+			Food
+		}
 
-        public static List<SelectListItem> CreateListOfItems<T>(string currentlySelectedValue) {
+		public enum HouseSubtype {
+			Apartment,
+			House,
+			Bungalow,
+			Hotel,
+			Other
+		}
+
+		public enum EntertainmentSubtype
+		{
+			Party,
+			Art,
+			Trip,
+			Science,
+			Other
+		}
+
+		public enum FoodSubtype
+		{
+			Restaurant,
+			Foodtruck,
+			Bar,
+			Pub,
+			Other
+		}
+
+		public enum HouseSharedPart {
+			Exterior,
+			OneRoom,
+			MultipleRooms,
+			OneRoomWithBathroom,
+			MultipleRoomsWithBathroom,
+			WholeFloor,
+			WholeFloorWithBathroom,
+			WholeHouse,
+			NotApplicable
+		}
+
+		public static List<SelectListItem> CreateListOfItems<T>(string currentlySelectedValue) {
             List<SelectListItem> list = new List<SelectListItem>();
             foreach (T item in Enum.GetValues(typeof(T)))
             {

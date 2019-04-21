@@ -17,6 +17,8 @@ namespace BedAndBreakfast.Data
 
         public User User { get; set; }
 
+		public int AddressFK { get; set; }
+
         // Data fields
 
         [Required]
@@ -40,22 +42,24 @@ namespace BedAndBreakfast.Data
         [DataType(DataType.Currency)]
         public string PrefCurrency { get; set; }
 
-        [MaxLength(50)]
-        public string Country { get; set; }
+		public Address Address { get; set; }
 
-        [MaxLength(50)]
-        public string Region { get; set; }
+		//[MaxLength(50)]
+		//public string Country { get; set; }
 
-        [MaxLength(50)]
-        public string City { get; set; }
+		//[MaxLength(50)]
+		//public string Region { get; set; }
 
-        [MaxLength(50)]
-        public string Street { get; set; }
+		//[MaxLength(50)]
+		//public string City { get; set; }
 
-        [MaxLength(10)]
-        public string StreetNumber { get; set; }
+		//[MaxLength(50)]
+		//public string Street { get; set; }
 
-        [MaxLength(1024)]
+		//[MaxLength(10)]
+		//public string StreetNumber { get; set; }
+
+		[MaxLength(1024)]
         public string PresonalDescription { get; set; }
 
         [MaxLength(100)]

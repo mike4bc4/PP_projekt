@@ -21,6 +21,7 @@ namespace BedAndBreakfast.Data
         public DbSet<HelpPageHelpTag> HelpPageHelpTags { get; set; }
         public DbSet<NotificationsSetting> NotificationSettings { get; set; }
         public DbSet<PrivacySetting> PrivacySettings { get; set; }
+		public DbSet<Address> Addresses { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
@@ -60,6 +61,13 @@ namespace BedAndBreakfast.Data
                 .HasOne(s => s.User)
                 .WithOne(u => u.PrivacySetting)
                 .HasForeignKey<PrivacySetting>(s => s.UserFK);
+
+			// Each user profile has one address.
+			modelBuilder.Entity<Profile>()
+				.HasOne(p => p.Address)
+				.WithOne(a => a.Profile)
+				.HasForeignKey<Profile>(p => p.AddressFK);
+			
 
         }
 
