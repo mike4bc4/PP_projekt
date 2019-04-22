@@ -42,6 +42,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
 			resultViewModel.PaymentMethod = (resultViewModel.PaymentMethod != newViewModel.PaymentMethod) ? newViewModel.PaymentMethod : resultViewModel.PaymentMethod;
 
 			return resultViewModel;
+
 		}
 	}
 }

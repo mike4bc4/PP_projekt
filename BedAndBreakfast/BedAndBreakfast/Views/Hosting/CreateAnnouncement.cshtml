@@ -1,0 +1,23 @@
+﻿@{
+	ViewData["Title"] = "CreateAnnouncement";
+
+	string announcementPart = (string)ViewData["announcementPart"];
+
+}
+
+<h2>PublishPlace</h2>
+
+@if (announcementPart == null)
+{
+	<partial name="PartialViews/Type" view-data="ViewData" />
+}
+else
+{
+	<partial name="PartialViews/@announcementPart" view-data="ViewData" />
+}
+
+
+
+
+
+

@@ -78,16 +78,19 @@ namespace BedAndBreakfast
                 options.ExpireTimeSpan = TimeSpan.FromDays(7);
             });
 
-            // Share resources localization based on MVC folder structure setup.
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddDataAnnotationsLocalization()
-                .AddViewLocalization()
-                .AddDataAnnotationsLocalization(options =>
-                 {
-                     options.DataAnnotationLocalizerProvider = (type, factory) =>
-                         factory.Create(typeof(SharedResources));
-                 });
+			// Share resources localization based on MVC folder structure setup.
+			services.AddMvc()
+				.SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+				.AddDataAnnotationsLocalization()
+				.AddViewLocalization()
+				.AddDataAnnotationsLocalization(options =>
+				 {
+					 options.DataAnnotationLocalizerProvider = (type, factory) =>
+						 factory.Create(typeof(SharedResources));
+				 });
+
+			// Add session service to allow storing data in session attributes.
+			services.AddSession();
 
             // Here are polices defined for this web application.
             services.AddAuthorization(options =>
@@ -102,6 +105,8 @@ namespace BedAndBreakfast
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider services)
         {
+			// Use session service.
+			app.UseSession();
 
             // Resource cultures setup.
             IList<CultureInfo> supportedCultures = new List<CultureInfo>{
