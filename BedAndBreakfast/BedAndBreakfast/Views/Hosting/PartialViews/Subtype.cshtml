@@ -1,118 +1,66 @@
-﻿@model BedAndBreakfast.Models.CreateAnnouncementViewModel
+﻿@model BedAndBreakfast.Models.AnnouncementSubtypeViewModel
 @using BedAndBreakfast.Data;
-@using Microsoft.AspNetCore.Http;
-@using Newtonsoft.Json;
+
 @{
 	ViewData["Title"] = "Subtype";
+	string announcementType = (string)ViewData["announcementType"];
 }
-
-@*
-	Allows to acquire values selected with drop down lists and send them as parameters
-	instead creating whole model object.
-	Also performs client side validation.
-*@
-<script type="text/javascript">
-	// Error message
-	var errorMessage = "Required";
-
-	function callActionWithValidationHouse() {
-		var subtype = $("#subtype").val();
-		var sharedPart = $("#sharedPart").val();
-
-		// Client side validation.
-		if (!subtype) {
-			var paragraph = document.getElementById("subtypeError");
-			paragraph.textContent = errorMessage;
-		}
-		else {
-			var paragraph = document.getElementById("subtypeError");
-			paragraph.textContent = "";
-		}
-		if (!sharedPart) {
-			var paragraph = document.getElementById("sharedPartError");
-			paragraph.textContent = errorMessage;
-		}
-		else {
-			var paragraph = document.getElementById("sharedPartError");
-			paragraph.textContent = "";
-		}
-
-		// Redirect
-		if (subtype && sharedPart) {
-			window.location.href = "SetAnnouncementSubtype?subtype=" + subtype + "&sharedPart=" + sharedPart;
-		}
-	}
-
-	function callActionWithValidation() {
-		var subtype = $("#subtype").val();
-
-		// Client side validation.
-		if (!subtype) {
-			var paragraph = document.getElementById("subtypeError");
-			paragraph.textContent = errorMessage;
-		}
-		else {
-			var paragraph = document.getElementById("subtypeError");
-			paragraph.textContent = "";
-		}
-
-		// Redirect
-		if (subtype) {
-			window.location.href = "SetAnnouncementSubtype?subtype=" + subtype;
-		}
-	}
-
-</script>
 
 <h2>Subtype</h2>
 
-@switch (Model.Type)
+@switch (announcementType)
 {
 	case "House":
 		List<SelectListItem> houseSubtypes = ListedDbValues.CreateListOfItems<ListedDbValues.HouseSubtype>(null);
 		List<SelectListItem> houseSharedParts = ListedDbValues.CreateListOfItems<ListedDbValues.HouseSharedPart>(null);
-
-		<div>
-			<label asp-for="Subtype"></label>
-			@Html.DropDownList("subtype", houseSubtypes, "---", new { id = "subtype" })
-			<div id="subtypeError"></div>
-		</div>
-		<div>
-			<label asp-for="Subtype"></label>
-			@Html.DropDownList("sharedPart", houseSharedParts, "---", new { id = "sharedPart" })
-			<div id="sharedPartError"></div>
-		</div>
-
-		<a href="#" onclick="return callActionWithValidationHouse();">
-			Continue
-		</a>
-
-
+		<form asp-controller="Hosting" asp-action="SetAnnouncementSubtype">
+			<div>
+				<label asp-for="Subtype"></label>
+				@Html.DropDownListFor(m => m.Subtype, houseSubtypes, "---")
+				<span asp-validation-for="Subtype"></span>
+			</div>
+			<div>
+				<label asp-for="SharedPart"></label>
+				@Html.DropDownListFor(m => m.SharedPart, houseSharedParts, "---")
+				<span asp-validation-for="SharedPart"></span>
+			</div>
+			<div>
+				<input type="submit" value="Continue" />
+			</div>
+		</form>
 		break;
+
+
 	case "Entertainment":
 		List<SelectListItem> entertainmentSubtypes = ListedDbValues.CreateListOfItems<ListedDbValues.EntertainmentSubtype>(null);
-
-		<div>
-			<label asp-for="Subtype"></label>
-			@Html.DropDownList("subtype", entertainmentSubtypes, "---", new { id = "subtype" })
-			<div id="subtypeError"></div>
-		</div>
-		<a href="#" onclick="return callActionWithValidation();">
-			Continue
-		</a>
+		<form asp-controller="Hosting" asp-action="SetAnnouncementSubtype">
+			<div>
+				<label asp-for="Subtype"></label>
+				@Html.DropDownListFor(m => m.Subtype, entertainmentSubtypes, "---")
+				<span asp-validation-for="Subtype"></span>
+			</div>
+			<div>
+				<input type="submit" value="Continue" />
+			</div>
+		</form>
 		break;
+
+
 	case "Food":
 		List<SelectListItem> foodSubtypes = ListedDbValues.CreateListOfItems<ListedDbValues.FoodSubtype>(null);
-
-		<div>
-			<label asp-for="Subtype"></label>
-			@Html.DropDownList("subtype", foodSubtypes, "---", new { id = "subtype" })
-			<div id="subtypeError"></div>
-		</div>
-		<a href="#" onclick="return callActionWithValidation();">
-			Continue
-		</a>
+		<form asp-controller="Hosting" asp-action="SetAnnouncementSubtype">
+			<div>
+				<label asp-for="Subtype"></label>
+				@Html.DropDownListFor(m => m.Subtype, foodSubtypes, "---")
+				<span asp-validation-for="Subtype"></span>
+			</div>
+			<div>
+				<input type="submit" value="Continue" />
+			</div>
+		</form>
 		break;
+
+
 	default:
 		break;
 }

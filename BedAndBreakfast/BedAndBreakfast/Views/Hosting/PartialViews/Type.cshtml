@@ -1,4 +1,5 @@
-﻿@using BedAndBreakfast.Data;
+﻿@model BedAndBreakfast.Models.AnnouncementTypeViewModel
+@using BedAndBreakfast.Data;
 
 @{
 	ViewData["Title"] = "Type";
@@ -8,10 +9,16 @@
 
 @foreach (ListedDbValues.AnnouncementType announcement in Enum.GetValues(typeof(ListedDbValues.AnnouncementType)))
 {
-	<div>
-		<a asp-controller="Hosting" asp-action="SetAnnouncementType" asp-route-value="@announcement.ToString()">
-			@announcement.ToString()
-		</a>
-	</div>
+	<form asp-controller="Hosting" asp-action="SetAnnouncementType">
+		<div>
+			<input type="hidden" asp-for="Type" value="@announcement.ToString()" />
+		</div>
+		<div>
+			<input type="submit" value="@announcement.ToString()" />
+		</div>
+	</form>
 }
+
+
+
 

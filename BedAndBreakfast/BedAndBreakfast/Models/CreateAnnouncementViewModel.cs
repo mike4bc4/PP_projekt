@@ -7,16 +7,29 @@ using System.Threading.Tasks;
 
 namespace BedAndBreakfast.Models
 {
-	/// <summary>
-	/// Allows communication between controller and view so user can place
-	/// announcement with specified data.
-	/// </summary>
-	public class CreateAnnouncementViewModel
-	{
-		// Predefined enumerated values
+	public class AnnouncementTypeViewModel {
 		public string Type { get; set; }
+	}
+
+	public class AnnouncementSubtypeViewModel {
+		[Required(ErrorMessage = "Required")]
 		public string Subtype { get; set; }
+
+		[Required(ErrorMessage = "Required")]
 		public string SharedPart { get; set; }
+	}
+
+	public class AnnouncementTimePlaceViewModel {
+		[Display(Name = "Announcement starts")]
+		[Required(ErrorMessage = "Required")]
+		[DataType(DataType.Date)]
+		public DateTime From { get; set; }
+
+		[Display(Name = "Announcement ends")]
+		[Required(ErrorMessage = "Required")]
+		[Remote(controller: "Validation", action: "ValidAnnouncementDate", AdditionalFields = "From,To", ErrorMessage = "InvalidAnnouncementDate")]
+		[DataType(DataType.Date)]
+		public DateTime To { get; set; }
 
 		[Display(Name = "Country")]
 		[Required(ErrorMessage = "Required")]
@@ -42,22 +55,44 @@ namespace BedAndBreakfast.Models
 		[Required(ErrorMessage = "Required")]
 		[MaxLength(10, ErrorMessage = "TooLong")]
 		public string StreetNumber { get; set; }
+	}
 
-		[Display(Name = "Announcement starts")]
-		[Required(ErrorMessage = "Required")]
-		[DataType(DataType.DateTime)]
-		public DateTime From { get; set; }
-
-		[Display(Name = "Announcement ends")]
-		[Required(ErrorMessage = "Required")]
-		[Remote(controller: "Validation", action: "ValidAnnouncementDate", AdditionalFields = "From,To", ErrorMessage = "InvalidAnnouncementDate")]
-		[DataType(DataType.DateTime)]
-		public DateTime To { get; set; }
-
+	public class AnnouncementDescriptionViewModel {
 		[Display(Name = "Description")]
 		[Required(ErrorMessage = "Required")]
 		public string Description { get; set; }
-		public Dictionary<string,string> AdditionalContact { get; set; }
-		public Dictionary<string,string> PaymentMethod { get; set; }
+	}
+
+	public class AnnouncementContactViewModel {
+		public AnnouncementContactViewModel() {
+			AdditionalContacts = new Dictionary<string, string>();
+		}
+		public Dictionary<string,string> AdditionalContacts { get; set; }
+	}
+
+	public class AnnouncementPaymentViewModel {
+		public AnnouncementPaymentViewModel() {
+			PaymentMethods = new Dictionary<string, string>();
+		}
+		public Dictionary<string, string> PaymentMethods { get; set; }
+	}
+
+	public class CreateAnnouncementViewModel
+	{
+		public CreateAnnouncementViewModel() {
+			AnnouncementTypeViewModel = new AnnouncementTypeViewModel();
+			AnnouncementSubtypeViewModel = new AnnouncementSubtypeViewModel();
+			AnnouncementTimePlaceViewModel = new AnnouncementTimePlaceViewModel();
+			AnnouncementDescriptionViewModel = new AnnouncementDescriptionViewModel();
+			AnnouncementContactViewModel = new AnnouncementContactViewModel();
+			AnnouncementPaymentViewModel = new AnnouncementPaymentViewModel();
+		}
+
+		public AnnouncementTypeViewModel AnnouncementTypeViewModel { get; set; }
+		public AnnouncementSubtypeViewModel AnnouncementSubtypeViewModel { get; set; }
+		public AnnouncementTimePlaceViewModel AnnouncementTimePlaceViewModel { get; set; }
+		public AnnouncementDescriptionViewModel AnnouncementDescriptionViewModel { get; set; }
+		public AnnouncementContactViewModel AnnouncementContactViewModel { get; set; }
+		public AnnouncementPaymentViewModel AnnouncementPaymentViewModel { get; set; }
 	}
 }

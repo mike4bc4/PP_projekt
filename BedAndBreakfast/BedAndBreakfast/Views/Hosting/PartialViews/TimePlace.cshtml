@@ -1,7 +1,48 @@
-﻿
+﻿@model BedAndBreakfast.Models.AnnouncementTimePlaceViewModel
 @{
     ViewData["Title"] = "TimePlaceSelection";
 }
 
 <h2>TimePlaceSelection</h2>
+
+<form asp-controller="Hosting" asp-action="SetAnnouncementTimePlace">
+	<div>
+		<label asp-for="Country"></label>
+		<input asp-for="Country" />
+		<span asp-validation-for="Country"></span>
+	</div>
+	<div>
+		<label asp-for="Region"></label>
+		<input asp-for="Region" />
+		<span asp-validation-for="Region"></span>
+	</div>
+	<div>
+		<label asp-for="City"></label>
+		<input asp-for="City" />
+		<span asp-validation-for="City"></span>
+	</div>
+	<div>
+		<label asp-for="Street"></label>
+		<input asp-for="Street" />
+		<span asp-validation-for="Street"></span>
+	</div>
+	<div>
+		<label asp-for="StreetNumber"></label>
+		<input asp-for="StreetNumber" />
+		<span asp-validation-for="StreetNumber"></span>
+	</div>
+	<div>
+		<label asp-for="From"></label>
+		<input asp-for="From" />
+		<span asp-validation-for="From"></span>
+	</div>
+	<div>
+		<label asp-for="To"></label>
+		<input asp-for="To" />
+		<span asp-validation-for="To"></span>
+	</div>
+	<div>
+		<input type="submit" value="Continue" />
+	</div>
+</form>
 
