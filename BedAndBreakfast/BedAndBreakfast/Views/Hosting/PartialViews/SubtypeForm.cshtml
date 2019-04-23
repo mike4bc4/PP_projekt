@@ -1,0 +1,56 @@
+﻿@using BedAndBreakfast.Data;
+
+@{
+	ViewData["Title"] = "SubtypeSelectionForm";
+
+	CreateAnnouncementViewModel model = (CreateAnnouncementViewModel)ViewData["data"];
+	string data = model.Type;
+
+	List<SelectListItem> houseSubtypes = ListedDbValues.CreateListOfItems<ListedDbValues.HouseSubtype>(model.Subtype);
+	List<SelectListItem> houseSharedParts = ListedDbValues.CreateListOfItems<ListedDbValues.HouseSharedPart>(model.SharedPart);
+	List<SelectListItem> entertainmentTypes = ListedDbValues.CreateListOfItems<ListedDbValues.EntertainmentSubtype>(model.Subtype);
+	List<SelectListItem> foodTypes = ListedDbValues.CreateListOfItems<ListedDbValues.FoodSubtype>(model.Subtype);
+
+}
+
+<script type="text/javascript">
+
+	
+</script>
+
+<h2>SubtypeSelectionForm</h2>
+
+<div id="subtypes"></div>
+
+<div id="errorMessage"></div>
+
+<div>
+	@switch (data)
+	{
+		case "House":
+			<label>House type</label>
+			@Html.DropDownList("houseSubtype", houseSubtypes, "---", new { id = "houseSubtype" })
+			<label>House shared part</label>
+			@Html.DropDownList("houseSharedPart", houseSharedParts, "---",  new { id = "houseSharedPart" })
+			break;
+		case "Entertainment":
+			<label>Entertainment type</label>
+			@Html.DropDownList("entertainmentType", entertainmentTypes, "---",  new { id = "entertainmentType" })
+			break;
+		case "Food":
+			<label>Food type</label>
+			@Html.DropDownList("foodType", foodTypes, "---",  new { id = "foodType" })
+			break;
+		default:
+			<div>Please select type first.</div>
+			break;
+	}
+</div>
+<div>
+	@if (!string.IsNullOrEmpty(data))
+	{
+		<a href="#" onclick="setSubtype();">Save</a>
+	}
+</div>
+
+

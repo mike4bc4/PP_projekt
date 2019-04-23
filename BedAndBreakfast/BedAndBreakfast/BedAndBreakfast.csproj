@@ -21,4 +21,12 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Hosting\PartialViews\TypeForm.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Hosting\PartialViews\TypeForm.cshtml" />
+  </ItemGroup>
+
 </Project>

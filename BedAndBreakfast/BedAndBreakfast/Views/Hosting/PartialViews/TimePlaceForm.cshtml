@@ -1,0 +1,42 @@
+﻿
+@{
+	CreateAnnouncementViewModel viewModel = (CreateAnnouncementViewModel)ViewData["data"];
+	ViewData["Title"] = "TimePlaceSelectionForm";
+}
+
+<h2>TimePlaceSelectionForm</h2>
+
+<div>
+	<div>
+		<label>Country</label>
+		<input type="text" id="country" value="@viewModel.Country"/>
+	</div>
+	<div>
+		<label>Region</label>
+		<input type="text" id="region" value="@viewModel.Region"/>
+	</div>
+	<div>
+		<label>City</label>
+		<input type="text" id="city" value="@viewModel.City"/>
+	</div>
+	<div>
+		<label>Street</label>
+		<input type="text" id="street" value="@viewModel.Street"/>
+	</div>
+	<div>
+		<label>Street number</label>
+		<input type="text" id="streetNumber" value="@viewModel.StreetNumber"/>
+	</div>
+	<div>
+		<label>From</label>
+		<input type="date" id="from" value="@viewModel.From.ToString("yyyy-MM-dd")"/>
+	</div>
+	<div>
+		<label>To</label>
+		<input type="date" id="to" value="@viewModel.To.ToString("yyyy-MM-dd")"/>
+	</div>
+</div>
+<div>
+	<a href="#" onclick="setTimePlace();">Save</a>
+</div>
+

@@ -1,24 +1,60 @@
-﻿@model BedAndBreakfast.Models.CreateAnnouncementViewModel
+﻿
 @{
 	ViewData["Title"] = "CreateAnnouncement";
-
-	string announcementPart = (string)ViewData["announcementPart"];
-
 }
 
-<h2>PublishPlace</h2>
+<h2>CreateAnnouncement</h2>
 
-@if (announcementPart == null)
-{
-	<partial name="PartialViews/Type" view-data="ViewData" />
-}
-else
-{
-	<partial name="PartialViews/@announcementPart" view-data="ViewData" />
-}
+<script type="text/javascript">
+	var typePartialViewName = 'TypeForm';
+	var subtypePartialViewName = 'SubtypeForm';
+	var timePlacePartialViewName = 'TimePlaceForm';
+	var descriptionPartialViewName = 'DescriptionForm';
+	var contactPartialViewName = 'ContactsForm';
+	var paymentPartialViewName = 'PaymentsForm';
 
+	var validViews = {};
+	validViews[typePartialViewName] = false;
+	validViews[subtypePartialViewName] = false;
+	validViews[timePlacePartialViewName] = false;
+	validViews[descriptionPartialViewName] = false;
+	validViews[contactPartialViewName] = false;
+	validViews[paymentPartialViewName] = false;
 
+	window.onload = function () {
+		deleteCurrentModel();
+		setPartialView('TypeSelectionForm');
+		createNewModel();
+	}
+	
+	
+</script>
 
+<div id="header">
+	<div id="TypeForm">
+		<a href="#" onclick="return setPartialView(typePartialViewName);">Type</a>
+	</div>
+	<div id="SubtypeForm">
+		<a href="#" onclick="return setPartialView(subtypePartialViewName);">Subtype</a>
+	</div>
+	<div id="TimePlaceForm">
+		<a href="#" onclick="return setPartialView(timePlacePartialViewName);">Time and place</a>
+	</div>
+	<div id="DescriptionForm">
+		<a href="#" onclick="return setPartialView(descriptionPartialViewName);">Description</a>
+	</div>
+	<div id="ContactsForm">
+		<a href="#" onclick="return setPartialView(contactPartialViewName);">Contact types</a>
+	</div>
+	<div id="PaymentsForm">
+		<a href="#" onclick="return setPartialView(paymentPartialViewName);">Payment methods</a>
+	</div>
+	<div id="">
+		<a href="#" onclick="return testFoo();">Summary</a>
+	</div>
+</div>
+<div id="errorMessage"></div>
+<div id="content">
 
-
+</div>
 
