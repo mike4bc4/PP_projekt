@@ -1,17 +1,37 @@
-﻿
+﻿@using BedAndBreakfast.Data;
+
 @{
+	List<string> contacts = Enum.GetNames(typeof(ListedDbValues.ContactType)).ToList();
+	List<string> payments = Enum.GetNames(typeof(ListedDbValues.PaymentMethod)).ToList();
+
 	ViewData["Title"] = "CreateAnnouncement";
 }
 
 <h2>CreateAnnouncement</h2>
 
 <script type="text/javascript">
+
+	function getContactMethods() {
+		var contacts = @Html.Raw(Json.Serialize(contacts));
+		return contacts;
+	}
+
+	function getPaymentMethods() {
+		var payments = @Html.Raw(Json.Serialize(payments));
+		return payments;
+	}
+
+	var contactItemIndex = { value: 0, name: 'contactItemIndex', items: [] };
+	var paymentItemIndex = { value: 0, name: 'paymentItemIndex', items: [] };
+
+
 	var typePartialViewName = 'TypeForm';
 	var subtypePartialViewName = 'SubtypeForm';
 	var timePlacePartialViewName = 'TimePlaceForm';
 	var descriptionPartialViewName = 'DescriptionForm';
 	var contactPartialViewName = 'ContactsForm';
 	var paymentPartialViewName = 'PaymentsForm';
+	var summaryPartialViewName = 'Summary';
 
 	var validViews = {};
 	validViews[typePartialViewName] = false;
@@ -49,8 +69,8 @@
 	<div id="PaymentsForm">
 		<a href="#" onclick="return setPartialView(paymentPartialViewName);">Payment methods</a>
 	</div>
-	<div id="">
-		<a href="#" onclick="return testFoo();">Summary</a>
+	<div id="Summary">
+		<a href="#" onclick="return setPartialView(summaryPartialViewName);">Summary</a>
 	</div>
 </div>
 <div id="errorMessage"></div>

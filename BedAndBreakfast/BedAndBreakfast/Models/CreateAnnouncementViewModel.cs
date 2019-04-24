@@ -13,6 +13,8 @@ namespace BedAndBreakfast.Models
 		public CreateAnnouncementViewModel() {
 			From = DateTime.Today.AddDays(1);
 			To = DateTime.Today.AddDays(2);
+			ContactMethods = new Dictionary<string, string>();
+			PaymentMethods = new Dictionary<string, string>();
 		}
 
 		public string Type { get; set; }

@@ -1,0 +1,127 @@
+﻿@model CreateAnnouncementViewModel
+@{
+
+	CreateAnnouncementViewModel viewModel = (CreateAnnouncementViewModel)ViewData["data"];
+	ViewData["Title"] = "Summary";
+}
+
+<h2>Summary</h2>
+
+<div>
+	<div>
+		<label>
+			<strong>
+				Announcement type
+			</strong>
+		</label>
+	</div>
+	<div>
+		@viewModel.Type
+	</div>
+
+	<div>
+		<label>
+			<strong>
+				Announcement subtype
+			</strong>
+		</label>
+	</div>
+	<div>
+		@viewModel.Subtype
+	</div>
+
+	@if (viewModel.SharedPart != null)
+	{
+		<div>
+			<label>
+				<strong>
+					Announcement shared part
+				</strong>
+			</label>
+		</div>
+		<div>
+			@viewModel.SharedPart
+		</div>
+	}
+
+	<div>
+		<label>
+			<strong>
+				Announcement period
+			</strong>
+		</label>
+	</div>
+	<div>
+		@viewModel.From.ToShortDateString() - @viewModel.To.ToShortDateString()
+	</div>
+
+	<div>
+		<label>
+			<strong>
+				Announcement address
+			</strong>
+		</label>
+	</div>
+	<div>
+		@viewModel.Country
+	</div>
+	<div>
+		@viewModel.Region
+	</div>
+	<div>
+		@viewModel.City
+	</div>
+	<div>
+		@viewModel.Street
+	</div>
+	<div>
+		@viewModel.StreetNumber
+	</div>
+
+	<div>
+		<label>
+			<strong>
+				Announcement description
+			</strong>
+		</label>
+	</div>
+	<div>
+		@viewModel.Description
+	</div>
+
+	<div>
+		<label>
+			<strong>
+				Announcement contact methods
+			</strong>
+		</label>
+	</div>
+	<div>
+		@foreach (var method in viewModel.ContactMethods)
+		{
+			<label>@method.Value</label>
+			<label>@method.Key</label>
+		}
+	</div>
+
+	<div>
+		<label>
+			<strong>
+				Announcement payment methods
+			</strong>
+		</label>
+	</div>
+	<div>
+		@foreach (var method in viewModel.PaymentMethods)
+		{
+			<label>@method.Value</label>
+			<label>@method.Key</label>
+		}
+	</div>
+
+</div>
+
+<div>
+	<a href="#" onclick="saveAnnouncement();">Create announcement</a>
+</div>
+

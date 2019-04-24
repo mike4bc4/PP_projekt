@@ -41,5 +41,15 @@ namespace BedAndBreakfast.Controllers
 			return PartialView("PartialViews/" + partialViewName);
 		}
 
+		public IActionResult SaveAnnouncement(CreateAnnouncementViewModel data) {
+			// Validate received view model.
+			bool announcementCorrect = true;
+
+
+
+			ViewData["announcementCorrect"] = announcementCorrect;
+			return PartialView("PartialViews/SaveAnnouncement");
+		}
+
 	}
 }

@@ -63,7 +63,26 @@ function setPartialView(partialViewName) {
 		},
 		dataType: 'html',
 		success: function (response) {
-			response += '<input type="hidden" value="' + partialViewName + '" id="partialViewTag" />';
+			injectHtml('content', response);
+			if (partialViewName == contactPartialViewName) {
+				retrieveContacts(contactItemIndex, 'contacts', getContactMethods());
+			}
+			else if (partialViewName == paymentPartialViewName) {
+				retrievePayments(paymentItemIndex, 'payments', getPaymentMethods());
+			}
+		}
+	});
+}
+
+function saveAnnouncement() {
+	$.ajax({
+		method: 'post',
+		url: '/Hosting/SaveAnnouncement',
+		data: {
+			data: getModelFromSession()
+		},
+		dataType: 'html',
+		success: function (response) {
 			injectHtml('content', response);
 		}
 	});
@@ -229,9 +248,10 @@ function setDescription() {
 	var model = getModelFromSession();
 	var description = getElementValue('descriptionField');
 
+	model.description = description;
+
 	if (description) {
 		validViews[descriptionPartialViewName] = true;
-		model.description = description;
 	}
 	else {
 		validViews[descriptionPartialViewName] = false;
@@ -240,6 +260,110 @@ function setDescription() {
 	// Reload view
 	setPartialView(descriptionPartialViewName);
 
+}
+
+function removeItem(container, index, itemNumber) {
+	var node = document.getElementById(container + itemNumber);
+	while (node.firstChild) {
+		node.removeChild(node.firstChild);
+	}
+	node.remove();
+	index.items[itemNumber] = null;
+}
+
+function addItem(index, container, dropDownListContent, selectedValue, inputValue) {
+	var contactMethods = dropDownListContent;
+	var html = '<div id="'+ container + index.value + '">';
+	html += '<select id="value' + container + index.value + '">';
+	for (var i = 0; i < contactMethods.length; i++) {
+		if (selectedValue) {
+			if (contactMethods[i] == selectedValue) {
+				html += '<option selected>' + contactMethods[i] + '</option>';
+			}
+			html += '<option>' + contactMethods[i] + '</option>';
+		}
+		else {
+			html += '<option>' + contactMethods[i] + '</option>';
+		}
+	}
+	html += '</select>';
+	html += '<input type="text" id="key' + container + index.value + '" value="' + inputValue + '"/>';
+	html += '<a href="#" onclick="removeItem(\'' + container + '\',' + index.name + ',' + index.value + ')">Remove</a>';
+	html += '</div>';
+	$('#' + container).append(html);
+
+	var key = $('#key' + container + index.value);
+	var value = $('#value' + container + index.value);
+	index.items[index.value] = { key: key, value: value };
+
+	index.value++;
+}
+
+function retrieveContacts(index, container, dropDownListContent) {
+	var model = getModelFromSession();
+	// Reset index
+	index.value = 0;
+	index.items = [];
+	Object.entries(model.contactMethods).forEach(([key, value]) => {
+		addItem(index, container, dropDownListContent, value, key);
+	});
+}
+function retrievePayments(index, container, dropDownListContent) {
+	var model = getModelFromSession();
+	// Reset index
+	index.value = 0;
+	index.items = [];
+	Object.entries(model.paymentMethods).forEach(([key, value]) => {
+		addItem(index, container, dropDownListContent, value, key);
+	});
+}
+
+
+function saveContacts(index) {
+	var model = getModelFromSession();
+	// Reset previous contact methods
+	model.contactMethods = {};
+	for (var i = 0; i < index.items.length; i++) {
+		if (index.items[i] != null) {
+			model.contactMethods[index.items[i].key.val()] = index.items[i].value.val();
+		}
+	}
+	// Validate
+	if (Object.keys(model.contactMethods).length > 0) {
+		validViews[contactPartialViewName] = true;
+	}
+	else {
+		validViews[contactPartialViewName] = false;
+	}
+	updateModelInSession(model);
+	updateValidStatusForView(contactPartialViewName);
+}
+
+
+function savePayments(index) {
+	var model = getModelFromSession();
+	// Reset previous contact methods
+	model.paymentMethods = {};
+	for (var i = 0; i < index.items.length; i++) {
+		if (index.items[i] != null) {
+			model.paymentMethods[index.items[i].key.val()] = index.items[i].value.val();
+		}
+	}
+	// Validate
+
+	for (var key in model.paymentMethods) {
+		if (key && model.paymentMethods[key]) {
+			validViews[paymentPartialViewName] = true;
+		}
+		else {
+			validViews[paymentPartialViewName] = false;
+		}
+		break;
+	}
+
+	
+	updateModelInSession(model);
+	updateValidStatusForView(paymentPartialViewName);
 }
 
 
