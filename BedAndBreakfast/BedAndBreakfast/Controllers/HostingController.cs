@@ -8,6 +8,7 @@ using BedAndBreakfast.Models.ServicesLogic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
 using Newtonsoft.Json;
 
 namespace BedAndBreakfast.Controllers
@@ -36,18 +37,23 @@ namespace BedAndBreakfast.Controllers
 			return View();
         }
 
+
 		public IActionResult GetPartialViewWithData(string partialViewName, CreateAnnouncementViewModel data) {
 			ViewData["data"] = data;
 			return PartialView("PartialViews/" + partialViewName);
 		}
 
 		public IActionResult SaveAnnouncement(CreateAnnouncementViewModel data) {
-			// Validate received view model.
-			bool announcementCorrect = true;
+
+            bool announcementCorrect = HostingServiceLogic.IsAnnouncementViewModelValid(data);
+
+            // TODO: add announcement to database if correct
+            // TODO: check once again if user is able to create announcement
+            // TODO: change user status as host
 
 
 
-			ViewData["announcementCorrect"] = announcementCorrect;
+            ViewData["announcementCorrect"] = announcementCorrect;
 			return PartialView("PartialViews/SaveAnnouncement");
 		}
 

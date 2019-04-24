@@ -1,23 +1,23 @@
-﻿
+﻿@using Microsoft.AspNetCore.Mvc.RazorPages;
 @{
     ViewData["Title"] = "SaveAnnouncement";
-	bool announcementCorrect = (bool)ViewData["announcementCorrect"];
+    bool announcementCorrect = (bool)ViewData["announcementCorrect"];
+
 }
 
 <h2>SaveAnnouncement</h2>
 
+<input id="announcementCorrect" type="hidden" value="@announcementCorrect.ToString()" />
 
 <div>
-	@if (announcementCorrect)
-	{
-		@:Your announcement has been saved and soon will be visible in out browser!
-		
-		<script type="text/javascript">alert("asdasd");</script>
-	}
-	else
-	{
-		@:There are errors in your announcement. Would you like to fix it?
-		<a href="#" onclick="return setPartialView(summaryPartialViewName);">Go back</a>
-	}
+    @if (announcementCorrect)
+    {
+        @:Your announcement has been saved and soon will be visible in out browser!
+    }
+    else
+    {
+        @:There are errors in your announcement. Would you like to fix it?
+        <a href="#" onclick="return setPartialView(summaryPartialViewName);">Go back</a>
+    }
 </div>
 

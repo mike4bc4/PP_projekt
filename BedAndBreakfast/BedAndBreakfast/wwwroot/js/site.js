@@ -74,6 +74,15 @@ function setPartialView(partialViewName) {
 	});
 }
 
+function resetValidViews() {
+	validViews[typePartialViewName] = false;
+	validViews[subtypePartialViewName] = false;
+	validViews[timePlacePartialViewName] = false;
+	validViews[descriptionPartialViewName] = false;
+	validViews[contactPartialViewName] = false;
+	validViews[paymentPartialViewName] = false;
+}
+
 function saveAnnouncement() {
 	$.ajax({
 		method: 'post',
@@ -84,6 +93,11 @@ function saveAnnouncement() {
 		dataType: 'html',
 		success: function (response) {
 			injectHtml('content', response);
+			var announcementCorrect = $('#announcementCorrect').val();
+			if (announcementCorrect == 'True') {
+				updateModelInSession(new Model());
+				resetValidViews();
+			}
 		}
 	});
 }
@@ -361,13 +375,7 @@ function savePayments(index) {
 		break;
 	}
 
-	
 	updateModelInSession(model);
 	updateValidStatusForView(paymentPartialViewName);
-}
-
-
-function testFoo() {
-	alert("test function works!");
 }
 
