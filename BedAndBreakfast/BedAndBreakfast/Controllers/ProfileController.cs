@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BedAndBreakfast.Data;
 using BedAndBreakfast.Models;
+using BedAndBreakfast.Models.ServicesLogic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -50,9 +51,38 @@ namespace BedAndBreakfast.Controllers
                 return RedirectToAction("Edit");
             }
 
-			// Get user profile.
+			// Get user.
 			User userData = await userManager.GetUserAsync(HttpContext.User);
+
+            // Get user profile or null if does not exists.
 			Profile profile = context.Profiles.Include(p => p.Address).Where(p => p.User == userData).First();
+
+
+            Address viewModelAddress = new Address
+            {
+                Country = viewModel.Country,
+                Region = viewModel.Region,
+                City = viewModel.City,
+                Street = viewModel.Street,
+                StreetNumber = viewModel.StreetNumber
+            };
+
+            bool addressesSimilar = UserAccountServiceLogic.AddressesSimilarCheck(profile.Address, viewModelAddress);
+
+            // Update address only if it has been changed by user.
+            if (!addressesSimilar)
+            {
+                Address addressInDatabase = SearchEngine.FindAddressByFields(viewModelAddress, context);
+                if (addressInDatabase != null)
+                {
+                    profile.Address = addressInDatabase;
+                    profile.AddressFK = addressInDatabase.ID;
+                }
+                else {
+                    // Address not found in database
+                    profile.Address = viewModelAddress;
+                }
+            }
 
 			// Update all profile fields.
 			profile.FirstName = viewModel.FirstName;
@@ -61,18 +91,13 @@ namespace BedAndBreakfast.Controllers
             profile.BirthDate = viewModel.BirthDate;
             profile.PrefLanguage = viewModel.PrefLanguage;
             profile.PrefCurrency = viewModel.PrefCurrency;
-            profile.Address.Country = viewModel.Country;
-            profile.Address.Region = viewModel.Region;
-            profile.Address.City = viewModel.City;
-            profile.Address.Street = viewModel.Street;
-            profile.Address.StreetNumber = viewModel.StreetNumber;
             profile.PresonalDescription = viewModel.PresonalDescription;
             profile.School = viewModel.School;
             profile.Work = viewModel.Work;
             profile.BackupEmailAddress = viewModel.BackupEmailAddress;
 
             // Commit changes to database.
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             return RedirectToAction("Edit");
         }

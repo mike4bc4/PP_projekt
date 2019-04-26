@@ -17,7 +17,8 @@ namespace BedAndBreakfast.Data
 
         public User User { get; set; }
 
-		public int AddressFK { get; set; }
+        // Address key can be null because user is created without any address information.
+		public int? AddressFK { get; set; }
 
         // Data fields
 

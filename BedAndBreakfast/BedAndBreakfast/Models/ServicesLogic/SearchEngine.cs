@@ -211,8 +211,21 @@ namespace BedAndBreakfast.Models
             return helpTags;
         }
 
-
-
+        /// <summary>
+        /// Allows to find address record by provided set of fields.
+        /// Note that filter is very restrictive and each address part has to be similar to
+        /// one in database in order to find it.
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static Address FindAddressByFields(Address address, AppDbContext context) {
+            return context.Addresses.Where(a => a.Country == address.Country)
+                .Where(a => a.Region == address.Region)
+                .Where(a => a.City == address.City)
+                .Where(a => a.Street == address.Street)
+                .Where(a => a.StreetNumber == address.StreetNumber).FirstOrDefault();
+        }
 
 
     }

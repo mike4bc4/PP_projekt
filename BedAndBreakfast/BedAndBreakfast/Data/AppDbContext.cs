@@ -67,11 +67,11 @@ namespace BedAndBreakfast.Data
                 .WithOne(u => u.PrivacySetting)
                 .HasForeignKey<PrivacySetting>(s => s.UserFK);
 
-			// Each user profile has one address.
+			// Multiple profiles may be related to the same address.
 			modelBuilder.Entity<Profile>()
 				.HasOne(p => p.Address)
-				.WithOne(a => a.Profile)
-				.HasForeignKey<Profile>(p => p.AddressFK);
+				.WithMany(a=>a.Profiles)
+				.HasForeignKey(p => p.AddressFK);
 
 			// Each user has many announcements
 			modelBuilder.Entity<User>()
@@ -107,6 +107,12 @@ namespace BedAndBreakfast.Data
 				.HasOne(ap => ap.PaymentMethod)
 				.WithMany(a => a.AnnouncementToPayments)
 				.HasForeignKey(ap => ap.PaymentMethodID);
+
+            // One address may be related to multiple announcements.
+            modelBuilder.Entity<Announcement>()
+                .HasOne(a => a.Address)
+                .WithMany(ad => ad.Announcements)
+                .HasForeignKey(a => a.AddressFK);
 
 
 

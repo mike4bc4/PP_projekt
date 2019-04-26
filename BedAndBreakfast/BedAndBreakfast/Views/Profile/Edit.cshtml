@@ -17,6 +17,9 @@
     List<SelectListItem> genders = ListedDbValues.CreateListOfItems<ListedDbValues.Gender>(profile.Gender);
     List<SelectListItem> currencies = ListedDbValues.CreateListOfItems<ListedDbValues.Currency>(profile.PrefCurrency);
     List<SelectListItem> languages = ListedDbValues.CreateListOfItems<ListedDbValues.Language>(profile.PrefLanguage);
+    // Address uses additional variable to prevent situations where address is read from null object.
+    // There is empty address created instead.
+    Address profileAddress = (profile.Address != null) ? profile.Address : new Address();
 }
 
 <h2>Edit</h2>
@@ -59,27 +62,27 @@
             </div>
             <div class="form-group">
                 <label asp-for="Country" class="control-label"></label>
-                <input asp-for="Country" class="form-control" value="@profile.Address.Country" />
+                <input asp-for="Country" class="form-control" value="@profileAddress.Country" />
                 <span asp-validation-for="Country" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Region" class="control-label"></label>
-                <input asp-for="Region" class="form-control" value="@profile.Address.Region" />
+                <input asp-for="Region" class="form-control" value="@profileAddress.Region" />
                 <span asp-validation-for="Region" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="City" class="control-label"></label>
-                <input asp-for="City" class="form-control" value="@profile.Address.City" />
+                <input asp-for="City" class="form-control" value="@profileAddress.City" />
                 <span asp-validation-for="City" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Street" class="control-label"></label>
-                <input asp-for="Street" class="form-control" value="@profile.Address.Street" />
+                <input asp-for="Street" class="form-control" value="@profileAddress.Street" />
                 <span asp-validation-for="Street" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="StreetNumber" class="control-label"></label>
-                <input asp-for="StreetNumber" class="form-control" value="@profile.Address.StreetNumber" />
+                <input asp-for="StreetNumber" class="form-control" value="@profileAddress.StreetNumber" />
                 <span asp-validation-for="StreetNumber" class="text-danger"></span>
             </div>
             <div class="form-group">

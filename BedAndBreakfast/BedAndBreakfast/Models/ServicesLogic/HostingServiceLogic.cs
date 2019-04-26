@@ -72,5 +72,18 @@ namespace BedAndBreakfast.Models.ServicesLogic
             }
             return announcementCorrect;
         }
+    
+        public static void AddAnnouncementToDatabase(CreateAnnouncementViewModel viewModel) {
+            Address address = new Address();
+            Announcement announcement = new Announcement();
+            announcement.Type = viewModel.Type;
+            announcement.Subtype = viewModel.Subtype;
+            announcement.SharedPart = viewModel.SharedPart;
+           
+
+        }
+
+
     }
+
 }

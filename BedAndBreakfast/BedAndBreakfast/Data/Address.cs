@@ -29,6 +29,9 @@ namespace BedAndBreakfast.Data
 		[MaxLength(10)]
 		public string StreetNumber { get; set; }
 
-		public Profile Profile { get; set; }
-	}
+		public List<Profile> Profiles { get; set; }
+
+        public List<Announcement> Announcements { get; set; }
+
+    }
 }

@@ -46,7 +46,7 @@ namespace BedAndBreakfast.Controllers
 		public IActionResult SaveAnnouncement(CreateAnnouncementViewModel data) {
 
             bool announcementCorrect = HostingServiceLogic.IsAnnouncementViewModelValid(data);
-
+            
             // TODO: add announcement to database if correct
             // TODO: check once again if user is able to create announcement
             // TODO: change user status as host

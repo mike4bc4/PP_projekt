@@ -21,11 +21,12 @@ namespace BedAndBreakfast.Data
 		[MaxLength(50)]
 		public string SharedPart { get; set; }
 
-		
 		public Address Address { get; set; }
 
-		// How long should announcement exist. 
-		[DataType(DataType.DateTime)]
+        public int AddressFK { get; set; }
+
+        // How long should announcement exist. 
+        [DataType(DataType.DateTime)]
 		public DateTime From { get; set; }
 		[DataType(DataType.DateTime)]
 		public DateTime To { get; set; }

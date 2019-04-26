@@ -24,7 +24,8 @@ namespace BedAndBreakfast.Models.ServicesLogic
 				FirstName = viewModel.FirstName,
 				LastName = viewModel.LastName,
 				BirthDate = viewModel.BirthDate,
-				Address = new Address()
+				//Address = new Address()
+                
             };
             return profile;
         }
@@ -103,7 +104,21 @@ namespace BedAndBreakfast.Models.ServicesLogic
             origin.ServiceByPhone = setting.ServiceByPhone;
         }
 
-        
+
+        /// <summary>
+        /// Checks if provided addresses are similar, if so returns true - else returns false.
+        /// Also returns false if one of addresses is null.
+        /// </summary>
+        /// <param name="firstAddress"></param>
+        /// <param name="secondAddress"></param>
+        /// <returns></returns>
+        public static bool AddressesSimilarCheck(Address firstAddress, Address secondAddress) {
+            if (firstAddress == null || secondAddress == null) {
+                return false;
+            }
+            return (firstAddress.Country == secondAddress.Country && firstAddress.Region == secondAddress.Region && firstAddress.City == secondAddress.City &&
+                firstAddress.Street == secondAddress.Street && firstAddress.StreetNumber == secondAddress.StreetNumber);
+        }
 
     }
 }
