@@ -1,13 +1,12 @@
-﻿
+﻿@model CreateAnnouncementViewModel
 @{
 	ViewData["Title"] = "DescriptionForm";
-	CreateAnnouncementViewModel viewModel = (CreateAnnouncementViewModel)ViewData["data"];
 }
 
 <h2>DescriptionForm</h2>
 
 <div>
-	<textarea id="descriptionField" rows="20" cols="50">@viewModel.Description</textarea>
+	<textarea id="descriptionField" rows="20" cols="50">@Model.Description</textarea>
 </div>
 <div>
 	<a href="#" onclick="setDescription();">Save</a>

@@ -1,77 +1,94 @@
 ﻿@using BedAndBreakfast.Data;
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<User> userManager
+@inject AppDbContext context
+
+@{
+
+    User currentUser = await userManager.GetUserAsync(User);
+    Profile userProfile = context.Profiles.Where(p => p.User == currentUser).FirstOrDefault();
+    var asd = 5;
+}
 
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - BedAndBreakfast</title>
-	@*Javascript files*@
-	<script src="~/js/site.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BedAndBreakfast</title>
+    @*Javascript files*@
+    <script src="~/js/site.js"></script>
 </head>
 <body>
 
-	@{
-		if (User.Identity.IsAuthenticated)
-		{
-			<div>
-				<p>
-					Hello @User.Identity.Name!
-				</p>
-			</div>
-			<hr />
-		}
-	}
+    @{
+        if (User.Identity.IsAuthenticated)
+        {
+            <div>
+                <p>
+                    @if (userProfile != null)
+                    {
+                        @:Hello @userProfile.FirstName
+                    }
+                    else
+                    {
+                        @:Hello there!
+                    }
+                </p>
+            </div>
+            <hr />
+        }
+    }
 
-	<div>
+    <div>
 
-		@*Visible for everyone.*@
-		<a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-		<a asp-area="" asp-controller="Help" asp-action="Browse">Help</a>
-
-
-		@*Visible for everyone except host*@
-		@if (!User.IsInRole(Role.Host))
-		{
-			<a asp-area="" asp-controller="Hosting" asp-action="CreateAnnouncement">Become a Host</a>
-		}
-		@*Visible for host only*@
-		else if (User.IsInRole(Role.Host))
-		{
-			//<a asp-area="" asp-controller="Hosting" asp-action="PublishPlace">My hosted places</a>
-		}
+        @*Visible for everyone.*@
+        <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+        <a asp-area="" asp-controller="Help" asp-action="Browse">Help</a>
 
 
-		@*If user is not an administrator.*@
-		@if (!User.IsInRole(Role.Admin))
-		{
+        @*Visible for everyone except host*@
+
+        @if (currentUser == null || !currentUser.isHost)
+        {
+            <a asp-area="" asp-controller="Hosting" asp-action="CreateAnnouncement">Become a Host</a>
+        }
+        else
+        {
+            <a asp-area="" asp-controller="Hosting" asp-action="CreateAnnouncement">Create announcement</a>
+        }
 
 
-			@if (!User.Identity.IsAuthenticated)
-			{
-				<a asp-area="" asp-controller="Account" asp-action="Login">Log In</a>
-				<a asp-area="" asp-controller="Account" asp-action="Create">Create Account</a>
-			}
-			else
-			{
-				<a asp-area="" asp-controller="Account" asp-action="Logout">Log Out</a>
-				<a asp-area="" asp-controller="Profile" asp-action="Edit">Profile</a>
-				<a asp-area="" asp-controller="Account" asp-action="Edit">Account</a>
-			}
-		}
-		@*If user is an administrator.*@
-		else
-		{
-			<a asp-area="" asp-controller="Account" asp-action="Logout">Log Out</a>
-			<a asp-area="" asp-controller="Administration" asp-action="FindUser">Find User</a>
-		}
+        @*If user is not an administrator.*@
+        @if (!User.IsInRole(Role.Admin))
+        {
+
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <a asp-area="" asp-controller="Account" asp-action="Login">Log In</a>
+                <a asp-area="" asp-controller="Account" asp-action="Create">Create Account</a>
+            }
+            else
+            {
+                <a asp-area="" asp-controller="Account" asp-action="Logout">Log Out</a>
+                <a asp-area="" asp-controller="Profile" asp-action="Edit">Profile</a>
+                <a asp-area="" asp-controller="Account" asp-action="Edit">Account</a>
+            }
+        }
+        @*If user is an administrator.*@
+        else
+        {
+            <a asp-area="" asp-controller="Account" asp-action="Logout">Log Out</a>
+            <a asp-area="" asp-controller="Administration" asp-action="FindUser">Find User</a>
+        }
 
 
 
-	</div>
-	<hr />
+    </div>
+    <hr />
 
-	@RenderBody()
+    @RenderBody()
 
 </body>
 </html>

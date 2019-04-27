@@ -1,10 +1,9 @@
 ﻿@using BedAndBreakfast.Data;
-
+@using Microsoft.AspNetCore.Http;
 @{
-	List<string> contacts = Enum.GetNames(typeof(ListedDbValues.ContactType)).ToList();
-	List<string> payments = Enum.GetNames(typeof(ListedDbValues.PaymentMethod)).ToList();
-
-	ViewData["Title"] = "CreateAnnouncement";
+    List<string> contacts = Enum.GetNames(typeof(ListedDbValues.ContactType)).ToList();
+    List<string> payments = Enum.GetNames(typeof(ListedDbValues.PaymentMethod)).ToList();
+    ViewData["Title"] = "CreateAnnouncement";
 }
 
 <h2>CreateAnnouncement</h2>
@@ -19,7 +18,7 @@
 	function getPaymentMethods() {
 		var payments = @Html.Raw(Json.Serialize(payments));
 		return payments;
-	}
+    }
 
 	var contactItemIndex = { value: 0, name: 'contactItemIndex', items: [] };
 	var paymentItemIndex = { value: 0, name: 'paymentItemIndex', items: [] };
@@ -46,8 +45,8 @@
 		setPartialView('TypeSelectionForm');
 		createNewModel();
 	}
-	
-	
+
+
 </script>
 
 <div id="header">

@@ -120,5 +120,8 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 firstAddress.Street == secondAddress.Street && firstAddress.StreetNumber == secondAddress.StreetNumber);
         }
 
+
+
+
     }
 }

@@ -72,7 +72,7 @@ namespace BedAndBreakfast.Controllers
             // Update address only if it has been changed by user.
             if (!addressesSimilar)
             {
-                Address addressInDatabase = SearchEngine.FindAddressByFields(viewModelAddress, context);
+                Address addressInDatabase = SearchEngine.FindAddressByContent(viewModelAddress, context);
                 if (addressInDatabase != null)
                 {
                     profile.Address = addressInDatabase;

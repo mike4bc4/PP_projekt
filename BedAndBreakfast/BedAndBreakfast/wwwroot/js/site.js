@@ -4,7 +4,9 @@
 // Write your JavaScript code.
 
 
-
+/**
+ * Client side model which represents announcement view model data.
+ * */
 class Model {
 	constructor() {
 		this.type;
@@ -23,8 +25,9 @@ class Model {
 	}
 }
 
-
-//Create new model for announcement data if it does not exists.
+/**
+ * Creates new model and stores in session if previous model does not exists.
+ * */
 function createNewModel() {
 	var model = getModelFromSession();
 	if (!model) {
@@ -32,26 +35,52 @@ function createNewModel() {
 	}
 }
 
+/**
+ * Replaces model stored in session with null value.
+ * */
 function deleteCurrentModel() {
 	sessionStorage.setItem("model", null);
 }
 
+/**
+ * Return model from session.
+ * */
 function getModelFromSession() {
 	return JSON.parse(sessionStorage.getItem("model"));
 }
 
+/**
+ * Updates model stored in session with new object provided.
+ * @param {any} model
+ */
 function updateModelInSession(model) {
 	sessionStorage.setItem("model", JSON.stringify(model));
 }
 
+/**
+ * Replaces HTML code in tag specified by id,
+ * @param {any} itemID
+ * @param {any} html
+ */
 function injectHtml(itemID, html) {
 	document.getElementById(itemID).innerHTML = html;
 }
 
+/**
+ * Returns value of HTML tag.
+ * @param {any} elementID
+ */
 function getElementValue(elementID) {
 	return $('#' + elementID).val();
 }
 
+/**
+ * Executes post request of specified partial view from hosting group.
+ * If response is received content of tag with 'content' id is replaced.
+ * Also modifies received views with proper forms if they are related
+ * to dynamic lists of contacts or payments.
+ * @param {any} partialViewName
+ */
 function setPartialView(partialViewName) {
 	updateValidStatus();
 	$.ajax({
@@ -59,7 +88,7 @@ function setPartialView(partialViewName) {
 		url: '/Hosting/GetPartialViewWithData',
 		data: {
 			partialViewName: partialViewName,
-			data: getModelFromSession()
+			viewModel: getModelFromSession()
 		},
 		dataType: 'html',
 		success: function (response) {
@@ -74,6 +103,9 @@ function setPartialView(partialViewName) {
 	});
 }
 
+/**
+ * Makes correct flag invalid for each view. 
+ * */
 function resetValidViews() {
 	validViews[typePartialViewName] = false;
 	validViews[subtypePartialViewName] = false;
@@ -83,26 +115,39 @@ function resetValidViews() {
 	validViews[paymentPartialViewName] = false;
 }
 
+/**
+ * Calls save announcement method from controller and resets model
+ * if announcement was successfully created.
+ * */
 function saveAnnouncement() {
+	var model = getModelFromSession();
 	$.ajax({
 		method: 'post',
 		url: '/Hosting/SaveAnnouncement',
 		data: {
-			data: getModelFromSession()
+			viewModel: getModelFromSession()
 		},
-		dataType: 'html',
+		dataType: 'json',
 		success: function (response) {
-			injectHtml('content', response);
-			var announcementCorrect = $('#announcementCorrect').val();
-			if (announcementCorrect == 'True') {
+			if (response.announcementCorrect) {
+				// Announcement has been saved in database.
+				// So create new view model.
 				updateModelInSession(new Model());
+				// Mark all views as invalid
 				resetValidViews();
+				// Display views as saved.
+				markHeadersAsSaved();
+				// Show proper response
+				injectHtml('content', response.page);
+			}
+			else {
+				injectHtml('content', response.page);
 			}
 		}
 	});
 }
 
-function updateValidStatus() {
+function markHeadersAsSaved() {
 	var typeHeader = document.getElementById(typePartialViewName);
 	var subtypeHeader = document.getElementById(subtypePartialViewName);
 	var timeplaceHeader = document.getElementById(timePlacePartialViewName);
@@ -110,46 +155,31 @@ function updateValidStatus() {
 	var contactsHeader = document.getElementById(contactPartialViewName);
 	var paymentsHeader = document.getElementById(paymentPartialViewName);
 
-	// Change colors
-	if (validViews[typePartialViewName]) 
-		typeHeader.setAttribute('style','background-color:green;')
-	else 
-		typeHeader.setAttribute('style', 'background-color:red;')
+	typeHeader.setAttribute('style', 'background-color:yellow;');
+	subtypeHeader.setAttribute('style', 'background-color:yellow;');
+	timeplaceHeader.setAttribute('style', 'background-color:yellow;');
+	descriptionHeader.setAttribute('style', 'background-color:yellow;');
+	contactsHeader.setAttribute('style', 'background-color:yellow;');
+	paymentsHeader.setAttribute('style', 'background-color:yellow;');
+}
 
-	if (validViews[subtypePartialViewName]) 
-		subtypeHeader.setAttribute('style', 'background-color:green;')
-	else
-		subtypeHeader.setAttribute('style', 'background-color:red;')
-
-	if (validViews[timePlacePartialViewName])
-		timeplaceHeader.setAttribute('style', 'background-color:green;')
-	else
-		timeplaceHeader.setAttribute('style', 'background-color:red;')
-
-	if (validViews[descriptionPartialViewName])
-		descriptionHeader.setAttribute('style', 'background-color:green;')
-	else
-		descriptionHeader.setAttribute('style', 'background-color:red;')
-
-	if (validViews[contactPartialViewName])
-		contactsHeader.setAttribute('style', 'background-color:green;')
-	else
-		contactsHeader.setAttribute('style', 'background-color:red;')
-
-	if (validViews[paymentPartialViewName])
-		paymentsHeader.setAttribute('style', 'background-color:green;')
-	else
-		paymentsHeader.setAttribute('style', 'background-color:red;')
-
+function updateValidStatus() {
+	// Update valid status for all headers.
+	updateValidStatusForView(typePartialViewName);
+	updateValidStatusForView(subtypePartialViewName);
+	updateValidStatusForView(timePlacePartialViewName);
+	updateValidStatusForView(descriptionPartialViewName);
+	updateValidStatusForView(contactPartialViewName);
+	updateValidStatusForView(paymentPartialViewName);
 }
 
 function updateValidStatusForView(partialViewName) {
 	var viewHeader = document.getElementById(partialViewName);
 	if (validViews[partialViewName]) {
-		viewHeader.setAttribute('style', 'background-color:green;')
+		viewHeader.setAttribute('style', 'background-color:green;');
 	}
 	else {
-		viewHeader.setAttribute('style', 'background-color:red;')
+		viewHeader.setAttribute('style', 'background-color:red;');
 	}
 }
 
@@ -339,7 +369,8 @@ function saveContacts(index) {
 	model.contactMethods = {};
 	for (var i = 0; i < index.items.length; i++) {
 		if (index.items[i] != null) {
-			model.contactMethods[index.items[i].key.val()] = index.items[i].value.val();
+			// Dictionary key does not support dot notation so it's necessary to replace it with unicode character (which is dot anyway -.-)
+			model.contactMethods[index.items[i].key.val().replace(/\./g, "\u2024")] = index.items[i].value.val();
 		}
 	}
 	// Validate
@@ -360,7 +391,7 @@ function savePayments(index) {
 	model.paymentMethods = {};
 	for (var i = 0; i < index.items.length; i++) {
 		if (index.items[i] != null) {
-			model.paymentMethods[index.items[i].key.val()] = index.items[i].value.val();
+			model.paymentMethods[index.items[i].key.val().replace(/\./g, "\u2024")] = index.items[i].value.val();
 		}
 	}
 	// Validate

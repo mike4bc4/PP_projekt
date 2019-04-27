@@ -1,6 +1,5 @@
-﻿
+﻿@model CreateAnnouncementViewModel
 @{
-	CreateAnnouncementViewModel viewModel = (CreateAnnouncementViewModel)ViewData["data"];
 	ViewData["Title"] = "TimePlaceSelectionForm";
 }
 
@@ -9,31 +8,31 @@
 <div>
 	<div>
 		<label>Country</label>
-		<input type="text" id="country" value="@viewModel.Country"/>
+		<input type="text" id="country" value="@Model.Country"/>
 	</div>
 	<div>
 		<label>Region</label>
-		<input type="text" id="region" value="@viewModel.Region"/>
+		<input type="text" id="region" value="@Model.Region"/>
 	</div>
 	<div>
 		<label>City</label>
-		<input type="text" id="city" value="@viewModel.City"/>
+		<input type="text" id="city" value="@Model.City"/>
 	</div>
 	<div>
 		<label>Street</label>
-		<input type="text" id="street" value="@viewModel.Street"/>
+		<input type="text" id="street" value="@Model.Street"/>
 	</div>
 	<div>
 		<label>Street number</label>
-		<input type="text" id="streetNumber" value="@viewModel.StreetNumber"/>
+		<input type="text" id="streetNumber" value="@Model.StreetNumber"/>
 	</div>
 	<div>
 		<label>From</label>
-		<input type="date" id="from" value="@viewModel.From.ToString("yyyy-MM-dd")"/>
+		<input type="date" id="from" value="@Model.From.ToString("yyyy-MM-dd")"/>
 	</div>
 	<div>
 		<label>To</label>
-		<input type="date" id="to" value="@viewModel.To.ToString("yyyy-MM-dd")"/>
+		<input type="date" id="to" value="@Model.To.ToString("yyyy-MM-dd")"/>
 	</div>
 </div>
 <div>

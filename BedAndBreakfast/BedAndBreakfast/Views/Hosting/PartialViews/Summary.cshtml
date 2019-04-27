@@ -1,7 +1,5 @@
 ﻿@model CreateAnnouncementViewModel
 @{
-
-	CreateAnnouncementViewModel viewModel = (CreateAnnouncementViewModel)ViewData["data"];
 	ViewData["Title"] = "Summary";
 }
 
@@ -16,7 +14,7 @@
 		</label>
 	</div>
 	<div>
-		@viewModel.Type
+		@Model.Type
 	</div>
 
 	<div>
@@ -27,10 +25,10 @@
 		</label>
 	</div>
 	<div>
-		@viewModel.Subtype
+		@Model.Subtype
 	</div>
 
-	@if (viewModel.SharedPart != null)
+	@if (Model.SharedPart != null)
 	{
 		<div>
 			<label>
@@ -40,7 +38,7 @@
 			</label>
 		</div>
 		<div>
-			@viewModel.SharedPart
+			@Model.SharedPart
 		</div>
 	}
 
@@ -52,7 +50,7 @@
 		</label>
 	</div>
 	<div>
-		@viewModel.From.ToShortDateString() - @viewModel.To.ToShortDateString()
+		@Model.From.ToShortDateString() - @Model.To.ToShortDateString()
 	</div>
 
 	<div>
@@ -63,19 +61,19 @@
 		</label>
 	</div>
 	<div>
-		@viewModel.Country
+		@Model.Country
 	</div>
 	<div>
-		@viewModel.Region
+		@Model.Region
 	</div>
 	<div>
-		@viewModel.City
+		@Model.City
 	</div>
 	<div>
-		@viewModel.Street
+		@Model.Street
 	</div>
 	<div>
-		@viewModel.StreetNumber
+		@Model.StreetNumber
 	</div>
 
 	<div>
@@ -86,7 +84,7 @@
 		</label>
 	</div>
 	<div>
-		@viewModel.Description
+		@Model.Description
 	</div>
 
 	<div>
@@ -97,7 +95,7 @@
 		</label>
 	</div>
 	<div>
-		@foreach (var method in viewModel.ContactMethods)
+		@foreach (var method in Model.ContactMethods)
 		{
 			<label>@method.Value</label>
 			<label>@method.Key</label>
@@ -112,7 +110,7 @@
 		</label>
 	</div>
 	<div>
-		@foreach (var method in viewModel.PaymentMethods)
+		@foreach (var method in Model.PaymentMethods)
 		{
 			<label>@method.Value</label>
 			<label>@method.Key</label>

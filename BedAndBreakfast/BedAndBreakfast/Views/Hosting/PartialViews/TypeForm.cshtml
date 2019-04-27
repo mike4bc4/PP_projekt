@@ -1,7 +1,7 @@
 ﻿@using BedAndBreakfast.Data;
+@model CreateAnnouncementViewModel
 @{
 	ViewData["Title"] = "TypeSelectionForm";
-	CreateAnnouncementViewModel model = (CreateAnnouncementViewModel)ViewData["data"];
 	List<string> types = Enum.GetNames(typeof(ListedDbValues.AnnouncementType)).ToList();
 }
 
@@ -11,7 +11,7 @@
 <div>
 	@foreach (string type in types)
 	{
-		if (model != null && model.Type == type)
+		if (Model.Type == type)
 		{
 			// Selected should be somehow highlighted.
 			<div style="background-color:yellow;" >

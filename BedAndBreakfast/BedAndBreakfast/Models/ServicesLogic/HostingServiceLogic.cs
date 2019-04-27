@@ -73,14 +73,77 @@ namespace BedAndBreakfast.Models.ServicesLogic
             return announcementCorrect;
         }
     
-        public static void AddAnnouncementToDatabase(CreateAnnouncementViewModel viewModel) {
-            Address address = new Address();
+        public static async Task AddAnnouncementToDatabase(CreateAnnouncementViewModel viewModel, AppDbContext context, User announcementOwner) {
             Announcement announcement = new Announcement();
+            Address viewModelAddress = new Address
+            {
+                Country = viewModel.Country,
+                Region = viewModel.Region,
+                City = viewModel.City,
+                Street = viewModel.Street,
+                StreetNumber = viewModel.StreetNumber
+            };
+
+            Address addressInDatabase = SearchEngine.FindAddressByContent(viewModelAddress, context);
+
+            // If there is already similar address in database add it.
+            if (addressInDatabase != null)
+            {
+                announcement.Address = addressInDatabase;
+                announcement.AddressFK = addressInDatabase.ID;
+            }
+            else {
+                announcement.Address = viewModelAddress;
+            }
+            
             announcement.Type = viewModel.Type;
             announcement.Subtype = viewModel.Subtype;
             announcement.SharedPart = viewModel.SharedPart;
-           
+            announcement.From = viewModel.From;
+            announcement.To = viewModel.To;
+            announcement.Description = viewModel.Description;
+            announcement.User = announcementOwner;
 
+            foreach (KeyValuePair<string, string> contact in viewModel.ContactMethods) {
+                AdditionalContact viewModelContact = new AdditionalContact {Type = contact.Value, Data = contact.Key};
+                AdditionalContact contactInDatabase = SearchEngine.FindAdditionalContactByContent(viewModelContact, context);
+                if (contactInDatabase != null)
+                {
+                    context.AnnouncementToContacts.Add(new AnnouncementToContact { Announcement = announcement, AdditionalContact = contactInDatabase });
+                }
+                else {
+                    context.AnnouncementToContacts.Add(new AnnouncementToContact { Announcement = announcement, AdditionalContact = viewModelContact });
+                }
+            }
+
+            foreach (KeyValuePair<string, string> payment in viewModel.PaymentMethods)
+            {
+                PaymentMethod viewModelPaymentMethod = new PaymentMethod { Type = payment.Value, Data = payment.Key };
+                PaymentMethod paymentMethodInDatabase = SearchEngine.FindPaymentMoethodByContent(viewModelPaymentMethod, context);
+                if (paymentMethodInDatabase != null)
+                {
+                    context.AnnouncementToPayments.Add(new AnnouncementToPayment { Announcement = announcement, PaymentMethod = paymentMethodInDatabase });
+                }
+                else
+                {
+                    context.AnnouncementToPayments.Add(new AnnouncementToPayment { Announcement = announcement, PaymentMethod = viewModelPaymentMethod });
+                }
+            }
+
+            await context.SaveChangesAsync();
+
+        }
+
+
+        /// <summary>
+        /// Simply sets user "is host" flag as true.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static async Task MakeUserHost(User user, AppDbContext context) {
+            user.isHost = true;
+            await context.SaveChangesAsync();
         }
 
 

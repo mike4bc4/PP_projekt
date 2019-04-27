@@ -1,16 +1,14 @@
-﻿@using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿@model CreateAnnouncementViewModel
+@using Microsoft.AspNetCore.Mvc.RazorPages;
+@using Microsoft.AspNetCore.Http;
 @{
     ViewData["Title"] = "SaveAnnouncement";
-    bool announcementCorrect = (bool)ViewData["announcementCorrect"];
-
 }
 
 <h2>SaveAnnouncement</h2>
 
-<input id="announcementCorrect" type="hidden" value="@announcementCorrect.ToString()" />
-
 <div>
-    @if (announcementCorrect)
+    @if (Model.IsCorrect)
     {
         @:Your announcement has been saved and soon will be visible in out browser!
     }

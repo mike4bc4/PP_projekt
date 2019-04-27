@@ -219,12 +219,36 @@ namespace BedAndBreakfast.Models
         /// <param name="address"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static Address FindAddressByFields(Address address, AppDbContext context) {
+        public static Address FindAddressByContent(Address address, AppDbContext context) {
             return context.Addresses.Where(a => a.Country == address.Country)
                 .Where(a => a.Region == address.Region)
                 .Where(a => a.City == address.City)
                 .Where(a => a.Street == address.Street)
                 .Where(a => a.StreetNumber == address.StreetNumber).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Allows to find additional contact by it's content.
+        /// Returns null if it does not exists.
+        /// </summary>
+        /// <param name="contact"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static AdditionalContact FindAdditionalContactByContent(AdditionalContact contact, AppDbContext context) {
+            return context.AdditionalContacts.Where(a => a.Type == contact.Type)
+                .Where(a => a.Data == contact.Data).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Allows to find payment method by it's content.
+        /// Returns null if it does not exists.
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static PaymentMethod FindPaymentMoethodByContent(PaymentMethod method, AppDbContext context) {
+            return context.PaymentMethods.Where(p => p.Type == method.Type)
+                .Where(p => p.Data == method.Data).FirstOrDefault();
         }
 
 

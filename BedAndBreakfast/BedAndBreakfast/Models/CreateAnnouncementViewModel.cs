@@ -7,9 +7,17 @@ using System.Threading.Tasks;
 
 namespace BedAndBreakfast.Models
 {
-	
+	/// <summary>
+    /// This model is used only for communication between view and controller
+    /// and does not take part in validation process so no annotations are needed.
+    /// </summary>
 	public class CreateAnnouncementViewModel
 	{
+        /// <summary>
+        /// Initializes model dictionaries so they do not contain null value and
+        /// sets default announcement from and to date which is from tomorrow till
+        /// day after.
+        /// </summary>
 		public CreateAnnouncementViewModel() {
 			From = DateTime.Today.AddDays(1);
 			To = DateTime.Today.AddDays(2);
@@ -30,5 +38,6 @@ namespace BedAndBreakfast.Models
 		public string Description { get; set; }
 		public Dictionary<string,string> ContactMethods { get; set; }
 		public Dictionary<string,string> PaymentMethods { get; set; }
-	}
+        public bool IsCorrect { get; set; } = false;
+    }
 }

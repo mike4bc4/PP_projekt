@@ -1,16 +1,13 @@
-﻿@using BedAndBreakfast.Data;
+﻿@model CreateAnnouncementViewModel
+@using BedAndBreakfast.Data;
 
 @{
 	ViewData["Title"] = "SubtypeSelectionForm";
 
-	CreateAnnouncementViewModel model = (CreateAnnouncementViewModel)ViewData["data"];
-	string data = model.Type;
-
-	List<SelectListItem> houseSubtypes = ListedDbValues.CreateListOfItems<ListedDbValues.HouseSubtype>(model.Subtype);
-	List<SelectListItem> houseSharedParts = ListedDbValues.CreateListOfItems<ListedDbValues.HouseSharedPart>(model.SharedPart);
-	List<SelectListItem> entertainmentTypes = ListedDbValues.CreateListOfItems<ListedDbValues.EntertainmentSubtype>(model.Subtype);
-	List<SelectListItem> foodTypes = ListedDbValues.CreateListOfItems<ListedDbValues.FoodSubtype>(model.Subtype);
-
+	List<SelectListItem> houseSubtypes = ListedDbValues.CreateListOfItems<ListedDbValues.HouseSubtype>(Model.Subtype);
+	List<SelectListItem> houseSharedParts = ListedDbValues.CreateListOfItems<ListedDbValues.HouseSharedPart>(Model.SharedPart);
+	List<SelectListItem> entertainmentTypes = ListedDbValues.CreateListOfItems<ListedDbValues.EntertainmentSubtype>(Model.Subtype);
+	List<SelectListItem> foodTypes = ListedDbValues.CreateListOfItems<ListedDbValues.FoodSubtype>(Model.Subtype);
 }
 
 <script type="text/javascript">
@@ -25,7 +22,7 @@
 <div id="errorMessage"></div>
 
 <div>
-	@switch (data)
+	@switch (Model.Type)
 	{
 		case "House":
 			<label>House type</label>
@@ -47,7 +44,7 @@
 	}
 </div>
 <div>
-	@if (!string.IsNullOrEmpty(data))
+	@if (!string.IsNullOrEmpty(Model.Type))
 	{
 		<a href="#" onclick="setSubtype();">Save</a>
 	}

@@ -12,6 +12,5 @@ namespace BedAndBreakfast.Data
     {
         public const string Admin = "Administrator";
         public const string User = "BnBUser";
-        public const string Host = "BnBHost";
     }
 }
