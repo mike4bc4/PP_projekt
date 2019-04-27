@@ -137,8 +137,14 @@ function saveAnnouncement() {
 				resetValidViews();
 				// Display views as saved.
 				markHeadersAsSaved();
-				// Show proper response
+				// Show proper response.
 				injectHtml('content', response.page);
+				// Change layout tag without page reload.
+				var becomeHostTag = document.getElementById('becomeHostTag');
+				if (becomeHostTag) {
+					becomeHostTag.setAttribute('href', '/Hosting/ListUserAnnouncements');
+					becomeHostTag.innerText = 'Manage my announcements';
+				}
 			}
 			else {
 				injectHtml('content', response.page);
@@ -261,9 +267,12 @@ function setTimePlace() {
 	var streetNumber = getElementValue('streetNumber');
 	var from = getElementValue('from').split('-');
 	var fromDate = new Date(from[0], from[1] - 1, from[2]);
+	fromDate.setHours(0, 0, 0, 0);
 	var to = getElementValue('to').split('-');
 	var toDate = new Date(to[0], to[1] - 1, to[2]);
+	toDate.setHours(0, 0, 0, 0);
 	var today = new Date();
+	today.setHours(0, 0, 0, 0);
 
 	// Always save data - even if wrong - to keep form updated.
 	model.country = country

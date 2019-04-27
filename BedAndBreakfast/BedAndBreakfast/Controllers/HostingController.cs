@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace BedAndBreakfast.Controllers
@@ -40,20 +42,19 @@ namespace BedAndBreakfast.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = Role.User)]
-        public IActionResult CreateAnnouncement()
+        public IActionResult EditAnnouncement()
         {
             return View();
         }
 
 
         /// <summary>
-        /// Returns specified partial view from hosting container and updates data
-        /// passed from server to main view with new create announcement view model.
+        /// Returns specified partial view from hosting container.
         /// </summary>
         /// <param name="partialViewName"></param>
         /// <param name="viewModel"></param>
         /// <returns></returns>
-		public IActionResult GetPartialViewWithData(string partialViewName, CreateAnnouncementViewModel viewModel)
+		public IActionResult GetPartialViewWithData(string partialViewName, EditAnnouncementViewModel viewModel)
         {
             return PartialView("PartialViews/" + partialViewName, viewModel);
         }
@@ -69,7 +70,7 @@ namespace BedAndBreakfast.Controllers
         /// <param name="viewModel"></param>
         /// <returns></returns>
         [Authorize(Roles = Role.User)]
-        public async Task<IActionResult> SaveAnnouncement(CreateAnnouncementViewModel viewModel)
+        public async Task<IActionResult> SaveAnnouncement(EditAnnouncementViewModel viewModel)
         {
             User currentUser = await userManager.GetUserAsync(HttpContext.User);
             bool announcementCorrect = HostingServiceLogic.IsAnnouncementViewModelValid(viewModel);
@@ -85,6 +86,71 @@ namespace BedAndBreakfast.Controllers
             }
 
             return Json(new { page = ControllerExtensions.ParseViewToStringAsync(this, viewModel, "PartialViews/SaveAnnouncement", true).Result, announcementCorrect });
+        }
+
+        [Authorize(Roles = Role.User)]
+        public async Task<IActionResult> ListUserAnnouncements(string sortingMethod, string queryString)
+        {
+
+            User currentUser = await userManager.GetUserAsync(HttpContext.User);
+            List<Announcement> usersAnnouncements = context.Announcements
+                .Include(a => a.Address)
+                .Where(a => a.User == currentUser).ToList();
+
+            var contactData = (from ua in usersAnnouncements
+                               join ac in context.AnnouncementToContacts
+                               on ua.ID equals ac.AnnouncementID
+                               select new { announcementID = ua.ID, contactID = ac.AdditionalContactID });
+
+            var paymentData = (from ua in usersAnnouncements
+                               join ap in context.AnnouncementToPayments
+                               on ua.ID equals ap.AnnouncementID
+                               select new { announcementID = ua.ID, paymentID = ap.PaymentMethodID });
+
+            List<Dictionary<string, string>> contacts = new List<Dictionary<string, string>>();
+            foreach (Announcement announcement in usersAnnouncements)
+            {
+                List<int> announcementsContacsIDs = (from d in contactData
+                                                     where d.announcementID == announcement.ID
+                                                     select d.contactID).ToList();
+                List<AdditionalContact> additionalContacts = (from ac in context.AdditionalContacts
+                                                              where announcementsContacsIDs.Contains(ac.ID)
+                                                              select ac).ToList();
+                Dictionary<string, string> announcementContacts = new Dictionary<string, string>();
+                foreach (AdditionalContact additionalContact in additionalContacts)
+                {
+                    announcementContacts.Add(key: additionalContact.Data, value: additionalContact.Type);
+                }
+                contacts.Add(announcementContacts);
+            }
+
+            List<Dictionary<string, string>> payments = new List<Dictionary<string, string>>();
+            foreach (Announcement announcement in usersAnnouncements)
+            {
+                List<int> announcementsPaymentsIDs = (from d in paymentData
+                                                      where d.announcementID == announcement.ID
+                                                      select d.paymentID).ToList();
+                List<PaymentMethod> paymentMethods = (from pm in context.PaymentMethods
+                                                      where announcementsPaymentsIDs.Contains(pm.ID)
+                                                      select pm).ToList();
+                Dictionary<string, string> announcementPayments = new Dictionary<string, string>();
+                foreach (PaymentMethod paymentMethod in paymentMethods)
+                {
+                    announcementPayments.Add(key: paymentMethod.Data, value: paymentMethod.Type);
+                }
+                payments.Add(announcementPayments);
+            }
+
+            List<EditAnnouncementViewModel> viewModel = HostingServiceLogic.ParseAnnouncementsToViewModelList(usersAnnouncements,
+                contacts, payments);
+
+            dynamic model = new ExpandoObject();
+            model.announcements = viewModel;
+
+
+            //return View("UnderConstruction");
+
+            return View(model);
         }
 
 

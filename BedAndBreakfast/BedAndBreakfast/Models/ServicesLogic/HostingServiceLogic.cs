@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace BedAndBreakfast.Models.ServicesLogic
 {
-    public static class HostingServiceLogic { 
-    
-        public static bool IsAnnouncementViewModelValid(CreateAnnouncementViewModel viewModel) {
+    public static class HostingServiceLogic
+    {
+
+        public static bool IsAnnouncementViewModelValid(EditAnnouncementViewModel viewModel)
+        {
             // Validate received view model.
             bool announcementCorrect = true;
             if (viewModel.Type == null)
@@ -72,8 +74,9 @@ namespace BedAndBreakfast.Models.ServicesLogic
             }
             return announcementCorrect;
         }
-    
-        public static async Task AddAnnouncementToDatabase(CreateAnnouncementViewModel viewModel, AppDbContext context, User announcementOwner) {
+
+        public static async Task AddAnnouncementToDatabase(EditAnnouncementViewModel viewModel, AppDbContext context, User announcementOwner)
+        {
             Announcement announcement = new Announcement();
             Address viewModelAddress = new Address
             {
@@ -92,10 +95,11 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 announcement.Address = addressInDatabase;
                 announcement.AddressFK = addressInDatabase.ID;
             }
-            else {
+            else
+            {
                 announcement.Address = viewModelAddress;
             }
-            
+
             announcement.Type = viewModel.Type;
             announcement.Subtype = viewModel.Subtype;
             announcement.SharedPart = viewModel.SharedPart;
@@ -104,14 +108,16 @@ namespace BedAndBreakfast.Models.ServicesLogic
             announcement.Description = viewModel.Description;
             announcement.User = announcementOwner;
 
-            foreach (KeyValuePair<string, string> contact in viewModel.ContactMethods) {
-                AdditionalContact viewModelContact = new AdditionalContact {Type = contact.Value, Data = contact.Key};
+            foreach (KeyValuePair<string, string> contact in viewModel.ContactMethods)
+            {
+                AdditionalContact viewModelContact = new AdditionalContact { Type = contact.Value, Data = contact.Key };
                 AdditionalContact contactInDatabase = SearchEngine.FindAdditionalContactByContent(viewModelContact, context);
                 if (contactInDatabase != null)
                 {
                     context.AnnouncementToContacts.Add(new AnnouncementToContact { Announcement = announcement, AdditionalContact = contactInDatabase });
                 }
-                else {
+                else
+                {
                     context.AnnouncementToContacts.Add(new AnnouncementToContact { Announcement = announcement, AdditionalContact = viewModelContact });
                 }
             }
@@ -141,11 +147,45 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// <param name="user"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static async Task MakeUserHost(User user, AppDbContext context) {
+        public static async Task MakeUserHost(User user, AppDbContext context)
+        {
             user.isHost = true;
             await context.SaveChangesAsync();
         }
 
+
+        public static List<EditAnnouncementViewModel> ParseAnnouncementsToViewModelList(List<Announcement> announcements,
+            List<Dictionary<string, string>> contacts, List<Dictionary<string, string>> payments)
+        {
+            if (announcements == null)
+            {
+                return null;
+            }
+            List<EditAnnouncementViewModel> viewModelList = new List<EditAnnouncementViewModel>();
+            int index = 0;
+            foreach (Announcement announcement in announcements) {
+                viewModelList.Add(new EditAnnouncementViewModel {
+                    Type = announcement.Type,
+                    Subtype = announcement.Subtype,
+                    SharedPart = announcement.SharedPart,
+                    Country = announcement.Address.Country,
+                    Region = announcement.Address.Region,
+                    City = announcement.Address.City,
+                    Street = announcement.Address.Street,
+                    StreetNumber = announcement.Address.StreetNumber,
+                    From = announcement.From,
+                    To = announcement.To,
+                    ContactMethods = contacts[index],
+                    Description = announcement.Description,
+                    PaymentMethods = payments[index],
+                    IsActive = announcement.IsActive,
+                    IsLocked = announcement.IsLocked
+                });
+                index++;
+            }
+            return viewModelList;
+
+        }
 
     }
 

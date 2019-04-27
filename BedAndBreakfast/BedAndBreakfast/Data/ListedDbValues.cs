@@ -97,6 +97,19 @@ namespace BedAndBreakfast.Data
 			Other
 		}
 
+        public enum AnnouncementSortOptions {
+            TypeAsc,
+            TypeDesc,
+            SubtypeAsc,
+            SubtypeDesc,
+            FromDateAsc,
+            FromDateDesc,
+            ToDateAsc,
+            ToDateDesc,
+            IsActive,
+            IsInactive
+        }
+
 
 
 

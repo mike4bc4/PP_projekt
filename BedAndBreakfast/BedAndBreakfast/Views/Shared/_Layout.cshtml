@@ -6,7 +6,7 @@
 @{
 
     User currentUser = await userManager.GetUserAsync(User);
-    Profile userProfile = context.Profiles.Where(p => p.User == currentUser).FirstOrDefault();
+    Profile userProfile = (currentUser != null) ? context.Profiles.Where(p => p.User == currentUser).FirstOrDefault() : null;
     var asd = 5;
 }
 
@@ -49,20 +49,20 @@
 
         @*Visible for everyone except host*@
 
-        @if (currentUser == null || !currentUser.isHost)
-        {
-            <a asp-area="" asp-controller="Hosting" asp-action="CreateAnnouncement">Become a Host</a>
-        }
-        else
-        {
-            <a asp-area="" asp-controller="Hosting" asp-action="CreateAnnouncement">Create announcement</a>
-        }
+
 
 
         @*If user is not an administrator.*@
         @if (!User.IsInRole(Role.Admin))
         {
-
+            @if (currentUser == null || !currentUser.isHost)
+            {
+                <a id="becomeHostTag" asp-area="" asp-controller="Hosting" asp-action="EditAnnouncement">Become a Host</a>
+            }
+            else
+            {
+                <a asp-area="" asp-controller="Hosting" asp-action="ListUserAnnouncements">Manage my announcements</a>
+            }
 
             @if (!User.Identity.IsAuthenticated)
             {

@@ -1,0 +1,42 @@
+﻿@using BedAndBreakfast.Data;
+
+
+@{
+    ViewData["Title"] = "ListUserAnnouncements";
+    List<EditAnnouncementViewModel> usersAnnouncements = Model.announcements;
+
+}
+
+<script type="text/javascript" src="~/js/listUserAnnouncements.js"></script>
+<script type="text/javascript">
+    window.onload = function () {
+        var userAnnouncements = @Html.Raw(Json.Serialize(usersAnnouncements));
+        drawAnnouncementsList(userAnnouncements);
+    };
+</script>
+
+
+<h2>ListUserAnnouncements</h2>
+
+<div>
+    <label>Browser and sort options:</label>
+</div>
+<div>
+    <input type="text" id="userAnnouncementSearchField" />
+    <a href="#" onclick="">Search</a>
+    <select id="userAnnouncementSortField">
+        @foreach (string option in Enum.GetNames(typeof(ListedDbValues.AnnouncementSortOptions))) {
+            <option>@option</option>
+        }
+    </select>
+    <a href="#" onclick="">Sort</a>
+</div>
+
+
+<div>
+    <a asp-area="" asp-controller="Hosting" asp-action="EditAnnouncement">Create announcement</a>
+</div>
+
+
+@*By default display all items received from controller.*@
+<div id="usrAnnPageContainer"></div>

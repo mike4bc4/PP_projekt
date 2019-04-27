@@ -43,7 +43,15 @@ namespace BedAndBreakfast.Data
 		[MaxLength(450)]
 		public string UserFK { get; set; }
 
+        /// <summary>
+        /// Disables announcement whatever from and to date is.
+        /// </summary>
+        public bool IsActive { get; set; } = true;
 
+        /// <summary>
+        /// Locked announcements are not displayed to users anymore - even to owners.
+        /// </summary>
+        public bool IsLocked { get; set; } = false;
 
-	}
+    }
 }
