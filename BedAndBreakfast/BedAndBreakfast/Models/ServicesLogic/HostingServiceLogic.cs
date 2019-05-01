@@ -75,9 +75,15 @@ namespace BedAndBreakfast.Models.ServicesLogic
             return announcementCorrect;
         }
 
-        public static async Task AddAnnouncementToDatabase(EditAnnouncementViewModel viewModel, AppDbContext context, User announcementOwner)
+        public static async Task SaveAnnouncementToDatabase(EditAnnouncementViewModel viewModel, AppDbContext context, User announcementOwner, bool newModel)
         {
-            Announcement announcement = new Announcement();
+            Announcement announcement;
+            if (newModel)
+                announcement = new Announcement();
+            else
+                // If model is edited it has to be found in database by provided ID.
+                announcement = context.Announcements.Where(a => a.ID == viewModel.ID).Single();
+
             Address viewModelAddress = new Address
             {
                 Country = viewModel.Country,
@@ -114,11 +120,14 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 AdditionalContact contactInDatabase = SearchEngine.FindAdditionalContactByContent(viewModelContact, context);
                 if (contactInDatabase != null)
                 {
-                    context.AnnouncementToContacts.Add(new AnnouncementToContact { Announcement = announcement, AdditionalContact = contactInDatabase });
+                    if (newModel && SearchEngine.AnnouncementToContactDuplicate(announcement.ID, contactInDatabase.ID, context))
+                        context.AnnouncementToContacts.Add(new AnnouncementToContact
+                        { Announcement = announcement, AdditionalContact = contactInDatabase });
                 }
                 else
                 {
-                    context.AnnouncementToContacts.Add(new AnnouncementToContact { Announcement = announcement, AdditionalContact = viewModelContact });
+                    context.AnnouncementToContacts.Add(new AnnouncementToContact
+                    { Announcement = announcement, AdditionalContact = viewModelContact });
                 }
             }
 
@@ -128,11 +137,14 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 PaymentMethod paymentMethodInDatabase = SearchEngine.FindPaymentMoethodByContent(viewModelPaymentMethod, context);
                 if (paymentMethodInDatabase != null)
                 {
-                    context.AnnouncementToPayments.Add(new AnnouncementToPayment { Announcement = announcement, PaymentMethod = paymentMethodInDatabase });
+                    if (newModel && SearchEngine.AnnouncementToPaymentMethodDuplicate(announcement.ID, paymentMethodInDatabase.ID, context))
+                        context.AnnouncementToPayments.Add(new AnnouncementToPayment
+                        { Announcement = announcement, PaymentMethod = paymentMethodInDatabase });
                 }
                 else
                 {
-                    context.AnnouncementToPayments.Add(new AnnouncementToPayment { Announcement = announcement, PaymentMethod = viewModelPaymentMethod });
+                    context.AnnouncementToPayments.Add(new AnnouncementToPayment
+                    { Announcement = announcement, PaymentMethod = viewModelPaymentMethod });
                 }
             }
 
@@ -153,18 +165,29 @@ namespace BedAndBreakfast.Models.ServicesLogic
             await context.SaveChangesAsync();
         }
 
-
+        /// <summary>
+        /// Creates and returns list of announcements parsed into view model list which
+        /// is easier to work with for view.
+        /// </summary>
+        /// <param name="announcements"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public static List<EditAnnouncementViewModel> ParseAnnouncementsToViewModelList(List<Announcement> announcements,
-            List<Dictionary<string, string>> contacts, List<Dictionary<string, string>> payments)
+            AppDbContext context)
         {
             if (announcements == null)
             {
                 return null;
             }
+            List<Dictionary<string, string>> contacts = GetListOfAdditonalContacts(announcements, context);
+            List<Dictionary<string, string>> payments = GetListOfPaymentMehtods(announcements, context);
             List<EditAnnouncementViewModel> viewModelList = new List<EditAnnouncementViewModel>();
             int index = 0;
-            foreach (Announcement announcement in announcements) {
-                viewModelList.Add(new EditAnnouncementViewModel {
+            foreach (Announcement announcement in announcements)
+            {
+                viewModelList.Add(new EditAnnouncementViewModel
+                {
+                    ID = announcement.ID,
                     Type = announcement.Type,
                     Subtype = announcement.Subtype,
                     SharedPart = announcement.SharedPart,
@@ -179,13 +202,80 @@ namespace BedAndBreakfast.Models.ServicesLogic
                     Description = announcement.Description,
                     PaymentMethods = payments[index],
                     IsActive = announcement.IsActive,
-                    IsLocked = announcement.IsLocked
+                    Removed = announcement.Removed
                 });
                 index++;
             }
             return viewModelList;
-
         }
+
+        /// <summary>
+        /// Finds and returns list of additional contacts for announcements which are
+        /// stored as dictionary. Order is based on list of announcements provided.
+        /// </summary>
+        /// <param name="usersAnnouncements"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static List<Dictionary<string, string>> GetListOfAdditonalContacts(List<Announcement> usersAnnouncements, AppDbContext context)
+        {
+            var contactData = (from ua in usersAnnouncements
+                               join ac in context.AnnouncementToContacts
+                               on ua.ID equals ac.AnnouncementID
+                               select new { announcementID = ua.ID, contactID = ac.AdditionalContactID });
+
+            List<Dictionary<string, string>> contacts = new List<Dictionary<string, string>>();
+            foreach (Announcement announcement in usersAnnouncements)
+            {
+                List<int> announcementsContacsIDs = (from d in contactData
+                                                     where d.announcementID == announcement.ID
+                                                     select d.contactID).ToList();
+                List<AdditionalContact> additionalContacts = (from ac in context.AdditionalContacts
+                                                              where announcementsContacsIDs.Contains(ac.ID)
+                                                              select ac).ToList();
+                Dictionary<string, string> announcementContacts = new Dictionary<string, string>();
+                foreach (AdditionalContact additionalContact in additionalContacts)
+                {
+                    announcementContacts.Add(key: additionalContact.Data, value: additionalContact.Type);
+                }
+                contacts.Add(announcementContacts);
+            }
+            return contacts;
+        }
+
+        /// <summary>
+        /// Finds and returns list of payment methods for announcements which are
+        /// stored as dictionary. Order is based on list of announcements provided.
+        /// </summary>
+        /// <param name="usersAnnouncements"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static List<Dictionary<string, string>> GetListOfPaymentMehtods(List<Announcement> usersAnnouncements, AppDbContext context)
+        {
+            var paymentData = (from ua in usersAnnouncements
+                               join ap in context.AnnouncementToPayments
+                               on ua.ID equals ap.AnnouncementID
+                               select new { announcementID = ua.ID, paymentID = ap.PaymentMethodID });
+
+            List<Dictionary<string, string>> payments = new List<Dictionary<string, string>>();
+            foreach (Announcement announcement in usersAnnouncements)
+            {
+                List<int> announcementsPaymentsIDs = (from d in paymentData
+                                                      where d.announcementID == announcement.ID
+                                                      select d.paymentID).ToList();
+                List<PaymentMethod> paymentMethods = (from pm in context.PaymentMethods
+                                                      where announcementsPaymentsIDs.Contains(pm.ID)
+                                                      select pm).ToList();
+                Dictionary<string, string> announcementPayments = new Dictionary<string, string>();
+                foreach (PaymentMethod paymentMethod in paymentMethods)
+                {
+                    announcementPayments.Add(key: paymentMethod.Data, value: paymentMethod.Type);
+                }
+                payments.Add(announcementPayments);
+            }
+            return payments;
+        }
+
+
 
     }
 

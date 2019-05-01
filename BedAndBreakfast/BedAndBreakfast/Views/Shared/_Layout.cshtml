@@ -4,10 +4,8 @@
 @inject AppDbContext context
 
 @{
-
     User currentUser = await userManager.GetUserAsync(User);
     Profile userProfile = (currentUser != null) ? context.Profiles.Where(p => p.User == currentUser).FirstOrDefault() : null;
-    var asd = 5;
 }
 
 <!DOCTYPE html>

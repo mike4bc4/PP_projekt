@@ -42,9 +42,14 @@ namespace BedAndBreakfast.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = Role.User)]
-        public IActionResult EditAnnouncement()
+        public IActionResult EditAnnouncement(bool newModel = true)
         {
-            return View();
+            dynamic model = new ExpandoObject();
+            model.newModel = newModel;
+            TempData["newModel"] = newModel;
+            //return View("UnderConstruction");
+
+            return View(model);
         }
 
 
@@ -77,7 +82,8 @@ namespace BedAndBreakfast.Controllers
             if (announcementCorrect)
             {
                 viewModel.IsCorrect = true;
-                await HostingServiceLogic.AddAnnouncementToDatabase(viewModel, context, currentUser);
+                bool newModel = (bool)TempData["newModel"];
+                await HostingServiceLogic.SaveAnnouncementToDatabase(viewModel, context, currentUser, newModel);
                 // Change user role to host if it's his first announcement.
                 if (!currentUser.isHost)
                 {
@@ -93,65 +99,49 @@ namespace BedAndBreakfast.Controllers
         {
 
             User currentUser = await userManager.GetUserAsync(HttpContext.User);
+            // Get only these announcements which were not removed by user.
             List<Announcement> usersAnnouncements = context.Announcements
                 .Include(a => a.Address)
-                .Where(a => a.User == currentUser).ToList();
+                .Where(a => a.User == currentUser)
+                .Where(a => a.Removed == false)
+                .ToList();
 
-            var contactData = (from ua in usersAnnouncements
-                               join ac in context.AnnouncementToContacts
-                               on ua.ID equals ac.AnnouncementID
-                               select new { announcementID = ua.ID, contactID = ac.AdditionalContactID });
-
-            var paymentData = (from ua in usersAnnouncements
-                               join ap in context.AnnouncementToPayments
-                               on ua.ID equals ap.AnnouncementID
-                               select new { announcementID = ua.ID, paymentID = ap.PaymentMethodID });
-
-            List<Dictionary<string, string>> contacts = new List<Dictionary<string, string>>();
-            foreach (Announcement announcement in usersAnnouncements)
-            {
-                List<int> announcementsContacsIDs = (from d in contactData
-                                                     where d.announcementID == announcement.ID
-                                                     select d.contactID).ToList();
-                List<AdditionalContact> additionalContacts = (from ac in context.AdditionalContacts
-                                                              where announcementsContacsIDs.Contains(ac.ID)
-                                                              select ac).ToList();
-                Dictionary<string, string> announcementContacts = new Dictionary<string, string>();
-                foreach (AdditionalContact additionalContact in additionalContacts)
-                {
-                    announcementContacts.Add(key: additionalContact.Data, value: additionalContact.Type);
-                }
-                contacts.Add(announcementContacts);
-            }
-
-            List<Dictionary<string, string>> payments = new List<Dictionary<string, string>>();
-            foreach (Announcement announcement in usersAnnouncements)
-            {
-                List<int> announcementsPaymentsIDs = (from d in paymentData
-                                                      where d.announcementID == announcement.ID
-                                                      select d.paymentID).ToList();
-                List<PaymentMethod> paymentMethods = (from pm in context.PaymentMethods
-                                                      where announcementsPaymentsIDs.Contains(pm.ID)
-                                                      select pm).ToList();
-                Dictionary<string, string> announcementPayments = new Dictionary<string, string>();
-                foreach (PaymentMethod paymentMethod in paymentMethods)
-                {
-                    announcementPayments.Add(key: paymentMethod.Data, value: paymentMethod.Type);
-                }
-                payments.Add(announcementPayments);
-            }
-
-            List<EditAnnouncementViewModel> viewModel = HostingServiceLogic.ParseAnnouncementsToViewModelList(usersAnnouncements,
-                contacts, payments);
+            List<EditAnnouncementViewModel> viewModel = HostingServiceLogic.ParseAnnouncementsToViewModelList(usersAnnouncements, context);
 
             dynamic model = new ExpandoObject();
             model.announcements = viewModel;
-
 
             //return View("UnderConstruction");
 
             return View(model);
         }
+
+        [Authorize(Roles = Role.User)]
+        public async Task<IActionResult> ChangeAnnouncementsActiveStatusById(List<int> announcementsIDs, bool areActive) {
+            List<Announcement> announcements = (from a in context.Announcements
+                                                where announcementsIDs.Contains(a.ID)
+                                                select a).ToList();
+            foreach (Announcement announcement in announcements) {
+                announcement.IsActive = areActive;
+            }
+            await context.SaveChangesAsync();
+            return Json(true);
+        }
+
+        [Authorize(Roles = Role.User)]
+        public async Task<IActionResult> RemoveAnnouncementsById(List<int> announcementsIDs)
+        {
+            List<Announcement> announcements = (from a in context.Announcements
+                                                where announcementsIDs.Contains(a.ID)
+                                                select a).ToList();
+            foreach (Announcement announcement in announcements)
+            {
+                announcement.Removed = true;
+            }
+            await context.SaveChangesAsync();
+            return Json(true);
+        }
+
 
 
     }

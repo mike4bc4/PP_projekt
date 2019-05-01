@@ -49,9 +49,9 @@ namespace BedAndBreakfast.Data
         public bool IsActive { get; set; } = true;
 
         /// <summary>
-        /// Locked announcements are not displayed to users anymore - even to owners.
+        /// Removed announcements are not displayed to users anymore - even to owners.
         /// </summary>
-        public bool IsLocked { get; set; } = false;
+        public bool Removed { get; set; } = false;
 
     }
 }

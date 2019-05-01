@@ -25,7 +25,8 @@ namespace BedAndBreakfast.Models
 			PaymentMethods = new Dictionary<string, string>();
 		}
 
-		public string Type { get; set; }
+        public int ID { get; set; }
+        public string Type { get; set; }
 		public string Subtype { get; set; }
 		public string SharedPart { get; set; }
 		public string Country { get; set; }
@@ -40,6 +41,6 @@ namespace BedAndBreakfast.Models
 		public Dictionary<string,string> PaymentMethods { get; set; }
         public bool IsCorrect { get; set; } = false;
         public bool IsActive { get; set; } = true;
-        public bool IsLocked { get; set; }
+        public bool Removed { get; set; }
     }
 }

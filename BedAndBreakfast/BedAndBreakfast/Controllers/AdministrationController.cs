@@ -63,7 +63,7 @@ namespace BedAndBreakfast.Controllers
         /// <param name="user"></param>
         /// <param name="option"></param>
         /// <returns></returns>
-        public async Task<IActionResult> EditUser(string user, string option)
+        public IActionResult EditUser(string user, string option)
         {
             ViewData["option"] = option;
             ViewBag.Message = TempData["message"];

@@ -251,6 +251,35 @@ namespace BedAndBreakfast.Models
                 .Where(p => p.Data == method.Data).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Verifies if relation between specified announcement and 
+        /// contact already exists.
+        /// </summary>
+        /// <param name="announcementID"></param>
+        /// <param name="contactID"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static bool AnnouncementToContactDuplicate(int announcementID, int contactID, AppDbContext context) {
+            return (context.AnnouncementToContacts
+                .Where(atc => atc.AdditionalContactID == contactID)
+                .Where(atc => atc.AnnouncementID == announcementID)
+                .SingleOrDefault() != null);
+        }
 
+        /// <summary>
+        /// Verifies if relation between specified announcement and 
+        /// payment method already exists.
+        /// </summary>
+        /// <param name="announcementID"></param>
+        /// <param name="contactID"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static bool AnnouncementToPaymentMethodDuplicate(int announcementID, int paymentMehodID, AppDbContext context)
+        {
+            return (context.AnnouncementToPayments
+                .Where(atc => atc.PaymentMethodID == paymentMehodID)
+                .Where(atc => atc.AnnouncementID == announcementID)
+                .SingleOrDefault() != null);
+        }
     }
 }

@@ -4,16 +4,60 @@
 @{
     ViewData["Title"] = "ListUserAnnouncements";
     List<EditAnnouncementViewModel> usersAnnouncements = Model.announcements;
-
 }
 
 <script type="text/javascript" src="~/js/listUserAnnouncements.js"></script>
 <script type="text/javascript">
     window.onload = function () {
-        var userAnnouncements = @Html.Raw(Json.Serialize(usersAnnouncements));
-        drawAnnouncementsList(userAnnouncements);
+        sessionStorage.setItem('userAnnouncements', JSON.stringify(@Html.Raw(Json.Serialize(usersAnnouncements))));
+        redraw();
     };
+
+    function redraw() {
+        drawAnnouncementsList(getAnnouncements());
+    }
+
+
 </script>
+
+<style>
+    .announcmentTable {
+        border: 1px solid gray;
+        border-collapse: collapse;
+        float: left;
+    }
+
+    .announcementEditButtonsTable {
+        border: 1px solid gray;
+        border-collapse: collapse;
+        float: auto;
+    }
+
+    .announcementTableRow {
+        border: 1px solid gray;
+    }
+
+        .announcementTableRow:hover {
+            background-color: lightgoldenrodyellow;
+        }
+
+    .announcmentTableCell {
+        border: 1px solid gray;
+    }
+
+    .announcmentTableHeader {
+        border: 1px solid gray;
+    }
+
+    .announcementTableRowSelected {
+        border: 1px solid gray;
+        background-color: darkseagreen;
+    }
+
+        .announcementTableRowSelected:hover {
+            background-color: lightgreen;
+        }
+</style>
 
 
 <h2>ListUserAnnouncements</h2>
@@ -25,18 +69,29 @@
     <input type="text" id="userAnnouncementSearchField" />
     <a href="#" onclick="">Search</a>
     <select id="userAnnouncementSortField">
-        @foreach (string option in Enum.GetNames(typeof(ListedDbValues.AnnouncementSortOptions))) {
+        @foreach (string option in Enum.GetNames(typeof(ListedDbValues.AnnouncementSortOptions)))
+        {
             <option>@option</option>
         }
     </select>
     <a href="#" onclick="">Sort</a>
 </div>
 
+<hr />
+
+@*Here JS script puts messages*@
+<div id="announcementManagementMessage"></div>
+
+<hr />
 
 <div>
-    <a asp-area="" asp-controller="Hosting" asp-action="EditAnnouncement">Create announcement</a>
+    <a asp-controller="Hosting" asp-action="EditAnnouncement">Create announcement</a>
+    <a href="#" onclick="activateSelectedAnnouncements(); redraw();">Activate selected</a>
+    <a href="#" onclick="deactivateSelectedAnnouncements(); redraw();">Deactivate selected</a>
+    <a href="#" onclick="removeSelectedAnnouncements(); redraw();">Remove selected</a>
 </div>
 
+<hr />
 
 @*By default display all items received from controller.*@
 <div id="usrAnnPageContainer"></div>
