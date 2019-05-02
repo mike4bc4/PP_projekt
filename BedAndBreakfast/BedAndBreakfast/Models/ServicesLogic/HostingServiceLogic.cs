@@ -15,62 +15,66 @@ namespace BedAndBreakfast.Models.ServicesLogic
             bool announcementCorrect = true;
             if (viewModel.Type == null)
             {
-                announcementCorrect = false;
+                return false;
             }
             // Continue validation only if current model state is valid.
             // Check subtype.
-            if (announcementCorrect == true && viewModel.Type == ListedDbValues.AnnouncementType.House.ToString())
+            if (viewModel.Type == (byte)ListedDbValues.AnnouncementType.House)
             {
                 if (viewModel.Subtype == null || viewModel.SharedPart == null)
                 {
-                    announcementCorrect = false;
+                    return false;
                 }
             }
             else
             {
                 if (viewModel.Subtype == null)
                 {
-                    announcementCorrect = false;
+                    return false;
                 }
             }
             // Check address.
-            if (announcementCorrect == true && viewModel.Country == null || viewModel.Region == null || viewModel.City == null || viewModel.Street == null || viewModel.StreetNumber == null)
+            if (viewModel.Country == null || viewModel.Region == null || viewModel.City == null || viewModel.Street == null || viewModel.StreetNumber == null)
             {
-                announcementCorrect = false;
+                return false;
             }
             // Check time.
-            if (announcementCorrect == true && DateTime.Compare(viewModel.From, viewModel.To) > 0 || DateTime.Compare(viewModel.From, DateTime.Today) < 0)
+            if (DateTime.Compare(viewModel.From, viewModel.To) > 0 || DateTime.Compare(viewModel.From, DateTime.Today) < 0)
             {
-                announcementCorrect = false;
+                return false;
             }
             // Check description.
-            if (announcementCorrect == true && viewModel.Description == null)
+            if (viewModel.Description == null)
             {
-                announcementCorrect = false;
+                return false;
             }
             // Check contacts
-            if (announcementCorrect == true && viewModel.ContactMethods.Count() > 0)
+            if (viewModel.ContactMethods.Count() > 0)
             {
-                if (string.IsNullOrEmpty(viewModel.ContactMethods.FirstOrDefault().Key) || string.IsNullOrEmpty(viewModel.ContactMethods.FirstOrDefault().Value))
-                {
-                    announcementCorrect = false;
+                foreach (var item in viewModel.ContactMethods) {
+                    if (String.IsNullOrEmpty(item.Key)) {
+                        return false;
+                    }
                 }
             }
             else
             {
-                announcementCorrect = false;
+                return false;
             }
             // Check payment methods.
-            if (announcementCorrect == true && viewModel.PaymentMethods.Count() > 0)
+            if (viewModel.PaymentMethods.Count() > 0)
             {
-                if (string.IsNullOrEmpty(viewModel.PaymentMethods.FirstOrDefault().Key) || string.IsNullOrEmpty(viewModel.PaymentMethods.FirstOrDefault().Value))
+                foreach (var item in viewModel.PaymentMethods)
                 {
-                    announcementCorrect = false;
+                    if (String.IsNullOrEmpty(item.Key))
+                    {
+                        return false;
+                    }
                 }
             }
             else
             {
-                announcementCorrect = false;
+                return false;
             }
             return announcementCorrect;
         }
@@ -111,15 +115,15 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 announcement.Address = viewModelAddress;
             }
 
-            announcement.Type = viewModel.Type;
-            announcement.Subtype = viewModel.Subtype;
+            announcement.Type = (byte)viewModel.Type;
+            announcement.Subtype = (byte)viewModel.Subtype;
             announcement.SharedPart = viewModel.SharedPart;
             announcement.From = viewModel.From;
             announcement.To = viewModel.To;
             announcement.Description = viewModel.Description;
             announcement.User = announcementOwner;
 
-            foreach (KeyValuePair<string, string> contact in viewModel.ContactMethods)
+            foreach (KeyValuePair<string, byte> contact in viewModel.ContactMethods)
             {
                 AdditionalContact viewModelContact = new AdditionalContact { Type = contact.Value, Data = contact.Key };
                 AdditionalContact contactInDatabase = SearchEngine.FindAdditionalContact(viewModelContact, context);
@@ -135,7 +139,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 }
             }
 
-            foreach (KeyValuePair<string, string> payment in viewModel.PaymentMethods)
+            foreach (KeyValuePair<string, byte> payment in viewModel.PaymentMethods)
             {
                 PaymentMethod viewModelPaymentMethod = new PaymentMethod { Type = payment.Value, Data = payment.Key };
                 PaymentMethod paymentMethodInDatabase = SearchEngine.FindPaymentMethod(viewModelPaymentMethod, context);
@@ -196,8 +200,8 @@ namespace BedAndBreakfast.Models.ServicesLogic
             {
                 return null;
             }
-            List<Dictionary<string, string>> contacts = GetListOfAdditonalContacts(announcements, context);
-            List<Dictionary<string, string>> payments = GetListOfPaymentMehtods(announcements, context);
+            List<Dictionary<string, byte>> contacts = GetListOfAdditonalContacts(announcements, context);
+            List<Dictionary<string, byte>> payments = GetListOfPaymentMehtods(announcements, context);
             List<EditAnnouncementViewModel> viewModelList = new List<EditAnnouncementViewModel>();
             int index = 0;
             foreach (Announcement announcement in announcements)
@@ -233,14 +237,14 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// <param name="usersAnnouncements"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        private static List<Dictionary<string, string>> GetListOfAdditonalContacts(List<Announcement> usersAnnouncements, AppDbContext context)
+        private static List<Dictionary<string, byte>> GetListOfAdditonalContacts(List<Announcement> usersAnnouncements, AppDbContext context)
         {
             var contactData = (from ua in usersAnnouncements
                                join ac in context.AnnouncementToContacts
                                on ua.ID equals ac.AnnouncementID
                                select new { announcementID = ua.ID, contactID = ac.AdditionalContactID });
 
-            List<Dictionary<string, string>> contacts = new List<Dictionary<string, string>>();
+            List<Dictionary<string, byte>> contacts = new List<Dictionary<string, byte>>();
             foreach (Announcement announcement in usersAnnouncements)
             {
                 List<int> announcementsContacsIDs = (from d in contactData
@@ -249,7 +253,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 List<AdditionalContact> additionalContacts = (from ac in context.AdditionalContacts
                                                               where announcementsContacsIDs.Contains(ac.ID)
                                                               select ac).ToList();
-                Dictionary<string, string> announcementContacts = new Dictionary<string, string>();
+                Dictionary<string, byte> announcementContacts = new Dictionary<string, byte>();
                 foreach (AdditionalContact additionalContact in additionalContacts)
                 {
                     announcementContacts.Add(key: additionalContact.Data, value: additionalContact.Type);
@@ -266,14 +270,14 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// <param name="usersAnnouncements"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        private static List<Dictionary<string, string>> GetListOfPaymentMehtods(List<Announcement> usersAnnouncements, AppDbContext context)
+        private static List<Dictionary<string, byte>> GetListOfPaymentMehtods(List<Announcement> usersAnnouncements, AppDbContext context)
         {
             var paymentData = (from ua in usersAnnouncements
                                join ap in context.AnnouncementToPayments
                                on ua.ID equals ap.AnnouncementID
                                select new { announcementID = ua.ID, paymentID = ap.PaymentMethodID });
 
-            List<Dictionary<string, string>> payments = new List<Dictionary<string, string>>();
+            List<Dictionary<string, byte>> payments = new List<Dictionary<string, byte>>();
             foreach (Announcement announcement in usersAnnouncements)
             {
                 List<int> announcementsPaymentsIDs = (from d in paymentData
@@ -282,7 +286,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 List<PaymentMethod> paymentMethods = (from pm in context.PaymentMethods
                                                       where announcementsPaymentsIDs.Contains(pm.ID)
                                                       select pm).ToList();
-                Dictionary<string, string> announcementPayments = new Dictionary<string, string>();
+                Dictionary<string, byte> announcementPayments = new Dictionary<string, byte>();
                 foreach (PaymentMethod paymentMethod in paymentMethods)
                 {
                     announcementPayments.Add(key: paymentMethod.Data, value: paymentMethod.Type);

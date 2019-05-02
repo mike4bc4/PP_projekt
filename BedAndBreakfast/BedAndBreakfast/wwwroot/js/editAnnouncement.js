@@ -219,41 +219,21 @@ function setSubtype() {
 	model.subtype = null;
 	model.sharedPart = null;
 	// load new values
+	// No validation is needed as selected values are predefined
+	// and empty value cannot be provided.
 	switch (model.type) {
-		case "House":
-			// Validation
-			var subtype = getElementValue('houseSubtype');
-			var sharedPart = getElementValue('houseSharedPart');
-			if (subtype && sharedPart) {
-				model.subtype = subtype;
-				model.sharedPart = sharedPart;
-				validViews[subtypePartialViewName] = true;
-			}
-			else {
-				validViews[subtypePartialViewName] = false;
-			}
+		case 0:	// House
+			model.subtype = parseInt(getElementValue('houseSubtype'), 10);
+			model.sharedPart = parseInt(getElementValue('houseSharedPart'), 10);
+			validViews[subtypePartialViewName] = true;
 			break;
-		case "Entertainment":
-			// Validation
-			var subtype = getElementValue('entertainmentType');
-			if (subtype) {
-				model.subtype = subtype;
-				validViews[subtypePartialViewName] = true;
-			}
-			else {
-				validViews[subtypePartialViewName] = false;
-			}
+		case 1:	// Entertainment
+			model.subtype = parseInt(getElementValue('entertainmentType'), 10);
+			validViews[subtypePartialViewName] = true;
 			break;
-		case "Food":
-			// Validation
-			var subtype = getElementValue('foodType');
-			if (subtype) {
-				model.subtype = subtype;
-				validViews[subtypePartialViewName] = true;
-			}
-			else {
-				validViews[subtypePartialViewName] = false;
-			}
+		case 2:	// Food
+			model.subtype = parseInt(getElementValue('foodType'), 10);
+			validViews[subtypePartialViewName] = true;
 			break;
 		default:
 			break;
@@ -331,20 +311,17 @@ function removeItem(container, index, itemNumber) {
 }
 
 function addItem(index, container, dropDownListContent, selectedValue, inputValue) {
-	var contactMethods = dropDownListContent;
 	var html = '<div id="' + container + index.value + '">';
 	html += '<select id="value' + container + index.value + '">';
-	for (var i = 0; i < contactMethods.length; i++) {
-		if (selectedValue) {
-			if (contactMethods[i] == selectedValue) {
-				html += '<option selected>' + contactMethods[i] + '</option>';
-			}
-			html += '<option>' + contactMethods[i] + '</option>';
+	Object.keys(dropDownListContent).forEach(function (key) {
+		if (selectedValue == dropDownListContent[key]) {
+			html += '<option value="' + dropDownListContent[key] + ' selected">' + key + '</option>';
 		}
 		else {
-			html += '<option>' + contactMethods[i] + '</option>';
+			html += '<option value="' + dropDownListContent[key] + '">' + key + '</option>';
 		}
-	}
+	});
+
 	html += '</select>';
 	html += '<input type="text" id="key' + container + index.value + '" value="' + inputValue + '"/>';
 	html += '<a href="#" onclick="removeItem(\'' + container + '\',' + index.name + ',' + index.value + ')">Remove</a>';
@@ -385,16 +362,23 @@ function saveContacts(index) {
 	for (var i = 0; i < index.items.length; i++) {
 		if (index.items[i] != null) {
 			// Dictionary key does not support dot notation so it's necessary to replace it with unicode character (which is dot anyway -.-)
-			model.contactMethods[index.items[i].key.val().replace(/\./g, "\u2024")] = index.items[i].value.val();
+			model.contactMethods[index.items[i].key.val().replace(/\./g, "\u2024")] = parseInt(index.items[i].value.val(), 10);
 		}
 	}
 	// Validate
+	validViews[contactPartialViewName] = true;
 	if (Object.keys(model.contactMethods).length > 0) {
-		validViews[contactPartialViewName] = true;
+		for (var key in model.contactMethods) {
+			if (key == null) {	// Key represents text field value
+				validViews[contactPartialViewName] = false;
+			}
+		}
 	}
 	else {
 		validViews[contactPartialViewName] = false;
 	}
+
+
 	updateModelInSession(model);
 	updateValidStatusForView(contactPartialViewName);
 }
@@ -406,19 +390,20 @@ function savePayments(index) {
 	model.paymentMethods = {};
 	for (var i = 0; i < index.items.length; i++) {
 		if (index.items[i] != null) {
-			model.paymentMethods[index.items[i].key.val().replace(/\./g, "\u2024")] = index.items[i].value.val();
+			model.paymentMethods[index.items[i].key.val().replace(/\./g, "\u2024")] = parseInt(index.items[i].value.val(), 10);
 		}
 	}
 	// Validate
-
-	for (var key in model.paymentMethods) {
-		if (key && model.paymentMethods[key]) {
-			validViews[paymentPartialViewName] = true;
+	validViews[paymentPartialViewName] = true;
+	if (Object.keys(model.paymentMethods).length > 0) {
+		for (var key in model.paymentMethods) {
+			if (key == null) {	// Key represents text field value
+				validViews[paymentPartialViewName] = false;
+			}
 		}
-		else {
-			validViews[paymentPartialViewName] = false;
-		}
-		break;
+	}
+	else {
+		validViews[paymentPartialViewName] = false;
 	}
 
 	updateModelInSession(model);

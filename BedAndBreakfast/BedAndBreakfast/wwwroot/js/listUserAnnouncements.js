@@ -30,10 +30,30 @@
 
 			$('#usrAnnTabBody').append('<tr id="usrAnnRow' + i + '" class="' + rowClass + '" onClick="toggleAnnouncementSelection(' + i + '); redraw();"></tr>');
 
+			var subtypeName = '';
+			var sharedPartName = '';
+			switch (announcements[i].type) {
+				case 0:
+					subtypeName = Object.keys(getHouseSubtypes())
+						.find(key => getHouseSubtypes()[key] === announcements[i].subtype);
+					sharedPartName = Object.keys(getHouseSharedPart())
+						.find(key => getHouseSharedPart()[key] === announcements[i].sharedPart);
+					break;
+				case 1:
+					subtypeName = Object.keys(getEntertainmentSubtypes())
+						.find(key => getEntertainmentSubtypes()[key] === announcements[i].subtype);
+					break;
+				case 2:
+					subtypeName = Object.keys(getFoodSubtypes())
+						.find(key => getFoodSubtypes()[key] === announcements[i].subtype);
+					break;
+			}
+
+
 			$('#usrAnnRow' + i).append(
-				'<td class="' + cellClass + '">' + announcements[i].type + '</td>' +
-				'<td class="' + cellClass + '">' + announcements[i].subtype + '</td>' +
-				'<td class="' + cellClass + '">' + announcements[i].sharedPart + '</td>' +
+				'<td class="' + cellClass + '">' + Object.keys(getTypes()).find(key => getTypes()[key] === announcements[i].type) + '</td>' +
+				'<td class="' + cellClass + '">' + subtypeName + '</td>' +
+				'<td class="' + cellClass + '">' + sharedPartName + '</td>' +
 				'<td class="' + cellClass + '">' + announcements[i].from.substr(0, 10) + '</td>' +
 				'<td class="' + cellClass + '">' + announcements[i].to.substr(0, 10) + '</td>');
 

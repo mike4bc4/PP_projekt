@@ -1,4 +1,5 @@
 ﻿@model EditAnnouncementViewModel
+@using BedAndBreakfast.Data
 @{
 	ViewData["Title"] = "Summary";
 }
@@ -14,7 +15,7 @@
 		</label>
 	</div>
 	<div>
-		@Model.Type
+        @Enum.GetName(typeof(ListedDbValues.AnnouncementType), Model.Type)
 	</div>
 
 	<div>
@@ -24,9 +25,20 @@
 			</strong>
 		</label>
 	</div>
-	<div>
-		@Model.Subtype
-	</div>
+    <div>
+        @switch (Model.Type)
+        {
+            case (int)ListedDbValues.AnnouncementType.House:
+                @Enum.GetName(typeof(ListedDbValues.HouseSubtype), Model.Subtype)
+                break;
+            case (int)ListedDbValues.AnnouncementType.Entertainment:
+                @Enum.GetName(typeof(ListedDbValues.EntertainmentSubtype), Model.Subtype)
+                break;
+            case (int)ListedDbValues.AnnouncementType.Food:
+                @Enum.GetName(typeof(ListedDbValues.FoodSubtype), Model.Subtype)
+                break;
+        }
+    </div>
 
 	@if (Model.SharedPart != null)
 	{
@@ -37,9 +49,9 @@
 				</strong>
 			</label>
 		</div>
-		<div>
-			@Model.SharedPart
-		</div>
+        <div>
+            @Enum.GetName(typeof(ListedDbValues.HouseSharedPart), Model.Subtype)
+        </div>
 	}
 
 	<div>
@@ -97,7 +109,7 @@
 	<div>
 		@foreach (var method in Model.ContactMethods)
 		{
-			<label>@method.Value</label>
+			<label>@Enum.GetName(typeof(ListedDbValues.ContactType), method.Value)</label>
 			<label>@method.Key</label>
 		}
 	</div>
@@ -112,7 +124,7 @@
 	<div>
 		@foreach (var method in Model.PaymentMethods)
 		{
-			<label>@method.Value</label>
+        <label>@Enum.GetName(typeof(ListedDbValues.PaymentMethod), method.Value)</label>
 			<label>@method.Key</label>
 		}
 	</div>

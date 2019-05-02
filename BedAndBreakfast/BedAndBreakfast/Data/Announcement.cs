@@ -14,12 +14,9 @@ namespace BedAndBreakfast.Data
 		public int ID { get; set; }
 
 		// Enumerable variables.
-		[MaxLength(50)]
-		public string Type { get; set; }
-		[MaxLength(50)]
-		public string Subtype { get; set; }
-		[MaxLength(50)]
-		public string SharedPart { get; set; }
+		public byte Type { get; set; }
+		public byte Subtype { get; set; }
+		public byte? SharedPart { get; set; }
 
 		public Address Address { get; set; }
 

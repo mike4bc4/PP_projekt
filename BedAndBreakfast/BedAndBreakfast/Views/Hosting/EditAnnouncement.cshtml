@@ -1,8 +1,9 @@
 ﻿@using BedAndBreakfast.Data;
 @using Microsoft.AspNetCore.Http;
 @{
-    List<string> contacts = Enum.GetNames(typeof(ListedDbValues.ContactType)).ToList();
-    List<string> payments = Enum.GetNames(typeof(ListedDbValues.PaymentMethod)).ToList();
+    Dictionary<string, int> contacts = ListedDbValues.ParseEnumToDictionary<ListedDbValues.ContactType>();
+    Dictionary<string, int> payments = ListedDbValues.ParseEnumToDictionary<ListedDbValues.PaymentMethod>();
+
     ViewData["Title"] = "EditAnnouncement";
     bool newModel = Model.newModel;
 }

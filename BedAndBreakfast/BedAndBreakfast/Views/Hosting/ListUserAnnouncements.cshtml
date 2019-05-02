@@ -4,6 +4,11 @@
 @{
     ViewData["Title"] = "ListUserAnnouncements";
     List<EditAnnouncementViewModel> usersAnnouncements = Model.announcements;
+    Dictionary<string, int> types = ListedDbValues.ParseEnumToDictionary<ListedDbValues.AnnouncementType>();
+    Dictionary<string, int> houseSubtypes = ListedDbValues.ParseEnumToDictionary<ListedDbValues.HouseSubtype>();
+    Dictionary<string, int> houseSharedParts = ListedDbValues.ParseEnumToDictionary<ListedDbValues.HouseSharedPart>();
+    Dictionary<string, int> entertainmentSubtypes = ListedDbValues.ParseEnumToDictionary<ListedDbValues.EntertainmentSubtype>();
+    Dictionary<string, int> foodSubtypes = ListedDbValues.ParseEnumToDictionary<ListedDbValues.FoodSubtype>();
 }
 
 <script type="text/javascript" src="~/js/listUserAnnouncements.js"></script>
@@ -19,10 +24,29 @@
         redraw();
     };
 
+    function getTypes() {
+        return @Html.Raw(Json.Serialize(types));
+    }
+
+    function getHouseSubtypes() {
+        return @Html.Raw(Json.Serialize(houseSubtypes));
+    }
+
+    function getHouseSharedPart() {
+        return @Html.Raw(Json.Serialize(houseSharedParts));
+    }
+
+    function getEntertainmentSubtypes() {
+        return @Html.Raw(Json.Serialize(entertainmentSubtypes));
+    }
+
+    function getFoodSubtypes() {
+        return @Html.Raw(Json.Serialize(foodSubtypes));
+    }
+
     function redraw() {
         drawAnnouncementsList(getAnnouncements());
     }
-
 
 </script>
 

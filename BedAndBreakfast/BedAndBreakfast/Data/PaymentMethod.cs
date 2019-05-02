@@ -13,8 +13,7 @@ namespace BedAndBreakfast.Data
 		/// <summary>
 		/// Type of payment e.g. Paypal or bank transfer.
 		/// </summary>
-		[MaxLength(100)]
-		public string Type { get; set; }
+		public byte Type { get; set; }
 		/// <summary>
 		/// Data related to payment method like account number or paypal link.
 		/// </summary>

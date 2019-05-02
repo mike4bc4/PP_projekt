@@ -41,73 +41,73 @@ namespace BedAndBreakfast.Data
 		/// Represents types of announcements that user may be host of.
 		/// </summary>
 		public enum AnnouncementType {
-			House,
-			Entertainment,
-			Food
+			House = 0,
+			Entertainment = 1,
+			Food = 2
 		}
 
 		public enum HouseSubtype {
-			Apartment,
-			House,
-			Bungalow,
-			Hotel,
-			Other
+			Apartment = 0,
+			House = 1,
+			Bungalow = 2,
+			Hotel = 3,
+			Other = 4
 		}
 
 		public enum EntertainmentSubtype
 		{
-			Party,
-			Art,
-			Trip,
-			Science,
-			Other
+			Party = 0,
+			Art = 1,
+			Trip = 2,
+			Science = 3,
+			Other = 4
 		}
 
 		public enum FoodSubtype
 		{
-			Restaurant,
-			Foodtruck,
-			Bar,
-			Pub,
-			Other
+			Restaurant = 0,
+			Foodtruck = 1,
+			Bar = 2,
+			Pub = 3,
+			Other = 4
 		}
 
 		public enum HouseSharedPart {
-			Exterior,
-			Room,
-			Rooms,
-			RoomWithBathroom,
-			RoomsWithBathroom,
-			Floor,
-			FloorWithBathroom,
-			House,
-			Other,
-			NotApplicable
+			Exterior = 0,
+			Room = 1,
+			Rooms = 2,
+			RoomWithBathroom = 3,
+			RoomsWithBathroom = 4,
+			Floor = 5,
+			FloorWithBathroom = 6,
+			House = 7,
+			Other = 8,
+			NotApplicable = 9
 		}
 
 		public enum ContactType {
-			EmailAddress,
-			PhoneNumber,
-			Other
+			EmailAddress = 0,
+			PhoneNumber = 1,
+			Other = 2
 		}
 
 		public enum PaymentMethod {
-			PayPal,
-			BankTransfer,
-			Other
+			PayPal = 0,
+			BankTransfer = 1,
+			Other = 2
 		}
 
         public enum AnnouncementSortOptions {
-            TypeAsc,
-            TypeDesc,
-            SubtypeAsc,
-            SubtypeDesc,
-            FromDateAsc,
-            FromDateDesc,
-            ToDateAsc,
-            ToDateDesc,
-            IsActive,
-            IsInactive
+            TypeAsc = 0,
+            TypeDesc = 1,
+            SubtypeAsc = 2,
+            SubtypeDesc = 3,
+            FromDateAsc = 4,
+            FromDateDesc = 5,
+            ToDateAsc = 6,
+            ToDateDesc = 7,
+            IsActive = 8,
+            IsInactive = 9
         }
 
 
@@ -127,6 +127,15 @@ namespace BedAndBreakfast.Data
 
             }
             return list;
+        }
+
+        public static Dictionary<string, int> ParseEnumToDictionary<T>() {
+            Array enumVaules = Enum.GetValues(typeof(T));
+            Dictionary<string, int> dict = new Dictionary<string, int>();
+            foreach (int enumValue in enumVaules) {
+                dict.Add(Enum.GetName(typeof(T), enumValue), enumValue);
+            }
+            return dict;
         }
       
     }
