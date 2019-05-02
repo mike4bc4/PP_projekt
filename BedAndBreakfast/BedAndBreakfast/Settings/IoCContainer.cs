@@ -10,5 +10,6 @@ namespace BedAndBreakfast.Settings
     {
         public static IOptions<DbSettings> DbSettings { get; set; }
         public static IOptions<PredefinedAccounts> PredefinedAccounts { get; set; }
+        public static IOptions<PredefinedAnnouncementTags> PredefinedAnnouncementTags { get; set; }
     }
 }

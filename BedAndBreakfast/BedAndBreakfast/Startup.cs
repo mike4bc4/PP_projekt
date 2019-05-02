@@ -41,6 +41,7 @@ namespace BedAndBreakfast
             // Map json files sections to classes.
             services.Configure<DbSettings>(config);
             services.Configure<PredefinedAccounts>(Configuration.GetSection("PredefinedAccounts"));
+            services.Configure<PredefinedAnnouncementTags>(Configuration.GetSection("PredefinedAnnouncementTags"));
 
             // This lambda determines whether user consent for non-essential cookies is needed for a given request.
             services.Configure<CookiePolicyOptions>(options =>
@@ -106,7 +107,7 @@ namespace BedAndBreakfast
             IServiceProvider serviceProvider = services.BuildServiceProvider();
             IoCContainer.DbSettings = serviceProvider.GetRequiredService<IOptions<DbSettings>>();
             IoCContainer.PredefinedAccounts = serviceProvider.GetRequiredService<IOptions<PredefinedAccounts>>();
-
+            IoCContainer.PredefinedAnnouncementTags = serviceProvider.GetRequiredService<IOptions<PredefinedAnnouncementTags>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

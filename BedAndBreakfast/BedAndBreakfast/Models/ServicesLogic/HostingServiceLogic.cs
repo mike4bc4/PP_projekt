@@ -1,5 +1,6 @@
 ﻿using BedAndBreakfast.Data;
 using BedAndBreakfast.Settings;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +42,8 @@ namespace BedAndBreakfast.Models.ServicesLogic
             }
             int len = IoCContainer.DbSettings.Value.MaxAddressInputLength;
             if (viewModel.Country.Length > len || viewModel.Region.Length > len || viewModel.City.Length > len
-                || viewModel.Street.Length > len || viewModel.StreetNumber.Length > len) {
+                || viewModel.Street.Length > len || viewModel.StreetNumber.Length > len)
+            {
                 return false;
             }
             // Check time.
@@ -57,8 +59,10 @@ namespace BedAndBreakfast.Models.ServicesLogic
             // Check contacts
             if (viewModel.ContactMethods.Count() > 0)
             {
-                foreach (var item in viewModel.ContactMethods) {
-                    if (string.IsNullOrEmpty(item.Key)) {
+                foreach (var item in viewModel.ContactMethods)
+                {
+                    if (string.IsNullOrEmpty(item.Key))
+                    {
                         return false;
                     }
                 }
@@ -93,15 +97,13 @@ namespace BedAndBreakfast.Models.ServicesLogic
             else
             {
                 // If model is edited it has to be found in database by provided ID.
-                announcement = context.Announcements.Where(a => a.ID == viewModel.ID).Single();
+                announcement = context.Announcements.Include(a => a.Address).Where(a => a.ID == viewModel.ID).Single();
                 // All payment methods and contact relations are removed to avoid duplicate relations and
                 // saving back those which were removed by user.
                 ClearContactsAndPaymentMethodRelations(announcement, context);
                 // Remove tag relations.
                 ClearTagRelations(announcement, context);
             }
-
-
 
             Address viewModelAddress = new Address
             {
@@ -166,15 +168,94 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 }
             }
 
+            // When all data is provided generate tags.
+            foreach (string tag in GenerateTags(announcement))
+            {
+                AnnouncementTag tagInDb = SearchEngine.FindTag(tag, context);
+                if (tagInDb != null)
+                {
+                    context.AnnouncementToTags
+                        .Add(new AnnouncementToTag
+                        {
+                            Announcement = announcement,
+                            AnnouncementID = announcement.ID,
+                            AnnouncementTag = tagInDb,
+                            AnnouncementTagID = tagInDb.Value
+                        });
+                }
+                else
+                {
+                    AnnouncementTag newAnnouncementTag = new AnnouncementTag { Value = tag };
+                    context.AnnouncementTags
+                        .Add(newAnnouncementTag);
+                    context.AnnouncementToTags
+                        .Add(new AnnouncementToTag
+                        {
+                            Announcement = announcement,
+                            AnnouncementID = announcement.ID,
+                            AnnouncementTag = newAnnouncementTag
+                        });
+                }
+            }
+
             await context.SaveChangesAsync();
 
         }
 
 
-        private static List<string> GenerateTags(Announcement announcement) {
-            List<string> generatedTags = new List<string>();
-            //generatedTags.Add(Enum.GetName(ListedDbValues.ty))
-            return null;
+
+        /// <summary>
+        /// Generates tags which should be applied to announcement based
+        /// on address, type and subtype.
+        /// </summary>
+        /// <param name="announcement"></param>
+        /// <returns></returns>
+        private static List<string> GenerateTags(Announcement announcement)
+        {
+            // Add tags based on address.
+            List<string> generatedTags = new List<string>
+            {
+                announcement.Address.Country.ToUpper(),
+                announcement.Address.Region.ToUpper(),
+                announcement.Address.City.ToUpper(),
+                announcement.Address.Street.ToUpper(),
+                announcement.Address.StreetNumber.ToUpper()
+            };
+
+            // Add tags based on chosen announcement type.
+            foreach (string tag in IoCContainer.PredefinedAnnouncementTags.Value.AnnouncementType[announcement.Type])
+            {
+                generatedTags.Add(tag.ToUpper());
+            }
+
+            // Add tags based on chosen announcement subtype.
+            switch (announcement.Type)
+            {
+                case (int)EnumeratedDbValues.AnnouncementType.House:
+                    foreach (string tag in IoCContainer.PredefinedAnnouncementTags.Value.HouseSubtype[announcement.Subtype])
+                    {
+                        generatedTags.Add(tag.ToUpper());
+                    }
+                    foreach (string tag in IoCContainer.PredefinedAnnouncementTags.Value.HouseSharedPart[(int)announcement.SharedPart])
+                    {
+                        generatedTags.Add(tag.ToUpper());
+                    }
+                    break;
+                case (int)EnumeratedDbValues.AnnouncementType.Entertainment:
+                    foreach (string tag in IoCContainer.PredefinedAnnouncementTags.Value.EntertainmentSubtype[announcement.Subtype])
+                    {
+                        generatedTags.Add(tag.ToUpper());
+                    }
+                    break;
+                case (int)EnumeratedDbValues.AnnouncementType.Food:
+                    foreach (string tag in IoCContainer.PredefinedAnnouncementTags.Value.FoodSubtype[announcement.Subtype])
+                    {
+                        generatedTags.Add(tag.ToUpper());
+                    }
+                    break;
+            }
+            // Remove duplicates.
+            return generatedTags.Distinct().ToList();
         }
 
         /// <summary>
@@ -183,9 +264,10 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// </summary>
         /// <param name="announcement"></param>
         /// <param name="context"></param>
-        private static void ClearTagRelations(Announcement announcement, AppDbContext context) {
-            List<AnnouncementToTag> tagsToRemove = context.AnnouncementToTags.Where(att => att.Announcement == announcement).ToList();
-            context.AnnouncementToTags.RemoveRange(tagsToRemove);
+        private static void ClearTagRelations(Announcement announcement, AppDbContext context)
+        {
+            List<AnnouncementToTag> tagRelationsToRemove = context.AnnouncementToTags.Where(att => att.Announcement == announcement).ToList();
+            context.AnnouncementToTags.RemoveRange(tagRelationsToRemove);
         }
 
         /// <summary>
@@ -194,7 +276,8 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// </summary>
         /// <param name="announcement"></param>
         /// <param name="context"></param>
-        private static void ClearContactsAndPaymentMethodRelations(Announcement announcement, AppDbContext context) {
+        private static void ClearContactsAndPaymentMethodRelations(Announcement announcement, AppDbContext context)
+        {
             List<AnnouncementToContact> contactRelationsToRemove = context.AnnouncementToContacts.Where(ac => ac.Announcement == announcement).ToList();
             List<AnnouncementToPayment> paymentMethodRelationsToRemove = context.AnnouncementToPayments.Where(ap => ap.Announcement == announcement).ToList();
             context.AnnouncementToContacts.RemoveRange(contactRelationsToRemove);
