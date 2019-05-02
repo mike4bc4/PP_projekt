@@ -1,6 +1,7 @@
 ﻿using BedAndBreakfast.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -27,8 +28,7 @@ namespace BedAndBreakfast.Models
         [Display(Name = "Password")]
         [DataType(DataType.Password)]
         [Required(ErrorMessage = "Required")]
-        [MinLength(DbRestrictionsContainer.PasswordMinLength, ErrorMessage = "TooShort")]
-        [MaxLength(DbRestrictionsContainer.PasswordMaxLength, ErrorMessage = "TooLong")]
+        [Remote(action: "ValidPasswordLenght", controller: "Validation")]
         public string Password { get; set; }
 
         [Display(Name = "Birth Date")]

@@ -1,4 +1,5 @@
 ﻿using BedAndBreakfast.Settings;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,7 +17,6 @@ namespace BedAndBreakfast.Data
 
         public List<HelpPageHelpTag> HelpPageHelpTag { get; set; }
 
-        [MaxLength(DbRestrictionsContainer.MaxTagLength)]
         public string Value { get; set; }
 
     }

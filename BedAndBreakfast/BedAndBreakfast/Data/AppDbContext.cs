@@ -5,12 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using BedAndBreakfast.Settings;
 
 namespace BedAndBreakfast.Data
 {
     public class AppDbContext : IdentityDbContext<User>
     {
-
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 
         // Tables
@@ -27,13 +28,43 @@ namespace BedAndBreakfast.Data
 		public DbSet<PaymentMethod> PaymentMethods { get; set; }
 		public DbSet<AnnouncementToContact> AnnouncementToContacts { get; set; }
 		public DbSet<AnnouncementToPayment> AnnouncementToPayments { get; set; }
+        public DbSet<AnnouncementTag> AnnouncementTags { get; set; }
+        public DbSet<AnnouncementToTag> AnnouncementToTags { get; set; }
+        
 
-
-		protected override void OnModelCreating(ModelBuilder modelBuilder) {
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
             // This method must be called to map keys for user identity tables.
             base.OnModelCreating(modelBuilder);
 
+            // ---------- Configure entities ----------
+            modelBuilder.Entity<HelpTag>()
+                .Property(ht => ht.Value).HasMaxLength(IoCContainer.DbSettings.Value.MaxTagLength);
+            modelBuilder.Entity<HelpPage>()
+                .Property(hp => hp.Content).HasMaxLength(IoCContainer.DbSettings.Value.MaxHelpPageSize);
+            modelBuilder.Entity<HelpPage>()
+                .Property(hp => hp.Title).HasMaxLength(IoCContainer.DbSettings.Value.MaxHelpPageTitleSize);
+            modelBuilder.Entity<Announcement>()
+                .Property(a => a.Description).HasMaxLength(IoCContainer.DbSettings.Value.MaxAnnouncementDescSize);
+
+
+            // ---------- Configure relations ----------
+            
+            // Many announcements may have many tags.
+            modelBuilder.Entity<AnnouncementToTag>()
+                .HasKey(att => new { att.AnnouncementID, att.AnnouncementTagID });
+
+            modelBuilder.Entity<AnnouncementToTag>()
+                .HasOne(att => att.Announcement)
+                .WithMany(a => a.AnnouncementToTags)
+                .HasForeignKey(att => att.AnnouncementID);
+
+            modelBuilder.Entity<AnnouncementToTag>()
+                .HasOne(att => att.AnnouncementTag)
+                .WithMany(at => at.AnnouncementToTags)
+                .HasForeignKey(att => att.AnnouncementTagID);
+       
+            
             // One user has one profile.
             modelBuilder.Entity<Profile>()
                 .HasOne(p => p.User)

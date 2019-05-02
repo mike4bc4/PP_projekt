@@ -37,7 +37,7 @@
 					subtypeName = Object.keys(getHouseSubtypes())
 						.find(key => getHouseSubtypes()[key] === announcements[i].subtype);
 					sharedPartName = Object.keys(getHouseSharedPart())
-						.find(key => getHouseSharedPart()[key] === announcements[i].sharedPart);
+						.find(key => getHouseSharedPart()[key] === announcements[i].s);
 					break;
 				case 1:
 					subtypeName = Object.keys(getEntertainmentSubtypes())

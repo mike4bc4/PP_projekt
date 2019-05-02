@@ -1,4 +1,5 @@
 ﻿using BedAndBreakfast.Settings;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -19,12 +20,12 @@ namespace BedAndBreakfast.Models
         public string Tags { get; set; }
 
         [Display(Name = "Title")]
-        [MaxLength(DbRestrictionsContainer.MaxHelpPageTitleSize, ErrorMessage = "TooLong")]
+        [Remote(controller: "Validation", action: "ValidHelpPageTitleLength")]
         [Required(ErrorMessage = "Required")]
         public string Title { get; set; }
 
         [Display(Name = "Content")]
-        [MaxLength(DbRestrictionsContainer.MaxHelpPageSize, ErrorMessage = "TooLong")]
+        [Remote(controller: "Validation", action: "ValidHelpPageSize")]
         [Required(ErrorMessage = "Required")]
         public string Content { get; set; }
     }

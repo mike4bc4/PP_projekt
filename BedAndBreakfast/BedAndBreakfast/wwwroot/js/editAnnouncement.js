@@ -244,8 +244,8 @@ function setSubtype() {
 }
 
 function setTimePlace() {
-	var model = getModelFromSession();
 
+	var model = getModelFromSession();
 	var country = getElementValue('country');
 	var region = getElementValue('region');
 	var city = getElementValue('city');
@@ -269,15 +269,18 @@ function setTimePlace() {
 	model.from = fromDate
 	model.to = toDate
 
-	if (country && region && city && street && streetNumber && fromDate && toDate
-		&& fromDate >= today && fromDate < toDate
-	) {
-		validViews[timePlacePartialViewName] = true;
-	}
-	else {
+	validViews[timePlacePartialViewName] = true;
 
+	if (!country && !region && !city && !street && !streetNumber && !fromDate && !toDate
+		&& fromDate < today && fromDate > toDate
+	) {
 		validViews[timePlacePartialViewName] = false;
 	}
+	if (country.length > maxInputLength || region.length > maxInputLength || city.length > maxInputLength
+		|| street > maxInputLength || streetNumber > maxInputLength) {
+		validViews[timePlacePartialViewName] = false;
+	}
+
 	// save in session
 	updateModelInSession(model);
 	updateValidStatusForView(timePlacePartialViewName);

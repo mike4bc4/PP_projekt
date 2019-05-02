@@ -3,10 +3,10 @@
 
 @{
     ViewData["Title"] = "SubtypeSelectionForm";
-    Array houseSubtypes = Enum.GetValues(typeof(ListedDbValues.HouseSubtype));
-    Array houseSharedParts = Enum.GetValues(typeof(ListedDbValues.HouseSharedPart));
-    Array entertinementTypes = Enum.GetValues(typeof(ListedDbValues.EntertainmentSubtype));
-    Array foodTypes = Enum.GetValues(typeof(ListedDbValues.FoodSubtype));
+    Array houseSubtypes = Enum.GetValues(typeof(EnumeratedDbValues.HouseSubtype));
+    Array houseSharedParts = Enum.GetValues(typeof(EnumeratedDbValues.HouseSharedPart));
+    Array entertinementTypes = Enum.GetValues(typeof(EnumeratedDbValues.EntertainmentSubtype));
+    Array foodTypes = Enum.GetValues(typeof(EnumeratedDbValues.FoodSubtype));
 }
 
 <script type="text/javascript">
@@ -30,11 +30,11 @@
                 {
                     @if (Model.Subtype == enumValue)
                     {
-                        @:<option value="@enumValue" selected>@Enum.GetName(typeof(ListedDbValues.HouseSubtype), enumValue)</option>
+                        @:<option value="@enumValue" selected>@Enum.GetName(typeof(EnumeratedDbValues.HouseSubtype), enumValue)</option>
                     }
                     else
                     {
-                        @:<option value="@enumValue">@Enum.GetName(typeof(ListedDbValues.HouseSubtype), enumValue)</option>
+                        @:<option value="@enumValue">@Enum.GetName(typeof(EnumeratedDbValues.HouseSubtype), enumValue)</option>
                     }
                 }
             </select>
@@ -44,11 +44,11 @@
                 {
                     @if (Model.SharedPart == enumValue)
                     {
-                        @:<option value="@enumValue" selected>@Enum.GetName(typeof(ListedDbValues.HouseSharedPart), enumValue)</option>
+                        @:<option value="@enumValue" selected>@Enum.GetName(typeof(EnumeratedDbValues.HouseSharedPart), enumValue)</option>
                     }
                     else
                     {
-                        @:<option value="@enumValue">@Enum.GetName(typeof(ListedDbValues.HouseSharedPart), enumValue)</option>
+                        @:<option value="@enumValue">@Enum.GetName(typeof(EnumeratedDbValues.HouseSharedPart), enumValue)</option>
                     }
                 }
             </select>
@@ -60,11 +60,11 @@
                 {
                     @if (Model.Subtype == enumValue)
                     {
-                        @:<option value="@enumValue" selected>@Enum.GetName(typeof(ListedDbValues.EntertainmentSubtype), enumValue)</option>
+                        @:<option value="@enumValue" selected>@Enum.GetName(typeof(EnumeratedDbValues.EntertainmentSubtype), enumValue)</option>
                     }
                     else
                     {
-                        @:<option value="@enumValue">@Enum.GetName(typeof(ListedDbValues.EntertainmentSubtype), enumValue)</option>
+                        @:<option value="@enumValue">@Enum.GetName(typeof(EnumeratedDbValues.EntertainmentSubtype), enumValue)</option>
                     }
                 }
             </select>
@@ -76,11 +76,11 @@
                 {
                     @if (Model.Subtype == enumValue)
                     {
-                        @:<option value="@enumValue" selected>@Enum.GetName(typeof(ListedDbValues.FoodSubtype), enumValue)</option>
+                        @:<option value="@enumValue" selected>@Enum.GetName(typeof(EnumeratedDbValues.FoodSubtype), enumValue)</option>
                     }
                     else
                     {
-                        @:<option value="@enumValue">@Enum.GetName(typeof(ListedDbValues.FoodSubtype), enumValue)</option>
+                        @:<option value="@enumValue">@Enum.GetName(typeof(EnumeratedDbValues.FoodSubtype), enumValue)</option>
                     }
                 }
             </select>

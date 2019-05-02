@@ -17,13 +17,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace BedAndBreakfast
 {
     public class Startup
     {
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; set; }
 
         public Startup(IConfiguration configuration)
         {
@@ -34,18 +35,20 @@ namespace BedAndBreakfast
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Get handle to json file to configure services.
+            var config = Configuration.GetSection("DbSettings");
+
+            // Map json files sections to classes.
+            services.Configure<DbSettings>(config);
+            services.Configure<PredefinedAccounts>(Configuration.GetSection("PredefinedAccounts"));
+
+            // This lambda determines whether user consent for non-essential cookies is needed for a given request.
             services.Configure<CookiePolicyOptions>(options =>
             {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => false;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            // Resource files localization.
-            services.AddLocalization(options =>
-            {
-                options.ResourcesPath = "Resources";
-            });
 
             // Connect to SQL server with default name.
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -56,12 +59,11 @@ namespace BedAndBreakfast
                 // Add token provider for basic hashing functions.
                 .AddDefaultTokenProviders();
 
-
             // Password constraints - development setup. 
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = false;
-                options.Password.RequiredLength = DbRestrictionsContainer.PasswordMinLength;
+                options.Password.RequiredLength = config.Get<DbSettings>().PasswordMinLength;
                 options.Password.RequiredUniqueChars = 0;
                 options.Password.RequireLowercase = true;
                 options.Password.RequireNonAlphanumeric = false;
@@ -78,19 +80,21 @@ namespace BedAndBreakfast
                 options.ExpireTimeSpan = TimeSpan.FromDays(7);
             });
 
-			// Share resources localization based on MVC folder structure setup.
-			services.AddMvc()
-				.SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-				.AddDataAnnotationsLocalization()
-				.AddViewLocalization()
-				.AddDataAnnotationsLocalization(options =>
-				 {
-					 options.DataAnnotationLocalizerProvider = (type, factory) =>
-						 factory.Create(typeof(SharedResources));
-				 });
+            // Resource files localization.
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
 
-			// Add session service to allow storing data in session attributes.
-			services.AddSession();
+            // Share resources localization based on MVC folder structure setup.
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddViewLocalization()
+                .AddDataAnnotationsLocalization(options =>
+                 {
+                     options.DataAnnotationLocalizerProvider = (type, factory) =>
+                         factory.Create(typeof(SharedResources));
+                 });
+
+            // Add session service to allow storing data in session attributes.
+            services.AddSession();
 
             // Here are polices defined for this web application.
             services.AddAuthorization(options =>
@@ -98,27 +102,43 @@ namespace BedAndBreakfast
                 options.AddPolicy(Policy.LoggedInUser, policy => policy.RequireRole(Role.User));
             });
 
-
+            // Configure IoC references before database setup.
+            IServiceProvider serviceProvider = services.BuildServiceProvider();
+            IoCContainer.DbSettings = serviceProvider.GetRequiredService<IOptions<DbSettings>>();
+            IoCContainer.PredefinedAccounts = serviceProvider.GetRequiredService<IOptions<PredefinedAccounts>>();
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider services)
         {
-			// Use session service.
-			app.UseSession();
+
+            // Add json files to configuration.
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(env.ContentRootPath)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddEnvironmentVariables();
+            Configuration = builder.Build();
+
+            // Use session service.
+            app.UseSession();
 
             // Resource cultures setup.
-            IList<CultureInfo> supportedCultures = new List<CultureInfo>{
-                                                    new CultureInfo("en-US"),
-                                                    new CultureInfo("pl-PL")
+            var supportedCultures = new[]
+            {
+                new CultureInfo("en-US"),
+                //new CultureInfo("pl-PL"), Polish culture is off because it
+                // forces to look for polish resources which are not present. 
             };
+
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
                 DefaultRequestCulture = new RequestCulture("en-US"),
                 SupportedCultures = supportedCultures,
                 SupportedUICultures = supportedCultures
             });
+
+            app.UseStaticFiles();
 
 
             // Use authentication in this web application.

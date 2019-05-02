@@ -23,22 +23,13 @@ namespace BedAndBreakfast.Data
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
         public static async Task CreateAdministratorAccounts(UserManager<User> userManager ) {
-
-            foreach (AdministartorLoginData admin in PredefinedAccountsContainer.administartorAccounts) {
-                var addedUser = new User {
-                    UserName = admin.login
-                };
-
-                var result = await userManager.CreateAsync(addedUser, admin.password);
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(addedUser, Role.Admin);
-                }
-                else
-                {
-                    throw new Exception("Administrator account creation exception.");
-                }
-            }
+            List<User> addedAdmins = new List<User>
+            {
+                new User { UserName = IoCContainer.PredefinedAccounts.Value.Admin1.Login },
+                new User { UserName = IoCContainer.PredefinedAccounts.Value.Admin2.Login }
+            };
+            await userManager.CreateAsync(addedAdmins[0], IoCContainer.PredefinedAccounts.Value.Admin1.Password);
+            await userManager.CreateAsync(addedAdmins[1], IoCContainer.PredefinedAccounts.Value.Admin2.Password);
         }
 
         /// <summary>

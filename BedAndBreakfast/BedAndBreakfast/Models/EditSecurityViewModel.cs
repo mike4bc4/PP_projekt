@@ -1,4 +1,6 @@
 ﻿using BedAndBreakfast.Settings;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,22 +14,19 @@ namespace BedAndBreakfast.Models
         [Display(Name = "Current password")]
         [DataType(DataType.Password)]
         [Required(ErrorMessage = "Required")]
-        [MinLength(DbRestrictionsContainer.PasswordMinLength, ErrorMessage = "TooShort")]
-        [MaxLength(DbRestrictionsContainer.PasswordMaxLength, ErrorMessage = "TooLong")]
+        [Remote(controller: "Validation", action: "ValidPasswordLenght")]
         public string CurrentPassword { get; set; }
 
         [Display(Name = "New password")]
         [DataType(DataType.Password)]
         [Required(ErrorMessage = "Required")]
-        [MinLength(DbRestrictionsContainer.PasswordMinLength, ErrorMessage = "TooShort")]
-        [MaxLength(DbRestrictionsContainer.PasswordMaxLength, ErrorMessage = "TooLong")]
+        [Remote(controller: "Validation", action: "ValidPasswordLenght")]
         public string NewPassword { get; set; }
 
         [Display(Name = "Repeat password")]
         [DataType(DataType.Password)]
         [Compare("NewPassword", ErrorMessage = "NotMatch")]
-        [MinLength(DbRestrictionsContainer.PasswordMinLength, ErrorMessage = "TooShort")]
-        [MaxLength(DbRestrictionsContainer.PasswordMaxLength, ErrorMessage = "TooLong")]
+        [Remote(controller: "Validation", action: "ValidPasswordLenght")]
         public string PrepeatNewPassword { get; set; }
     }
 }

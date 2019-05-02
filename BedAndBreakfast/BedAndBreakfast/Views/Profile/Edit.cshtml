@@ -14,9 +14,9 @@
 @*Objects for drop-down select lists*@
 @{
 
-    List<SelectListItem> genders = ListedDbValues.CreateListOfItems<ListedDbValues.Gender>(profile.Gender);
-    List<SelectListItem> currencies = ListedDbValues.CreateListOfItems<ListedDbValues.Currency>(profile.PrefCurrency);
-    List<SelectListItem> languages = ListedDbValues.CreateListOfItems<ListedDbValues.Language>(profile.PrefLanguage);
+    List<SelectListItem> genders = EnumeratedDbValues.CreateListOfItems<EnumeratedDbValues.Gender>(profile.Gender);
+    List<SelectListItem> currencies = EnumeratedDbValues.CreateListOfItems<EnumeratedDbValues.Currency>(profile.PrefCurrency);
+    List<SelectListItem> languages = EnumeratedDbValues.CreateListOfItems<EnumeratedDbValues.Language>(profile.PrefLanguage);
     // Address uses additional variable to prevent situations where address is read from null object.
     // There is empty address created instead.
     Address profileAddress = (profile.Address != null) ? profile.Address : new Address();

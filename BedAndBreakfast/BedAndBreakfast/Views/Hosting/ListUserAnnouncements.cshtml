@@ -4,11 +4,11 @@
 @{
     ViewData["Title"] = "ListUserAnnouncements";
     List<EditAnnouncementViewModel> usersAnnouncements = Model.announcements;
-    Dictionary<string, int> types = ListedDbValues.ParseEnumToDictionary<ListedDbValues.AnnouncementType>();
-    Dictionary<string, int> houseSubtypes = ListedDbValues.ParseEnumToDictionary<ListedDbValues.HouseSubtype>();
-    Dictionary<string, int> houseSharedParts = ListedDbValues.ParseEnumToDictionary<ListedDbValues.HouseSharedPart>();
-    Dictionary<string, int> entertainmentSubtypes = ListedDbValues.ParseEnumToDictionary<ListedDbValues.EntertainmentSubtype>();
-    Dictionary<string, int> foodSubtypes = ListedDbValues.ParseEnumToDictionary<ListedDbValues.FoodSubtype>();
+    Dictionary<string, int> types = EnumeratedDbValues.ParseEnumToDictionary<EnumeratedDbValues.AnnouncementType>();
+    Dictionary<string, int> houseSubtypes = EnumeratedDbValues.ParseEnumToDictionary<EnumeratedDbValues.HouseSubtype>();
+    Dictionary<string, int> houseSharedParts = EnumeratedDbValues.ParseEnumToDictionary<EnumeratedDbValues.HouseSharedPart>();
+    Dictionary<string, int> entertainmentSubtypes = EnumeratedDbValues.ParseEnumToDictionary<EnumeratedDbValues.EntertainmentSubtype>();
+    Dictionary<string, int> foodSubtypes = EnumeratedDbValues.ParseEnumToDictionary<EnumeratedDbValues.FoodSubtype>();
 }
 
 <script type="text/javascript" src="~/js/listUserAnnouncements.js"></script>
@@ -99,7 +99,7 @@
     <input type="text" id="userAnnouncementSearchField" />
     <a href="#" onclick="">Search</a>
     <select id="userAnnouncementSortField">
-        @foreach (string option in Enum.GetNames(typeof(ListedDbValues.AnnouncementSortOptions)))
+        @foreach (string option in Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementSortOptions)))
         {
             <option>@option</option>
         }

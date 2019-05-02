@@ -1,4 +1,5 @@
 ﻿using BedAndBreakfast.Data;
+using BedAndBreakfast.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
             }
             // Continue validation only if current model state is valid.
             // Check subtype.
-            if (viewModel.Type == (byte)ListedDbValues.AnnouncementType.House)
+            if (viewModel.Type == (byte)EnumeratedDbValues.AnnouncementType.House)
             {
                 if (viewModel.Subtype == null || viewModel.SharedPart == null)
                 {
@@ -38,6 +39,11 @@ namespace BedAndBreakfast.Models.ServicesLogic
             {
                 return false;
             }
+            int len = IoCContainer.DbSettings.Value.MaxAddressInputLength;
+            if (viewModel.Country.Length > len || viewModel.Region.Length > len || viewModel.City.Length > len
+                || viewModel.Street.Length > len || viewModel.StreetNumber.Length > len) {
+                return false;
+            }
             // Check time.
             if (DateTime.Compare(viewModel.From, viewModel.To) > 0 || DateTime.Compare(viewModel.From, DateTime.Today) < 0)
             {
@@ -52,7 +58,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
             if (viewModel.ContactMethods.Count() > 0)
             {
                 foreach (var item in viewModel.ContactMethods) {
-                    if (String.IsNullOrEmpty(item.Key)) {
+                    if (string.IsNullOrEmpty(item.Key)) {
                         return false;
                     }
                 }
@@ -66,7 +72,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
             {
                 foreach (var item in viewModel.PaymentMethods)
                 {
-                    if (String.IsNullOrEmpty(item.Key))
+                    if (string.IsNullOrEmpty(item.Key))
                     {
                         return false;
                     }
@@ -90,8 +96,12 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 announcement = context.Announcements.Where(a => a.ID == viewModel.ID).Single();
                 // All payment methods and contact relations are removed to avoid duplicate relations and
                 // saving back those which were removed by user.
-                ClearContactsAndPaymentMethods(announcement, context);
+                ClearContactsAndPaymentMethodRelations(announcement, context);
+                // Remove tag relations.
+                ClearTagRelations(announcement, context);
             }
+
+
 
             Address viewModelAddress = new Address
             {
@@ -160,13 +170,31 @@ namespace BedAndBreakfast.Models.ServicesLogic
 
         }
 
+
+        private static List<string> GenerateTags(Announcement announcement) {
+            List<string> generatedTags = new List<string>();
+            //generatedTags.Add(Enum.GetName(ListedDbValues.ty))
+            return null;
+        }
+
+        /// <summary>
+        /// Removes announcement tag relations but only in context, so 
+        /// changes must be saved to make this operation persistent.
+        /// </summary>
+        /// <param name="announcement"></param>
+        /// <param name="context"></param>
+        private static void ClearTagRelations(Announcement announcement, AppDbContext context) {
+            List<AnnouncementToTag> tagsToRemove = context.AnnouncementToTags.Where(att => att.Announcement == announcement).ToList();
+            context.AnnouncementToTags.RemoveRange(tagsToRemove);
+        }
+
         /// <summary>
         /// Removes contact and payment method relations but only in context, so 
         /// changes must be saved to make this operation persistent.
         /// </summary>
         /// <param name="announcement"></param>
         /// <param name="context"></param>
-        private static void ClearContactsAndPaymentMethods(Announcement announcement, AppDbContext context) {
+        private static void ClearContactsAndPaymentMethodRelations(Announcement announcement, AppDbContext context) {
             List<AnnouncementToContact> contactRelationsToRemove = context.AnnouncementToContacts.Where(ac => ac.Announcement == announcement).ToList();
             List<AnnouncementToPayment> paymentMethodRelationsToRemove = context.AnnouncementToPayments.Where(ap => ap.Announcement == announcement).ToList();
             context.AnnouncementToContacts.RemoveRange(contactRelationsToRemove);

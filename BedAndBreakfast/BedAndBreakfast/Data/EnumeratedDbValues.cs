@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace BedAndBreakfast.Data
 {
     /// <summary>
-    /// This class contains abbreviations for gender value stored in database.
+    /// This class contains abbreviations for values stored in database.
     /// </summary>
-    public static class ListedDbValues
+    public static class EnumeratedDbValues
     {
         public enum Gender
         {
@@ -109,10 +109,6 @@ namespace BedAndBreakfast.Data
             IsActive = 8,
             IsInactive = 9
         }
-
-
-
-
 
 		public static List<SelectListItem> CreateListOfItems<T>(string currentlySelectedValue) {
             List<SelectListItem> list = new List<SelectListItem>();

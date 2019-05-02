@@ -93,12 +93,12 @@ namespace BedAndBreakfast.Models
             {
                 helpPages = context.HelpPages
                         .Where(hp => hp.IsLocked == false)
-                        .OrderBy(hp => hp.ID).Take(GeneralSettings.DefHelpPages)
+                        .OrderBy(hp => hp.ID).Take(IoCContainer.DbSettings.Value.DefHelpPages)
                         .ToList();
             }
             else {
                 helpPages = context.HelpPages
-                        .OrderBy(hp => hp.ID).Take(GeneralSettings.DefHelpPages)
+                        .OrderBy(hp => hp.ID).Take(IoCContainer.DbSettings.Value.DefHelpPages)
                         .ToList();
             }
             return helpPages;
@@ -114,7 +114,7 @@ namespace BedAndBreakfast.Models
         {
             List<User> users = context.Users
                 .Include(u => u.Profile)
-                .OrderBy(u => u.UserName).Take(GeneralSettings.DefUsersDisplayed)
+                .OrderBy(u => u.UserName).Take(IoCContainer.DbSettings.Value.DefUsersDisplayed)
                 .ToList();
             return users;
         }
@@ -224,7 +224,7 @@ namespace BedAndBreakfast.Models
                 .Where(a => a.Region == address.Region)
                 .Where(a => a.City == address.City)
                 .Where(a => a.Street == address.Street)
-                .Where(a => a.StreetNumber == address.StreetNumber).FirstOrDefault();
+                .Where(a => a.StreetNumber == address.StreetNumber).SingleOrDefault();
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace BedAndBreakfast.Models
         /// <returns></returns>
         public static AdditionalContact FindAdditionalContact(AdditionalContact contact, AppDbContext context) {
             return context.AdditionalContacts.Where(a => a.Type == contact.Type)
-                .Where(a => a.Data == contact.Data).FirstOrDefault();
+                .Where(a => a.Data == contact.Data).SingleOrDefault();
         }
 
         /// <summary>
@@ -248,7 +248,20 @@ namespace BedAndBreakfast.Models
         /// <returns></returns>
         public static PaymentMethod FindPaymentMethod(PaymentMethod method, AppDbContext context) {
             return context.PaymentMethods.Where(p => p.Type == method.Type)
-                .Where(p => p.Data == method.Data).FirstOrDefault();
+                .Where(p => p.Data == method.Data).SingleOrDefault();
         }
+
+        /// <summary>
+        /// Allows to find tag by it's ID or value
+        /// which are the same as value is unique.
+        /// </summary>
+        /// <param name="tagValueOrID"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static AnnouncementTag FindTag(string tagValueOrID, AppDbContext context) {
+            return context.AnnouncementTags
+                .Where(at => at.Value == tagValueOrID).SingleOrDefault();
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BedAndBreakfast.Settings;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -27,8 +28,7 @@ namespace BedAndBreakfast.Models
         [Display(Name = "New password")]
         [DataType(DataType.Password)]
         [Required(ErrorMessage = "Required")]
-        [MaxLength(DbRestrictionsContainer.PasswordMaxLength, ErrorMessage = "TooLong")]
-        [MinLength(DbRestrictionsContainer.PasswordMinLength, ErrorMessage = "TooShort")]
+        [Remote(controller: "Validation", action: "ValidPasswordLenght")]
         public string NewPassword { get; set; }
 
         [Compare("NewPassword", ErrorMessage = "PassNotMatch")]

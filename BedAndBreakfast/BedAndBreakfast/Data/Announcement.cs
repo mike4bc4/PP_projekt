@@ -1,5 +1,6 @@
 ﻿using BedAndBreakfast.Models;
 using BedAndBreakfast.Settings;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -28,13 +29,12 @@ namespace BedAndBreakfast.Data
 		[DataType(DataType.DateTime)]
 		public DateTime To { get; set; }
 
-
-		[MaxLength(DbRestrictionsContainer.MaxAnnouncementDescSize)]
 		public string Description { get; set; }
 		// TODO: store images?
 
 		public List<AnnouncementToContact> AnnouncementToContacts { get; set; }
 		public List<AnnouncementToPayment> AnnouncementToPayments { get; set; }
+        public List<AnnouncementToTag> AnnouncementToTags { get; set; }
 
 		public User User { get; set; }
 		[MaxLength(450)]

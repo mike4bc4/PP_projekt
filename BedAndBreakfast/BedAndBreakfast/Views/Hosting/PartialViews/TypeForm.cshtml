@@ -2,7 +2,7 @@
 @model EditAnnouncementViewModel
 @{
     ViewData["Title"] = "TypeSelectionForm";
-    Array types = Enum.GetValues(typeof(ListedDbValues.AnnouncementType));
+    Array types = Enum.GetValues(typeof(EnumeratedDbValues.AnnouncementType));
 }
 
 <h2>TypeSelectionForm</h2>
@@ -15,13 +15,13 @@
 		{
 			// Selected should be somehow highlighted.
 			<div style="background-color:yellow;" >
-				<a href="#" onclick="setType(@enumValue);">@Enum.GetName(typeof(ListedDbValues.AnnouncementType),enumValue)</a>
+				<a href="#" onclick="setType(@enumValue);">@Enum.GetName(typeof(EnumeratedDbValues.AnnouncementType),enumValue)</a>
 			</div>
 		}
 		else
 		{
 			<div>
-                <a href="#" onclick="setType(@enumValue);">@Enum.GetName(typeof(ListedDbValues.AnnouncementType),enumValue)</a>
+                <a href="#" onclick="setType(@enumValue);">@Enum.GetName(typeof(EnumeratedDbValues.AnnouncementType),enumValue)</a>
 			</div>
 		}
 	}

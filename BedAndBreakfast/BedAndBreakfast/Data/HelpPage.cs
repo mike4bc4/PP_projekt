@@ -1,4 +1,5 @@
 ﻿using BedAndBreakfast.Settings;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,11 +19,9 @@ namespace BedAndBreakfast.Data
 		public List<HelpPageHelpTag> HelpPageHelpTag { get; set; }
 
         [Required]
-        [MaxLength(DbRestrictionsContainer.MaxHelpPageTitleSize)]
         public string Title { get; set; }
 
         [Required]
-        [MaxLength(DbRestrictionsContainer.MaxHelpPageSize)]
 		public string Content { get; set; }
 
         /// <summary>
