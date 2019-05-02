@@ -122,7 +122,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
             foreach (KeyValuePair<string, string> contact in viewModel.ContactMethods)
             {
                 AdditionalContact viewModelContact = new AdditionalContact { Type = contact.Value, Data = contact.Key };
-                AdditionalContact contactInDatabase = SearchEngine.FindAdditionalContactByContent(viewModelContact, context);
+                AdditionalContact contactInDatabase = SearchEngine.FindAdditionalContact(viewModelContact, context);
                 if (contactInDatabase != null)
                 {
                     context.AnnouncementToContacts.Add(new AnnouncementToContact
@@ -138,7 +138,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
             foreach (KeyValuePair<string, string> payment in viewModel.PaymentMethods)
             {
                 PaymentMethod viewModelPaymentMethod = new PaymentMethod { Type = payment.Value, Data = payment.Key };
-                PaymentMethod paymentMethodInDatabase = SearchEngine.FindPaymentMoethodByContent(viewModelPaymentMethod, context);
+                PaymentMethod paymentMethodInDatabase = SearchEngine.FindPaymentMethod(viewModelPaymentMethod, context);
                 if (paymentMethodInDatabase != null)
                 {
 

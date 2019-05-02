@@ -115,32 +115,21 @@ namespace BedAndBreakfast.Controllers
             return View(model);
         }
 
+
         [Authorize(Roles = Role.User)]
-        public async Task<IActionResult> ChangeAnnouncementsActiveStatusById(List<int> announcementsIDs, bool areActive) {
+        public async Task<IActionResult> ChangeAnnouncementsStatus(List<int> announcementsIDs, bool? areActive) {
             List<Announcement> announcements = (from a in context.Announcements
                                                 where announcementsIDs.Contains(a.ID)
                                                 select a).ToList();
             foreach (Announcement announcement in announcements) {
-                announcement.IsActive = areActive;
+                if (areActive != null)
+                    announcement.IsActive = (bool)areActive;
+                else
+                    announcement.Removed = true;
             }
             await context.SaveChangesAsync();
             return Json(true);
         }
-
-        [Authorize(Roles = Role.User)]
-        public async Task<IActionResult> RemoveAnnouncementsById(List<int> announcementsIDs)
-        {
-            List<Announcement> announcements = (from a in context.Announcements
-                                                where announcementsIDs.Contains(a.ID)
-                                                select a).ToList();
-            foreach (Announcement announcement in announcements)
-            {
-                announcement.Removed = true;
-            }
-            await context.SaveChangesAsync();
-            return Json(true);
-        }
-
 
 
     }

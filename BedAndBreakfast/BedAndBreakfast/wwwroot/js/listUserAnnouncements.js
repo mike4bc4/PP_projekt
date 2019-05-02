@@ -69,7 +69,7 @@ function isOutOfDateRange(announcement) {
 	return (fromAsDate > today || toAsDate < today);
 }
 
-function getAnnouncmentSelectedList() {
+function getAnnouncementSelectedList() {
 	var announcmentSelectedList = JSON.parse(sessionStorage.getItem('announcmentSelectedList'));
 	if (!announcmentSelectedList) {
 		announcmentSelectedList = [];
@@ -78,9 +78,13 @@ function getAnnouncmentSelectedList() {
 	return announcmentSelectedList;
 }
 
+function clearAnnouncementSelectedList() {
+	sessionStorage.setItem('announcmentSelectedList', null);
+}
+
 
 function toggleAnnouncementSelection(announcementIndex) {
-	var announcmentSelectedList = getAnnouncmentSelectedList();
+	var announcmentSelectedList = getAnnouncementSelectedList();
 	var selectedIndex = clickedAnnouncementRowIndex(announcementIndex);
 
 	if (selectedIndex == null) {
@@ -100,7 +104,7 @@ function toggleAnnouncementSelection(announcementIndex) {
  * @param {any} announcementIndex
  */
 function clickedAnnouncementRowIndex(announcementIndex) {
-	var announcmentSelectedList = getAnnouncmentSelectedList();
+	var announcmentSelectedList = getAnnouncementSelectedList();
 	var selectedIndex = null;
 
 	// Find record with clicked announcement index.
@@ -116,7 +120,7 @@ function clickedAnnouncementRowIndex(announcementIndex) {
 
 
 function activateSelectedAnnouncements() {
-	var announcementSelectedList = getAnnouncmentSelectedList();
+	var announcementSelectedList = getAnnouncementSelectedList();
 	var announcements = getAnnouncements();
 	var selectedAnnouncementsIDs = [];
 	var messageCode = 1;
@@ -140,7 +144,7 @@ function activateSelectedAnnouncements() {
 
 	// Perform update in database.
 	$.ajax({
-		url: '/Hosting/ChangeAnnouncementsActiveStatusById',
+		url: '/Hosting/ChangeAnnouncementsStatus',
 		method: 'post',
 		data: { announcementsIDs: selectedAnnouncementsIDs, areActive: true },
 		dataType: 'json'
@@ -153,7 +157,7 @@ function activateSelectedAnnouncements() {
 
 
 function deactivateSelectedAnnouncements() {
-	var announcementSelectedList = getAnnouncmentSelectedList();
+	var announcementSelectedList = getAnnouncementSelectedList();
 	var selectedAnnouncementsIDs = [];
 	var announcements = getAnnouncements();
 
@@ -170,7 +174,7 @@ function deactivateSelectedAnnouncements() {
 
 	// Perform update in database.
 	$.ajax({
-		url: '/Hosting/ChangeAnnouncementsActiveStatusById',
+		url: '/Hosting/ChangeAnnouncementsStatus',
 		method: 'post',
 		data: { announcementsIDs: selectedAnnouncementsIDs, areActive: false },
 		dataType: 'json'
@@ -182,7 +186,7 @@ function deactivateSelectedAnnouncements() {
 
 
 function removeSelectedAnnouncements() {
-	var announcementSelectedList = getAnnouncmentSelectedList();
+	var announcementSelectedList = getAnnouncementSelectedList();
 	var selectedAnnouncementsIDs = [];
 	var announcements = getAnnouncements();
 
@@ -195,11 +199,15 @@ function removeSelectedAnnouncements() {
 		selectedAnnouncementsIDs.push(announcements[announcementSelectedList[i]].id);
 		announcements[announcementSelectedList[i]] = null;
 	}
+
+	// All selected rows has been removed, reset selection list.
+	clearAnnouncementSelectedList();	
+
 	setAnnouncementManagementMessage(4);
 
 	// Perform update in database.
 	$.ajax({
-		url: '/Hosting/RemoveAnnouncementsById',
+		url: '/Hosting/ChangeAnnouncementsStatus',
 		method: 'post',
 		data: { announcementsIDs: selectedAnnouncementsIDs },
 		dataType: 'json'

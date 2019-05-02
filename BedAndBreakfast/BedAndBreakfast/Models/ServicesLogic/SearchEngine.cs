@@ -234,7 +234,7 @@ namespace BedAndBreakfast.Models
         /// <param name="contact"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static AdditionalContact FindAdditionalContactByContent(AdditionalContact contact, AppDbContext context) {
+        public static AdditionalContact FindAdditionalContact(AdditionalContact contact, AppDbContext context) {
             return context.AdditionalContacts.Where(a => a.Type == contact.Type)
                 .Where(a => a.Data == contact.Data).FirstOrDefault();
         }
@@ -246,7 +246,7 @@ namespace BedAndBreakfast.Models
         /// <param name="method"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static PaymentMethod FindPaymentMoethodByContent(PaymentMethod method, AppDbContext context) {
+        public static PaymentMethod FindPaymentMethod(PaymentMethod method, AppDbContext context) {
             return context.PaymentMethods.Where(p => p.Type == method.Type)
                 .Where(p => p.Data == method.Data).FirstOrDefault();
         }
