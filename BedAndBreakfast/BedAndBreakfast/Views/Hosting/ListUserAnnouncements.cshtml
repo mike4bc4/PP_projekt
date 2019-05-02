@@ -8,6 +8,12 @@
 
 <script type="text/javascript" src="~/js/listUserAnnouncements.js"></script>
 <script type="text/javascript">
+    var tableClass = 'announcmentTable';
+    var rowDefaultClass = 'announcementTableRow';
+    var rowSelectedClass = 'announcementTableRowSelected';
+    var cellClass = 'announcmentTableCell';
+    var editButtonsTableClass = 'announcementEditButtonsTable';
+
     window.onload = function () {
         sessionStorage.setItem('userAnnouncements', JSON.stringify(@Html.Raw(Json.Serialize(usersAnnouncements))));
         redraw();

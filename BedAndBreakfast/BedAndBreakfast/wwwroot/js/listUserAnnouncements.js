@@ -1,12 +1,5 @@
 ﻿function drawAnnouncementsList(announcements) {
 
-	// Style class names - from view file.
-	var tableClass = 'announcmentTable';
-	var rowDefaultClass = 'announcementTableRow';
-	var rowSelectedClass = 'announcementTableRowSelected';
-	var cellClass = 'announcmentTableCell';
-	var editButtonsTableClass = 'announcementEditButtonsTable';
-
 	// Clear container content.
 	var container = document.getElementById('usrAnnPageContainer');
 	container.innerHTML = '';

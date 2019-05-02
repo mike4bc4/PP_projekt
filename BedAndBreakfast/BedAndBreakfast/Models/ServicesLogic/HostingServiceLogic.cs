@@ -81,8 +81,13 @@ namespace BedAndBreakfast.Models.ServicesLogic
             if (newModel)
                 announcement = new Announcement();
             else
+            {
                 // If model is edited it has to be found in database by provided ID.
                 announcement = context.Announcements.Where(a => a.ID == viewModel.ID).Single();
+                // All payment methods and contact relations are removed to avoid duplicate relations and
+                // saving back those which were removed by user.
+                ClearContactsAndPaymentMethods(announcement, context);
+            }
 
             Address viewModelAddress = new Address
             {
@@ -120,9 +125,8 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 AdditionalContact contactInDatabase = SearchEngine.FindAdditionalContactByContent(viewModelContact, context);
                 if (contactInDatabase != null)
                 {
-                    if (newModel && SearchEngine.AnnouncementToContactDuplicate(announcement.ID, contactInDatabase.ID, context))
-                        context.AnnouncementToContacts.Add(new AnnouncementToContact
-                        { Announcement = announcement, AdditionalContact = contactInDatabase });
+                    context.AnnouncementToContacts.Add(new AnnouncementToContact
+                    { Announcement = announcement, AdditionalContact = contactInDatabase });
                 }
                 else
                 {
@@ -137,9 +141,9 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 PaymentMethod paymentMethodInDatabase = SearchEngine.FindPaymentMoethodByContent(viewModelPaymentMethod, context);
                 if (paymentMethodInDatabase != null)
                 {
-                    if (newModel && SearchEngine.AnnouncementToPaymentMethodDuplicate(announcement.ID, paymentMethodInDatabase.ID, context))
-                        context.AnnouncementToPayments.Add(new AnnouncementToPayment
-                        { Announcement = announcement, PaymentMethod = paymentMethodInDatabase });
+
+                    context.AnnouncementToPayments.Add(new AnnouncementToPayment
+                    { Announcement = announcement, PaymentMethod = paymentMethodInDatabase });
                 }
                 else
                 {
@@ -150,6 +154,19 @@ namespace BedAndBreakfast.Models.ServicesLogic
 
             await context.SaveChangesAsync();
 
+        }
+
+        /// <summary>
+        /// Removes contact and payment method relations but only in context, so 
+        /// changes must be saved to make this operation persistent.
+        /// </summary>
+        /// <param name="announcement"></param>
+        /// <param name="context"></param>
+        private static void ClearContactsAndPaymentMethods(Announcement announcement, AppDbContext context) {
+            List<AnnouncementToContact> contactRelationsToRemove = context.AnnouncementToContacts.Where(ac => ac.Announcement == announcement).ToList();
+            List<AnnouncementToPayment> paymentMethodRelationsToRemove = context.AnnouncementToPayments.Where(ap => ap.Announcement == announcement).ToList();
+            context.AnnouncementToContacts.RemoveRange(contactRelationsToRemove);
+            context.AnnouncementToPayments.RemoveRange(paymentMethodRelationsToRemove);
         }
 
 
@@ -216,7 +233,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// <param name="usersAnnouncements"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static List<Dictionary<string, string>> GetListOfAdditonalContacts(List<Announcement> usersAnnouncements, AppDbContext context)
+        private static List<Dictionary<string, string>> GetListOfAdditonalContacts(List<Announcement> usersAnnouncements, AppDbContext context)
         {
             var contactData = (from ua in usersAnnouncements
                                join ac in context.AnnouncementToContacts
@@ -249,7 +266,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// <param name="usersAnnouncements"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static List<Dictionary<string, string>> GetListOfPaymentMehtods(List<Announcement> usersAnnouncements, AppDbContext context)
+        private static List<Dictionary<string, string>> GetListOfPaymentMehtods(List<Announcement> usersAnnouncements, AppDbContext context)
         {
             var paymentData = (from ua in usersAnnouncements
                                join ap in context.AnnouncementToPayments

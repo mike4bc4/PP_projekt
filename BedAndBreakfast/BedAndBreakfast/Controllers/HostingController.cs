@@ -94,6 +94,7 @@ namespace BedAndBreakfast.Controllers
             return Json(new { page = ControllerExtensions.ParseViewToStringAsync(this, viewModel, "PartialViews/SaveAnnouncement", true).Result, announcementCorrect });
         }
 
+
         [Authorize(Roles = Role.User)]
         public async Task<IActionResult> ListUserAnnouncements(string sortingMethod, string queryString)
         {
@@ -110,8 +111,6 @@ namespace BedAndBreakfast.Controllers
 
             dynamic model = new ExpandoObject();
             model.announcements = viewModel;
-
-            //return View("UnderConstruction");
 
             return View(model);
         }
