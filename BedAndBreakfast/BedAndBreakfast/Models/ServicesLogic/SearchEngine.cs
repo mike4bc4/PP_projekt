@@ -66,14 +66,15 @@ namespace BedAndBreakfast.Models
                 {
                     pagesByScore.Add(context.HelpPages.Find(result.page));
                 }
-                else {
+                else
+                {
                     HelpPage page = context.HelpPages.Find(result.page);
-                    if (!page.IsLocked) {
+                    if (!page.IsLocked)
+                    {
                         pagesByScore.Add(page);
                     }
                 }
             }
-
             return pagesByScore;
 
         }
@@ -96,7 +97,8 @@ namespace BedAndBreakfast.Models
                         .OrderBy(hp => hp.ID).Take(IoCContainer.DbSettings.Value.DefHelpPages)
                         .ToList();
             }
-            else {
+            else
+            {
                 helpPages = context.HelpPages
                         .OrderBy(hp => hp.ID).Take(IoCContainer.DbSettings.Value.DefHelpPages)
                         .ToList();
@@ -219,7 +221,8 @@ namespace BedAndBreakfast.Models
         /// <param name="address"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static Address FindAddressByContent(Address address, AppDbContext context) {
+        public static Address FindAddressByContent(Address address, AppDbContext context)
+        {
             return context.Addresses.Where(a => a.Country == address.Country)
                 .Where(a => a.Region == address.Region)
                 .Where(a => a.City == address.City)
@@ -234,7 +237,8 @@ namespace BedAndBreakfast.Models
         /// <param name="contact"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static AdditionalContact FindAdditionalContact(AdditionalContact contact, AppDbContext context) {
+        public static AdditionalContact FindAdditionalContact(AdditionalContact contact, AppDbContext context)
+        {
             return context.AdditionalContacts.Where(a => a.Type == contact.Type)
                 .Where(a => a.Data == contact.Data).SingleOrDefault();
         }
@@ -246,7 +250,8 @@ namespace BedAndBreakfast.Models
         /// <param name="method"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static PaymentMethod FindPaymentMethod(PaymentMethod method, AppDbContext context) {
+        public static PaymentMethod FindPaymentMethod(PaymentMethod method, AppDbContext context)
+        {
             return context.PaymentMethods.Where(p => p.Type == method.Type)
                 .Where(p => p.Data == method.Data).SingleOrDefault();
         }
@@ -258,9 +263,62 @@ namespace BedAndBreakfast.Models
         /// <param name="tagValueOrID"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static AnnouncementTag FindTag(string tagValueOrID, AppDbContext context) {
+        public static AnnouncementTag FindTag(string tagValueOrID, AppDbContext context)
+        {
             return context.AnnouncementTags
                 .Where(at => at.Value == tagValueOrID).SingleOrDefault();
+        }
+
+        /// <summary>
+        /// Returns announcements found by query which are sorted descending by match score.
+        /// If query is null or empty returns default number of announcements from top of
+        /// database table.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static List<Announcement> FindAnnoucements(string query, AppDbContext context)
+        {
+            if (string.IsNullOrEmpty(query))
+            {
+                return context.Announcements
+                    .Include(a => a.Address)
+                    .Include(a => a.AnnouncementToContacts)
+                    .Include(a => a.AnnouncementToPayments)
+                    .Take(IoCContainer.DbSettings.Value.DefAnnouncementsDisplayed).ToList();
+            }
+
+            List<string> queryTags = StringManager.RemoveSpecials(query.ToUpper()).Split(' ').ToList();
+            var announcementTags = (from at in context.AnnouncementTags
+                                    select at.Value);
+            var tagMatchingQuery = (from at in announcementTags
+                                    from qt in queryTags
+                                    where at.Contains(qt)
+                                    select at);
+            var announcementsMatchingTags = (from att in context.AnnouncementToTags
+                                             where tagMatchingQuery.Contains(att.AnnouncementTagID)
+                                             select new { att.Announcement });
+            var score = from d in announcementsMatchingTags
+                        group d by d.Announcement into grp
+                        select new
+                        {
+                            announcement = grp.Key,
+                            score = grp.Count()
+                        };
+            score = score.OrderByDescending(s => s.score);
+            var results = (from s in score
+                           select s.announcement);
+            List<Announcement> announcements = new List<Announcement>();
+            foreach (Announcement announcement in results)
+            {
+                announcements.Add(context.Announcements
+                    .Include(a => a.Address)
+                    .Include(a => a.AnnouncementToContacts)
+                    .Include(a => a.AnnouncementToPayments)
+                    .Where(a => a == announcement)
+                    .Single());
+            }
+            return announcements;
         }
 
     }

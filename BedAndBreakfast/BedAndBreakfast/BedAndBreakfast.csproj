@@ -22,11 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <UpToDateCheckInput Remove="Views\Hosting\PartialViews\TypeForm.cshtml" />
+    <UpToDateCheckInput Remove="Views\Announcement\PartialViews\TypeForm.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="Views\Hosting\PartialViews\TypeForm.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Announcement\PartialViews\TypeForm.cshtml" />
   </ItemGroup>
 
 </Project>

@@ -37,7 +37,7 @@
 					subtypeName = Object.keys(getHouseSubtypes())
 						.find(key => getHouseSubtypes()[key] === announcements[i].subtype);
 					sharedPartName = Object.keys(getHouseSharedPart())
-						.find(key => getHouseSharedPart()[key] === announcements[i].s);
+						.find(key => getHouseSharedPart()[key] === announcements[i].sharedPart);
 					break;
 				case 1:
 					subtypeName = Object.keys(getEntertainmentSubtypes())
@@ -67,7 +67,7 @@
 				$('#usrAnnRow' + i).append('<td class="' + cellClass + '">Yes</td>');
 			}
 
-			$('#usrAnnEditButtonsBody').append('<tr><td class="' + cellClass + '"><a href="/Hosting/EditAnnouncement/?newModel=false" onClick="editAnnouncement(' + i + ');">Edit announcement</a></td></tr>');
+			$('#usrAnnEditButtonsBody').append('<tr><td class="' + cellClass + '"><a href="/Announcement/EditAnnouncement/?newModel=false" onClick="editAnnouncement(' + i + ');">Edit announcement</a></td></tr>');
 		}
 	}
 }
@@ -164,7 +164,7 @@ function activateSelectedAnnouncements() {
 
 	// Perform update in database.
 	$.ajax({
-		url: '/Hosting/ChangeAnnouncementsStatus',
+		url: '/Announcement/ChangeAnnouncementsStatus',
 		method: 'post',
 		data: { announcementsIDs: selectedAnnouncementsIDs, areActive: true },
 		dataType: 'json'
@@ -194,7 +194,7 @@ function deactivateSelectedAnnouncements() {
 
 	// Perform update in database.
 	$.ajax({
-		url: '/Hosting/ChangeAnnouncementsStatus',
+		url: '/Announcement/ChangeAnnouncementsStatus',
 		method: 'post',
 		data: { announcementsIDs: selectedAnnouncementsIDs, areActive: false },
 		dataType: 'json'
@@ -227,7 +227,7 @@ function removeSelectedAnnouncements() {
 
 	// Perform update in database.
 	$.ajax({
-		url: '/Hosting/ChangeAnnouncementsStatus',
+		url: '/Announcement/ChangeAnnouncementsStatus',
 		method: 'post',
 		data: { announcementsIDs: selectedAnnouncementsIDs },
 		dataType: 'json'

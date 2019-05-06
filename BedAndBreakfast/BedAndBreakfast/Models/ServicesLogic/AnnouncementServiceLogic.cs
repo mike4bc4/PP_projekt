@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BedAndBreakfast.Models.ServicesLogic
 {
-    public static class HostingServiceLogic
+    public static class AnnouncementServiceLogic
     {
 
         public static bool IsAnnouncementViewModelValid(EditAnnouncementViewModel viewModel)
@@ -89,6 +89,15 @@ namespace BedAndBreakfast.Models.ServicesLogic
             return announcementCorrect;
         }
 
+        /// <summary>
+        /// Saves announcement to database. If such announcement is already present
+        /// in database it will be updated. Also generates browser tags for announcement. 
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <param name="context"></param>
+        /// <param name="announcementOwner"></param>
+        /// <param name="newModel"></param>
+        /// <returns></returns>
         public static async Task SaveAnnouncementToDatabase(EditAnnouncementViewModel viewModel, AppDbContext context, User announcementOwner, bool newModel)
         {
             Announcement announcement;

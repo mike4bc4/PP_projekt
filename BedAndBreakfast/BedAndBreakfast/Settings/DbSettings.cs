@@ -18,5 +18,6 @@ namespace BedAndBreakfast.Settings
         public int MaxAddressInputLength { get; set; }
         public int DefHelpPages { get; set; }
         public int DefUsersDisplayed { get; set; }
+        public int DefAnnouncementsDisplayed { get; set; }
     }
 }

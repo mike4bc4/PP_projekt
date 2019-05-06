@@ -16,9 +16,13 @@
     <title>@ViewData["Title"] - BedAndBreakfast</title>
     @*Javascript files*@
     <script src="~/js/site.js"></script>
+    @*Remote jQuery validation scripts.*@
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"></script>
 </head>
 <body>
-
+    @*User identity*@
     @{
         if (User.Identity.IsAuthenticated)
         {
@@ -37,31 +41,31 @@
             <hr />
         }
     }
-
+    @*Announcement browser*@
     <div>
-
+        <form asp-controller="Announcement" asp-action="Browse">
+            <label>Find announcement:</label>
+            <input type="text" name="annBrowserQuery" />
+            <input type="submit" value="Find announcement"/>
+        </form>
+    </div>
+    <hr />
+    @*Navigation header*@
+    <div>
         @*Visible for everyone.*@
         <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
         <a asp-area="" asp-controller="Help" asp-action="Browse">Help</a>
-
-
-        @*Visible for everyone except host*@
-
-
-
-
         @*If user is not an administrator.*@
         @if (!User.IsInRole(Role.Admin))
         {
             @if (currentUser == null || !currentUser.isHost)
             {
-                <a id="becomeHostTag" asp-area="" asp-controller="Hosting" asp-action="EditAnnouncement">Become a Host</a>
+                <a id="becomeHostTag" asp-area="" asp-controller="Announcement" asp-action="EditAnnouncement">Become a Host</a>
             }
             else
             {
-                <a asp-area="" asp-controller="Hosting" asp-action="ListUserAnnouncements">Manage my announcements</a>
+                <a asp-area="" asp-controller="Announcement" asp-action="ListUserAnnouncements">Manage my announcements</a>
             }
-
             @if (!User.Identity.IsAuthenticated)
             {
                 <a asp-area="" asp-controller="Account" asp-action="Login">Log In</a>
@@ -80,9 +84,6 @@
             <a asp-area="" asp-controller="Account" asp-action="Logout">Log Out</a>
             <a asp-area="" asp-controller="Administration" asp-action="FindUser">Find User</a>
         }
-
-
-
     </div>
     <hr />
 
@@ -90,13 +91,3 @@
 
 </body>
 </html>
-
-@*Remote jQuery validation scripts.*@
-<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
-<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
-<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"></script>
-
-
-
-
-

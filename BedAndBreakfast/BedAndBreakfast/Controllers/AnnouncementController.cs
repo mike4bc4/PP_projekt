@@ -20,7 +20,7 @@ using Newtonsoft.Json;
 
 namespace BedAndBreakfast.Controllers
 {
-    public class HostingController : Controller
+    public class AnnouncementController : Controller
     {
         /// <summary>
         /// Service necessary to validate policies. 
@@ -30,7 +30,7 @@ namespace BedAndBreakfast.Controllers
         private UserManager<User> userManager;
 
 
-        public HostingController(IAuthorizationService authorizationService, AppDbContext context, UserManager<User> userManager)
+        public AnnouncementController(IAuthorizationService authorizationService, AppDbContext context, UserManager<User> userManager)
         {
             this.authorizationService = authorizationService;
             this.context = context;
@@ -78,16 +78,16 @@ namespace BedAndBreakfast.Controllers
         public async Task<IActionResult> SaveAnnouncement(EditAnnouncementViewModel viewModel)
         {
             User currentUser = await userManager.GetUserAsync(HttpContext.User);
-            bool announcementCorrect = HostingServiceLogic.IsAnnouncementViewModelValid(viewModel);
+            bool announcementCorrect = AnnouncementServiceLogic.IsAnnouncementViewModelValid(viewModel);
             if (announcementCorrect)
             {
                 viewModel.IsCorrect = true;
                 bool newModel = (bool)TempData["newModel"];
-                await HostingServiceLogic.SaveAnnouncementToDatabase(viewModel, context, currentUser, newModel);
+                await AnnouncementServiceLogic.SaveAnnouncementToDatabase(viewModel, context, currentUser, newModel);
                 // Change user role to host if it's his first announcement.
                 if (!currentUser.isHost)
                 {
-                    await HostingServiceLogic.MakeUserHost(currentUser, context);
+                    await AnnouncementServiceLogic.MakeUserHost(currentUser, context);
                 }
             }
 
@@ -107,7 +107,7 @@ namespace BedAndBreakfast.Controllers
                 .Where(a => a.Removed == false)
                 .ToList();
 
-            List<EditAnnouncementViewModel> viewModel = HostingServiceLogic.ParseAnnouncementsToViewModelList(usersAnnouncements, context);
+            List<EditAnnouncementViewModel> viewModel = AnnouncementServiceLogic.ParseAnnouncementsToViewModelList(usersAnnouncements, context);
 
             dynamic model = new ExpandoObject();
             model.announcements = viewModel;
@@ -131,6 +131,16 @@ namespace BedAndBreakfast.Controllers
             return Json(true);
         }
 
+        public IActionResult Browse(string annBrowserQuery)
+        {
+            dynamic model = new ExpandoObject();
+            List<EditAnnouncementViewModel> viewModel = AnnouncementServiceLogic
+                .ParseAnnouncementsToViewModelList(SearchEngine.FindAnnoucements(annBrowserQuery, context),
+                context);
+            model.announcements = viewModel;
+
+            return View(model);
+        }
 
 
     }

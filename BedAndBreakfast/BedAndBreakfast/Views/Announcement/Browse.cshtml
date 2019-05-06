@@ -1,0 +1,19 @@
+﻿
+@using BedAndBreakfast.Data;
+@{
+    ViewData["Title"] = "BrowseAnnouncements";
+    List<EditAnnouncementViewModel> announcements = Model.announcements;
+}
+
+<h2>Browse</h2>
+
+@foreach (EditAnnouncementViewModel announcement in announcements)
+{
+    <div>
+        <div>@announcement.Type</div>
+        <div>@announcement.Subtype</div>
+        <div>@announcement.SharedPart</div>
+        <div>@announcement.Description</div>
+    </div>
+}
+

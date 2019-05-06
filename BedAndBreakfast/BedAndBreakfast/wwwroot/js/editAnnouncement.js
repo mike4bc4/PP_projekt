@@ -79,7 +79,7 @@ function setPartialView(partialViewName) {
 	updateValidStatus();
 	$.ajax({
 		method: 'post',
-		url: '/Hosting/GetPartialViewWithData',
+		url: '/Announcement/GetPartialViewWithData',
 		data: {
 			partialViewName: partialViewName,
 			viewModel: getModelFromSession()
@@ -129,7 +129,7 @@ function saveAnnouncement() {
 	var model = getModelFromSession();
 	$.ajax({
 		method: 'post',
-		url: '/Hosting/SaveAnnouncement',
+		url: '/Announcement/SaveAnnouncement',
 		data: {
 			viewModel: getModelFromSession()
 		},
@@ -148,7 +148,7 @@ function saveAnnouncement() {
 				// Change layout tag without page reload.
 				var becomeHostTag = document.getElementById('becomeHostTag');
 				if (becomeHostTag) {
-					becomeHostTag.setAttribute('href', '/Hosting/ListUserAnnouncements');
+					becomeHostTag.setAttribute('href', '/Announcement/ListUserAnnouncements');
 					becomeHostTag.innerText = 'Manage my announcements';
 				}
 			}
@@ -271,8 +271,8 @@ function setTimePlace() {
 
 	validViews[timePlacePartialViewName] = true;
 
-	if (!country && !region && !city && !street && !streetNumber && !fromDate && !toDate
-		&& fromDate < today && fromDate > toDate
+	if (!country || !region || !city || !street || !streetNumber || !fromDate || !toDate
+		|| fromDate < today || fromDate > toDate
 	) {
 		validViews[timePlacePartialViewName] = false;
 	}
