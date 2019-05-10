@@ -30,7 +30,10 @@ namespace BedAndBreakfast.Data
 		public DbSet<AnnouncementToPayment> AnnouncementToPayments { get; set; }
         public DbSet<AnnouncementTag> AnnouncementTags { get; set; }
         public DbSet<AnnouncementToTag> AnnouncementToTags { get; set; }
-        
+        public DbSet<ScheduleItem> ScheduleItems { get; set; }
+        public DbSet<AnnouncementToSchedule> AnnouncementToSchedules { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
@@ -47,9 +50,24 @@ namespace BedAndBreakfast.Data
             modelBuilder.Entity<Announcement>()
                 .Property(a => a.Description).HasMaxLength(IoCContainer.DbSettings.Value.MaxAnnouncementDescSize);
 
-
             // ---------- Configure relations ----------
-            
+
+
+            // Many announcements has many schedule items.
+            modelBuilder.Entity<AnnouncementToSchedule>()
+                .HasKey(ats => new { ats.AnnouncementID, ats.ScheduleItemID });
+
+            modelBuilder.Entity<AnnouncementToSchedule>()
+                .HasOne(ats => ats.Announcement)
+                .WithMany(a => a.AnnouncementToSchedules)
+                .HasForeignKey(ats => ats.AnnouncementID);
+
+            modelBuilder.Entity<AnnouncementToSchedule>()
+                .HasOne(ats => ats.ScheduleItem)
+                .WithMany(s => s.AnnouncementToSchedules)
+                .HasForeignKey(ats => ats.ScheduleItemID);
+
+
             // Many announcements may have many tags.
             modelBuilder.Entity<AnnouncementToTag>()
                 .HasKey(att => new { att.AnnouncementID, att.AnnouncementTagID });

@@ -35,8 +35,9 @@ namespace BedAndBreakfast.Data
 		public List<AnnouncementToContact> AnnouncementToContacts { get; set; }
 		public List<AnnouncementToPayment> AnnouncementToPayments { get; set; }
         public List<AnnouncementToTag> AnnouncementToTags { get; set; }
+        public List<AnnouncementToSchedule> AnnouncementToSchedules { get; set; }
 
-		public User User { get; set; }
+        public User User { get; set; }
 		[MaxLength(450)]
 		public string UserFK { get; set; }
 
@@ -49,6 +50,9 @@ namespace BedAndBreakfast.Data
         /// Removed announcements are not displayed to users anymore - even to owners.
         /// </summary>
         public bool Removed { get; set; } = false;
+
+        public int? MaxReservations { get; set; }
+        public byte Timetable { get; set; }
 
     }
 }

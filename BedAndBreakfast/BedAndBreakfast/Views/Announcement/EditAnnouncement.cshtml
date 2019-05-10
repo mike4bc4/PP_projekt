@@ -4,6 +4,7 @@
 @{
     Dictionary<string, int> contacts = EnumeratedDbValues.ParseEnumToDictionary<EnumeratedDbValues.ContactType>();
     Dictionary<string, int> payments = EnumeratedDbValues.ParseEnumToDictionary<EnumeratedDbValues.PaymentMethod>();
+    List<string> timetableOptions = Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementTimetableOptions)).ToList();
 
     ViewData["Title"] = "EditAnnouncement";
     bool newModel = Model.newModel;
@@ -35,6 +36,10 @@
 
 	function getPaymentMethods() {
         return @Html.Raw(Json.Serialize(payments));
+    }
+
+    function getTimetableOptions() {
+        return @Html.Raw(Json.Serialize(timetableOptions));
     }
 
     window.onload = function () {

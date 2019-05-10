@@ -1,30 +1,31 @@
 ﻿@model EditAnnouncementViewModel
 @using BedAndBreakfast.Data
 @{
-	ViewData["Title"] = "Summary";
+    ViewData["Title"] = "Summary";
+
 }
 
 <h2>Summary</h2>
 
 <div>
-	<div>
-		<label>
-			<strong>
-				Announcement type
-			</strong>
-		</label>
-	</div>
-	<div>
+    <div>
+        <label>
+            <strong>
+                Announcement type
+            </strong>
+        </label>
+    </div>
+    <div>
         @Enum.GetName(typeof(EnumeratedDbValues.AnnouncementType), Model.Type)
-	</div>
+    </div>
 
-	<div>
-		<label>
-			<strong>
-				Announcement subtype
-			</strong>
-		</label>
-	</div>
+    <div>
+        <label>
+            <strong>
+                Announcement subtype
+            </strong>
+        </label>
+    </div>
     <div>
         @switch (Model.Type)
         {
@@ -40,98 +41,142 @@
         }
     </div>
 
-	@if (Model.SharedPart != null)
-	{
-		<div>
-			<label>
-				<strong>
-					Announcement shared part
-				</strong>
-			</label>
-		</div>
+    @if (Model.SharedPart != null)
+    {
+        <div>
+            <label>
+                <strong>
+                    Announcement shared part
+                </strong>
+            </label>
+        </div>
         <div>
             @Enum.GetName(typeof(EnumeratedDbValues.HouseSharedPart), Model.Subtype)
         </div>
-	}
+    }
 
-	<div>
-		<label>
-			<strong>
-				Announcement period
-			</strong>
-		</label>
-	</div>
-	<div>
-		@Model.From.ToShortDateString() - @Model.To.ToShortDateString()
-	</div>
+    <div>
+        <label>
+            <strong>
+                Announcement period
+            </strong>
+        </label>
+    </div>
+    <div>
+        @Model.From.ToShortDateString() - @Model.To.ToShortDateString()
+    </div>
 
-	<div>
-		<label>
-			<strong>
-				Announcement address
-			</strong>
-		</label>
-	</div>
-	<div>
-		@Model.Country
-	</div>
-	<div>
-		@Model.Region
-	</div>
-	<div>
-		@Model.City
-	</div>
-	<div>
-		@Model.Street
-	</div>
-	<div>
-		@Model.StreetNumber
-	</div>
+    <div>
+        <label>
+            <strong>
+                Announcement address
+            </strong>
+        </label>
+    </div>
+    <div>
+        @Model.Country
+    </div>
+    <div>
+        @Model.Region
+    </div>
+    <div>
+        @Model.City
+    </div>
+    <div>
+        @Model.Street
+    </div>
+    <div>
+        @Model.StreetNumber
+    </div>
 
-	<div>
-		<label>
-			<strong>
-				Announcement description
-			</strong>
-		</label>
-	</div>
-	<div>
-		@Model.Description
-	</div>
+    <div>
+        <label>
+            <strong>
+                Announcement description
+            </strong>
+        </label>
+    </div>
+    <div>
+        @Model.Description
+    </div>
 
-	<div>
-		<label>
-			<strong>
-				Announcement contact methods
-			</strong>
-		</label>
-	</div>
-	<div>
-		@foreach (var method in Model.ContactMethods)
-		{
-			<label>@Enum.GetName(typeof(EnumeratedDbValues.ContactType), method.Value)</label>
-			<label>@method.Key</label>
-		}
-	</div>
+    <div>
+        <label>
+            <strong>
+                Announcement contact methods
+            </strong>
+        </label>
+    </div>
+    <div>
+        @foreach (var method in Model.ContactMethods)
+        {
+            <label>@Enum.GetName(typeof(EnumeratedDbValues.ContactType), method.Value)</label>
+            <label>@method.Key</label>
+        }
+    </div>
 
-	<div>
-		<label>
-			<strong>
-				Announcement payment methods
-			</strong>
-		</label>
-	</div>
-	<div>
-		@foreach (var method in Model.PaymentMethods)
-		{
-        <label>@Enum.GetName(typeof(EnumeratedDbValues.PaymentMethod), method.Value)</label>
-			<label>@method.Key</label>
-		}
-	</div>
+    <div>
+        <label>
+            <strong>
+                Announcement payment methods
+            </strong>
+        </label>
+    </div>
+    <div>
+        @foreach (var method in Model.PaymentMethods)
+        {
+            <label>@Enum.GetName(typeof(EnumeratedDbValues.PaymentMethod), method.Value)</label>
+            <label>@method.Key</label>
+        }
+    </div>
+    <div>
+        <label>
+            <strong>
+                Timetable options
+            </strong>
+        </label>
+    </div>
+    <div>
+        @Enum.GetName(typeof(EnumeratedDbValues.AnnouncementTimetableOptions), Model.Timetable);
+    </div>
+
+    @switch (Model.Timetable)
+    {
+        case 1:
+            <div>
+                <label>
+                    <strong>
+                        Reservations per day
+                    </strong>
+                </label>
+            </div>
+            <div>
+                @Model.MaxReservations
+            </div>
+            break;
+        case 2:
+            <div>
+                <label>
+                    <strong>
+                        Schedule
+                    </strong>
+                </label>
+            </div>
+            foreach (var item in Model.ScheduleItems)
+            {
+                <div>
+                    From @item.From
+                    To @item.To
+                    Reservations @item.MaxReservations
+                </div>
+            }
+            break;
+    }
 
 </div>
 
 <div>
-	<a href="#" onclick="saveAnnouncement();">Save announcement</a>
+
+    <a href="#" onclick="saveAnnouncement();">Save announcement</a>
 </div>
 

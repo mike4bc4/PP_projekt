@@ -110,6 +110,14 @@ namespace BedAndBreakfast.Data
             IsInactive = 9
         }
 
+        public enum AnnouncementTimetableOptions {
+            Off = 0,
+            PerDay = 1,
+            PerHour = 2
+        }
+
+
+
 		public static List<SelectListItem> CreateListOfItems<T>(string currentlySelectedValue) {
             List<SelectListItem> list = new List<SelectListItem>();
             foreach (T item in Enum.GetValues(typeof(T)))

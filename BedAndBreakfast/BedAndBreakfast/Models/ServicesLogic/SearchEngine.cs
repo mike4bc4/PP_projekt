@@ -321,5 +321,22 @@ namespace BedAndBreakfast.Models
             return announcements;
         }
 
+        /// <summary>
+        /// Finds and returns schedule item based on specified from, to and maxReservations values.
+        /// Will return null if there is no searched record in database.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="maxReservations"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static ScheduleItem FindScheduleItem(byte from, byte to, int maxReservations, AppDbContext context) {
+            return context.ScheduleItems
+                .Where(s => s.From == from)
+                .Where(s => s.To == to)
+                .Where(s => s.MaxReservations == maxReservations)
+                .SingleOrDefault();
+        }
+
     }
 }

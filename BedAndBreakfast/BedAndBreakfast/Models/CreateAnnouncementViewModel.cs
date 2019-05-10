@@ -42,5 +42,15 @@ namespace BedAndBreakfast.Models
         public bool IsCorrect { get; set; } = false;
         public bool IsActive { get; set; } = true;
         public bool Removed { get; set; }
+        public int? Timetable { get; set; }
+        public int? MaxReservations { get; set; }
+        public List<ScheduleItemViewModel> ScheduleItems { get; set; }
     }
+
+    public class ScheduleItemViewModel {
+        public int From { get; set; }
+        public int To { get; set; }
+        public int? MaxReservations { get; set; }
+    }
+    
 }

@@ -1,6 +1,9 @@
 ﻿@model EditAnnouncementViewModel
+@using BedAndBreakfast.Data;
 @{
-	ViewData["Title"] = "TimePlaceSelectionForm";
+    ViewData["Title"] = "TimePlaceSelectionForm";
+    Array timetableOptions = Enum.GetValues(typeof(EnumeratedDbValues.AnnouncementTimetableOptions));
+
 }
 
 <h2>TimePlaceSelectionForm</h2>
@@ -34,6 +37,18 @@
 		<label>To</label>
 		<input type="date" id="to" value="@Model.To.ToString("yyyy-MM-dd")"/>
 	</div>
+    <div>
+        <label>Timetable</label>
+        <select id="timetableOptionSelect"
+                onchange="handleTimetableOptionChange(this.id, 'announcementScheduleContainer');">
+            @foreach (int timetableOption in timetableOptions) {
+                @:<option value="@timetableOption">
+                    @Enum.GetName(typeof(EnumeratedDbValues.AnnouncementTimetableOptions), timetableOption);
+                @:</option>
+            }
+        </select>
+        <div id="announcementScheduleContainer"></div>
+    </div>
 </div>
 <div>
 	<a href="#" onclick="setTimePlace();">Save</a>
