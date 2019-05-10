@@ -313,7 +313,7 @@ function setTimePlace() {
     }
     else {
         for (var item of getScheduleItems()) {
-            if (item == null || item.maxReservationsValid == false || item.timeValid == false) {
+            if (item != null && (item.maxReservationsValid == false || item.timeValid == false)) {
                 scheduleItemsValid = false;
                 break;
             }
