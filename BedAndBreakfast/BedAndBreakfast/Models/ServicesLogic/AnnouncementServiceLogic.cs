@@ -552,9 +552,6 @@ namespace BedAndBreakfast.Models.ServicesLogic
             }
             return payments;
         }
-
-
-
     }
 
 }

@@ -117,11 +117,13 @@ namespace BedAndBreakfast.Controllers
 
 
         [Authorize(Roles = Role.User)]
-        public async Task<IActionResult> ChangeAnnouncementsStatus(List<int> announcementsIDs, bool? areActive) {
+        public async Task<IActionResult> ChangeAnnouncementsStatus(List<int> announcementsIDs, bool? areActive)
+        {
             List<Announcement> announcements = (from a in context.Announcements
                                                 where announcementsIDs.Contains(a.ID)
                                                 select a).ToList();
-            foreach (Announcement announcement in announcements) {
+            foreach (Announcement announcement in announcements)
+            {
                 if (areActive != null)
                     announcement.IsActive = (bool)areActive;
                 else
@@ -134,9 +136,15 @@ namespace BedAndBreakfast.Controllers
         public IActionResult Browse(string annBrowserQuery)
         {
             dynamic model = new ExpandoObject();
+            // Find only these announcements which fit in active time range,
+            // were not deactivated or removed by owner and parse them to view model.
             List<EditAnnouncementViewModel> viewModel = AnnouncementServiceLogic
-                .ParseAnnouncementsToViewModelList(SearchEngine.FindAnnoucements(annBrowserQuery, context),
-                context);
+                .ParseAnnouncementsToViewModelList(SearchEngine.FindAnnoucements(annBrowserQuery, context), context)
+                .Where(vm => (DateTime.Compare(vm.From, DateTime.Today) <= 0))
+                .Where(vm => (DateTime.Compare(vm.To, DateTime.Today) >= 0))
+                .Where(vm => vm.IsActive == true)
+                .Where(vm => vm.Removed == false).ToList();
+
             model.announcements = viewModel;
 
             return View(model);

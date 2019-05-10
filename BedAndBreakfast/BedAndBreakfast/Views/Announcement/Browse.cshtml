@@ -3,17 +3,70 @@
 @{
     ViewData["Title"] = "BrowseAnnouncements";
     List<EditAnnouncementViewModel> announcements = Model.announcements;
+
+
+    List<string> announcementTypes = Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementType)).ToList();
+    List<string> houseSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.HouseSubtype)).ToList();
+    List<string> entertainmnetSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.EntertainmentSubtype)).ToList();
+    List<string> foodSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.FoodSubtype)).ToList();
+    List<string> houseSharedParts = Enum.GetNames(typeof(EnumeratedDbValues.HouseSharedPart)).ToList();
+
+    List<string> paymentMethods = Enum.GetNames(typeof(EnumeratedDbValues.PaymentMethod)).ToList();
+    List<string> contactMethods = Enum.GetNames(typeof(EnumeratedDbValues.ContactType)).ToList();
+    List<string> timetableOptions = Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementTimetableOptions)).ToList();
+
 }
 
 <h2>Browse</h2>
 
-@foreach (EditAnnouncementViewModel announcement in announcements)
-{
-    <div>
-        <div>@announcement.Type</div>
-        <div>@announcement.Subtype</div>
-        <div>@announcement.SharedPart</div>
-        <div>@announcement.Description</div>
-    </div>
-}
+<script type="text/javascript" src="~/js/browseAnnouncements.js"></script>
+<script type="text/javascript">
+    window.onload = function () {
+        drawAnnouncementsList();
+    };
+    function getAnnouncementTypes() {
+        return @Html.Raw(Json.Serialize(announcementTypes));
+    }
+    function getHouseSubtypes() {
+        return @Html.Raw(Json.Serialize(houseSubtypes));
+    }
+    function getEntertainmentSubtypes() {
+        return @Html.Raw(Json.Serialize(entertainmnetSubtypes));
+    }
+    function getFoodSubtypes() {
+        return @Html.Raw(Json.Serialize(foodSubtypes));
+    }
+    function getHouseSharedParts() {
+        return @Html.Raw(Json.Serialize(houseSharedParts));
+    }
+    function getPaymentMethods() {
+        return @Html.Raw(Json.Serialize(paymentMethods));
+    }
+    function getContactMethods() {
+        return @Html.Raw(Json.Serialize(contactMethods));
+    }
+    function getTimetableOptions() {
+        return @Html.Raw(Json.Serialize(timetableOptions));
+    }
+    function getAnnouncements() {
+        return @Html.Raw(Json.Serialize(announcements));
+    }
+</script>
+
+<style>
+    .ann-row {
+        margin: 2px;
+        border: 1px solid black;
+    }
+        .ann-row:hover {
+            background-color: slategray;
+            cursor: pointer;
+        }
+    .ann-row-subtitle {
+        font-weight: bold;
+    }
+</style>
+
+
+<div id="browse-ann-view-container"></div>
 
