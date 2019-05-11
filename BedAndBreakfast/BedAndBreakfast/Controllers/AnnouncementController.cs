@@ -150,6 +150,22 @@ namespace BedAndBreakfast.Controllers
             return View(model);
         }
 
+        public IActionResult GetReservations(int announcementID, DateTime from, DateTime to)
+        {
+            Announcement announcement = context.Announcements.Where(a => a.ID == announcementID).SingleOrDefault();
+            if (announcement != null)
+            {
+                switch (announcement.Timetable)
+                {
+                    case 1:
+
+                        break;
+                    case 2:
+                        break;
+                }
+            }
+
+        }
 
     }
 }

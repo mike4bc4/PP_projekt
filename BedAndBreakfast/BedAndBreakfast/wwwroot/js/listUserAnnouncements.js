@@ -1,80 +1,86 @@
-﻿function drawAnnouncementsList(announcements) {
+﻿var mainContainerName = 'list-ann-main-container';
+var subTableClassName = 'sub-table';
+var subTableHeaderCellClassName = 'sub-table-header-cell';
+var mainTableClassName = 'main-table';
+var subTableRowClassName = 'sub-table-row';
+var subTableRowSelectedClassName = 'sub-table-row-selected';
+
+
+function drawAnnouncementsList(announcements) {
 
 	// Clear container content.
-	var container = document.getElementById('usrAnnPageContainer');
-	container.innerHTML = '';
+	//container.innerHTML = '';
 	// Create table body.
-	$('#usrAnnPageContainer').append('<table class="' + tableClass + '">' +
-		'<thead id="usrAnnTabHeader"></thead><tbody id="usrAnnTabBody"></tbody></table>');
 
-	// Create edit buttons table
-	$('#usrAnnPageContainer').append('<table class="' + editButtonsTableClass + '"><thead><th>&nbsp</th></thead>' +
-		'<tbody id="usrAnnEditButtonsBody"></tbody></table>');
-
-	// Set table header.
-	$('#usrAnnTabHeader').append('<tr><th class="' + cellClass + '">Type</th><th class="' + cellClass + '">Subtype</th><th class="' + cellClass + '">Additional option</th>' +
-		'<th class="' + cellClass + '">From</th><th class="' + cellClass + '">To</th><th class="' + cellClass + '">Active</th></tr>');
-
-
-	// Set table content.
-	for (var i = 0; i < announcements.length; i++) {
-		if (announcements[i] != null) {
-			// Select row class - based on selection array.
-			var rowClass;
-			if (clickedAnnouncementRowIndex(i) != null) {
-				rowClass = rowSelectedClass;
-			}
-			else {
-				rowClass = rowDefaultClass;
-			}
-
-			$('#usrAnnTabBody').append('<tr id="usrAnnRow' + i + '" class="' + rowClass + '" onClick="toggleAnnouncementSelection(' + i + '); redraw();"></tr>');
-
-			var subtypeName = '';
-			var sharedPartName = '';
-			switch (announcements[i].type) {
-				case 0:
-					subtypeName = Object.keys(getHouseSubtypes())
-						.find(key => getHouseSubtypes()[key] === announcements[i].subtype);
-					sharedPartName = Object.keys(getHouseSharedPart())
-						.find(key => getHouseSharedPart()[key] === announcements[i].sharedPart);
-					break;
-				case 1:
-					subtypeName = Object.keys(getEntertainmentSubtypes())
-						.find(key => getEntertainmentSubtypes()[key] === announcements[i].subtype);
-					break;
-				case 2:
-					subtypeName = Object.keys(getFoodSubtypes())
-						.find(key => getFoodSubtypes()[key] === announcements[i].subtype);
-					break;
-			}
-
-
-			$('#usrAnnRow' + i).append(
-				'<td class="' + cellClass + '">' + Object.keys(getTypes()).find(key => getTypes()[key] === announcements[i].type) + '</td>' +
-				'<td class="' + cellClass + '">' + subtypeName + '</td>' +
-				'<td class="' + cellClass + '">' + sharedPartName + '</td>' +
-				'<td class="' + cellClass + '">' + announcements[i].from.substr(0, 10) + '</td>' +
-				'<td class="' + cellClass + '">' + announcements[i].to.substr(0, 10) + '</td>');
-
-			// Date is retrieved as string so it has to be parsed into date time.
-			// In retrieved date string T character replaces space between date and time.
-
-			if (!announcements[i].isActive || isOutOfDateRange(announcements[i])) {
-				$('#usrAnnRow' + i).append('<td class="' + cellClass + '">No</td>');
-			}
-			else {
-				$('#usrAnnRow' + i).append('<td class="' + cellClass + '">Yes</td>');
-			}
-
-			$('#usrAnnEditButtonsBody').append('<tr><td class="' + cellClass + '"><a href="/Announcement/EditAnnouncement/?newModel=false" onClick="editAnnouncement(' + i + ');">Edit announcement</a></td></tr>');
+	document.getElementById(mainContainerName).innerHTML = '<table id="main-table" class="' + mainTableClassName + '"></table>';
+	document.getElementById('main-table').innerHTML = '<tr><td id="sub-table-left-container"></td><td id="sub-table-right-container"></td></tr>';
+	document.getElementById('sub-table-left-container').innerHTML = '<table class="' + subTableClassName + '" id="sub-table-left"></table>';
+	document.getElementById('sub-table-right-container').innerHTML = '<table class="' + subTableClassName + '" id="sub-table-right"></table>';
+	$('#sub-table-left').append('<tr>' +
+		'<td class="' + subTableHeaderCellClassName + '">Type</td>' +
+		'<td class="' + subTableHeaderCellClassName + '">Subtype</td>' +
+		'<td class="' + subTableHeaderCellClassName + '">Additional options</td>' +
+		'<td class="' + subTableHeaderCellClassName + '">From</td>' +
+		'<td class="' + subTableHeaderCellClassName + '">To</td>' +
+		'<td class="' + subTableHeaderCellClassName + '">Active</td>' +
+		'</tr>');
+	$('#sub-table-right').append('<tr>' +
+		'<td class="' + subTableHeaderCellClassName + '">&nbsp</td>' +
+		'<td class="' + subTableHeaderCellClassName + '">&nbsp</td>' +
+		'</tr>')
+	var index = 0;
+	for (var announcement of announcements) {
+		var announcementSubtype = '';
+		var announcementSharedPart = '';
+		switch (announcement.type) {
+			case 0:	// House typ
+				announcementSubtype = getHouseSubtypes()[announcement.type];
+				announcementSharedPart = getHouseSharedPart()[announcement.type];
+				break;
+			case 1:	// Entertainment type
+				announcementSubtype = getEntertainmentSubtypes()[announcement.type];
+				break;
+			case 2:	// Food type
+				announcementSubtype = getFoodSubtypes()[announcement.type];
+				break;
 		}
+		var active = '';
+		if (!announcement.isActive || isOutOfDateRange(announcement)) {
+			active = 'No';
+		}
+		else {
+			active = 'Yes';
+		}
+		var rowClass;
+		if (clickedAnnouncementRowIndex(index) != null) {
+			rowClass = subTableRowSelectedClassName;
+		}
+		else {
+			rowClass = subTableRowClassName;
+		}
+
+		$('#sub-table-left').append('<tr class="' + rowClass + '" onClick="toggleAnnouncementSelection(' + index + '); redraw();">' +
+			'<td class="' + subTableHeaderCellClassName + '">' + getTypes()[announcement.type] + '</td>' +
+			'<td class="' + subTableHeaderCellClassName + '">' + announcementSubtype + '</td>' +
+			'<td class="' + subTableHeaderCellClassName + '">' + announcementSharedPart + '</td>' +
+			'<td class="' + subTableHeaderCellClassName + '">' + announcement.from.split('T')[0] + '</td>' +
+			'<td class="' + subTableHeaderCellClassName + '">' + announcement.to.split('T')[0] + '</td>' +
+			'<td class="' + subTableHeaderCellClassName + '">' + active + '</td>' +
+			'</tr>');
+		$('#sub-table-right').append('<tr>' +
+			'<td class="' + subTableHeaderCellClassName + '"><a href="/Announcement/EditAnnouncement/?newModel=false" onClick="editAnnouncement(' + index + ');">Edit announcement</a></td>' +
+			'<td class="' + subTableHeaderCellClassName + '"><a href="/Announcement/EditAnnouncement/?newModel=false" onClick="editAnnouncement(' + index + ');">Edit announcement</a></td>' +
+			'</tr>');
+		index++;
+
 	}
 }
 
+
+
 function getAnnouncements() {
 	return JSON.parse(sessionStorage.getItem('userAnnouncements'));
-	
+
 }
 
 function updateSessionAnnouncements(announcements) {
@@ -90,33 +96,33 @@ function isOutOfDateRange(announcement) {
 }
 
 function getAnnouncementSelectedList() {
-	var announcmentSelectedList = JSON.parse(sessionStorage.getItem('announcmentSelectedList'));
-	if (!announcmentSelectedList) {
-		announcmentSelectedList = [];
-		sessionStorage.setItem('announcmentSelectedList', JSON.stringify(announcmentSelectedList));
+	var announcementSelectedList = JSON.parse(sessionStorage.getItem('announcementSelectedList'));
+	if (!announcementSelectedList) {
+		announcementSelectedList = [];
+		sessionStorage.setItem('announcementSelectedList', JSON.stringify(announcementSelectedList));
 	}
-	return announcmentSelectedList;
+	return announcementSelectedList;
 }
 
 function clearAnnouncementSelectedList() {
-	sessionStorage.setItem('announcmentSelectedList', null);
+	sessionStorage.setItem('announcementSelectedList', null);
 }
 
 
 function toggleAnnouncementSelection(announcementIndex) {
-	var announcmentSelectedList = getAnnouncementSelectedList();
+	var announcementSelectedList = getAnnouncementSelectedList();
 	var selectedIndex = clickedAnnouncementRowIndex(announcementIndex);
 
 	if (selectedIndex == null) {
 		// Clicked announcement index does not exist in selected list.
-		announcmentSelectedList.push(announcementIndex);
+		announcementSelectedList.push(announcementIndex);
 	}
 	else {
 		// Remove selected item record.
-		announcmentSelectedList.splice(selectedIndex, 1);
+		announcementSelectedList.splice(selectedIndex, 1);
 	}
 	// Save changes
-	sessionStorage.setItem('announcmentSelectedList', JSON.stringify(announcmentSelectedList));
+	sessionStorage.setItem('announcementSelectedList', JSON.stringify(announcementSelectedList));
 }
 
 /**
@@ -124,12 +130,12 @@ function toggleAnnouncementSelection(announcementIndex) {
  * @param {any} announcementIndex
  */
 function clickedAnnouncementRowIndex(announcementIndex) {
-	var announcmentSelectedList = getAnnouncementSelectedList();
+	var announcementSelectedList = getAnnouncementSelectedList();
 	var selectedIndex = null;
 
 	// Find record with clicked announcement index.
-	for (var i = 0; i < announcmentSelectedList.length; i++) {
-		if (announcmentSelectedList[i] == announcementIndex) {
+	for (var i = 0; i < announcementSelectedList.length; i++) {
+		if (announcementSelectedList[i] == announcementIndex) {
 			selectedIndex = i;
 			break;
 		}
@@ -221,7 +227,7 @@ function removeSelectedAnnouncements() {
 	}
 
 	// All selected rows has been removed, reset selection list.
-	clearAnnouncementSelectedList();	
+	clearAnnouncementSelectedList();
 
 	setAnnouncementManagementMessage(4);
 

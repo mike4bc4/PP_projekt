@@ -4,20 +4,16 @@
 @{
     ViewData["Title"] = "ListUserAnnouncements";
     List<EditAnnouncementViewModel> usersAnnouncements = Model.announcements;
-    Dictionary<string, int> types = EnumeratedDbValues.ParseEnumToDictionary<EnumeratedDbValues.AnnouncementType>();
-    Dictionary<string, int> houseSubtypes = EnumeratedDbValues.ParseEnumToDictionary<EnumeratedDbValues.HouseSubtype>();
-    Dictionary<string, int> houseSharedParts = EnumeratedDbValues.ParseEnumToDictionary<EnumeratedDbValues.HouseSharedPart>();
-    Dictionary<string, int> entertainmentSubtypes = EnumeratedDbValues.ParseEnumToDictionary<EnumeratedDbValues.EntertainmentSubtype>();
-    Dictionary<string, int> foodSubtypes = EnumeratedDbValues.ParseEnumToDictionary<EnumeratedDbValues.FoodSubtype>();
+    List<string> types = Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementType)).ToList();
+    List<string> houseSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.HouseSubtype)).ToList();
+    List<string> houseSharedParts = Enum.GetNames(typeof(EnumeratedDbValues.HouseSharedPart)).ToList();
+    List<string> entertainmentSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.EntertainmentSubtype)).ToList();
+    List<string> foodSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.FoodSubtype)).ToList();
 }
 
 <script type="text/javascript" src="~/js/listUserAnnouncements.js"></script>
 <script type="text/javascript">
-    var tableClass = 'announcmentTable';
-    var rowDefaultClass = 'announcementTableRow';
-    var rowSelectedClass = 'announcementTableRowSelected';
-    var cellClass = 'announcmentTableCell';
-    var editButtonsTableClass = 'announcementEditButtonsTable';
+
 
     window.onload = function () {
         sessionStorage.setItem('userAnnouncements', JSON.stringify(@Html.Raw(Json.Serialize(usersAnnouncements))));
@@ -51,42 +47,31 @@
 </script>
 
 <style>
-    .announcmentTable {
-        border: 1px solid gray;
+    .main-table{
         border-collapse: collapse;
-        float: left;
     }
-
-    .announcementEditButtonsTable {
-        border: 1px solid gray;
+    .main-table-cell{
         border-collapse: collapse;
-        float: auto;
     }
 
-    .announcementTableRow {
-        border: 1px solid gray;
+    .sub-table{
+        border-collapse: collapse;
     }
-
-        .announcementTableRow:hover {
-            background-color: lightgoldenrodyellow;
-        }
-
-    .announcmentTableCell {
-        border: 1px solid gray;
+    .sub-table-header-cell{
+        border: 1px solid black;
     }
+    .sub-table-row{
 
-    .announcmentTableHeader {
-        border: 1px solid gray;
     }
-
-    .announcementTableRowSelected {
-        border: 1px solid gray;
-        background-color: darkseagreen;
+    .sub-table-row:hover{
+        background-color: lightgoldenrodyellow;
     }
-
-        .announcementTableRowSelected:hover {
-            background-color: lightgreen;
-        }
+    .sub-table-row-selected{
+        background-color: seagreen;
+    }
+    .sub-table-row-selected:hover{
+        background-color: lightgreen;
+    }
 </style>
 
 
@@ -124,4 +109,4 @@
 <hr />
 
 @*By default display all items received from controller.*@
-<div id="usrAnnPageContainer"></div>
+<div id="list-ann-main-container"></div>
