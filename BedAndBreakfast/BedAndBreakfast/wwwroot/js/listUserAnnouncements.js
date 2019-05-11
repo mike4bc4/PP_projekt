@@ -5,14 +5,18 @@ var mainTableClassName = 'main-table';
 var subTableRowClassName = 'sub-table-row';
 var subTableRowSelectedClassName = 'sub-table-row-selected';
 var weekTimetableTableClassName = 'week-timetable-table';
-var weekTimetableTableCellClassName = 'week-timetable-cell';
-var weekTimetableTableCellHighlightClassName = 'week-timetable-cell-highlight';
-var weekTimetableTableCellDisabledClassName = 'week-timetable-cell-disabled';
-var weekTimetableTableHeaderCellClassName = 'week-timetable-header-cell';
+var weekTimetableCellClassName = 'week-timetable-cell';
+var weekTimetableCellHighlightClassName = 'week-timetable-cell-highlight';
+var weekTimetableCellDisabledClassName = 'week-timetable-cell-disabled';
+var weekTimetableHeaderCellClassName = 'week-timetable-header-cell';
 var announcementListNavBarId = 'list-ann-nav-bar';
-var announcementListSearchBar = 'list-ann-search-bar';
+var announcementListSearchBarId = 'list-ann-search-bar';
 var navigationButtonClassName = 'nav-button';
-
+var dayTimetableTableClassName = 'day-timetable-table';
+var dayTimetableCellClassName = 'day-timetable-cell';
+var dayTimetableHeaderCellClassName = 'day-timetable-header-cell';
+var dayTimetableCellDisabledClassName = 'day-timetable-cell-disabled';
+var dayTimetableHeaderCellHighlightClassName = 'day-timetable-header-cell-highlight';
 
 
 function drawAnnouncementsList(announcements) {
@@ -42,7 +46,7 @@ function drawAnnouncementsList(announcements) {
 		var announcementSubtype = '';
 		var announcementSharedPart = '';
 		switch (announcement.type) {
-			case 0:	// House typ
+			case 0:	// House type
 				announcementSubtype = getHouseSubtypes()[announcement.type];
 				announcementSharedPart = getHouseSharedPart()[announcement.type];
 				break;
@@ -79,9 +83,13 @@ function drawAnnouncementsList(announcements) {
 		var todayDate = new Date();
 		todayDate.setHours(0, 0, 0, 0);
 		todayDate = todayDate.toLocaleDateString('en-US');
+		var displayTimetableContent = 'Timetable off';
+		if (announcement.timetable != 0) {
+			displayTimetableContent = '<a href="#" onClick="getReservations(' + announcement.id + ',\'' + todayDate + '\');">Display timetable</a>';
+		}
 		$('#sub-table-right').append('<tr>' +
 			'<td class="' + subTableHeaderCellClassName + '"><a href="/Announcement/EditAnnouncement/?newModel=false" onClick="editAnnouncement(' + index + ');">Edit announcement</a></td>' +
-			'<td class="' + subTableHeaderCellClassName + '"><a href="#" onClick="getReservations(' + announcement.id + ',\'' + todayDate + '\');">Display timetable</a></td>' +
+			'<td class="' + subTableHeaderCellClassName + '">' + displayTimetableContent + '</td>' +
 			'</tr>');
 		index++;
 
@@ -91,18 +99,20 @@ function drawAnnouncementsList(announcements) {
 function drawTimetable(reservations, announcement, scheduleItems, date) {
 	// Parse short string date to date format.
 	var dateArray = date.split('/');
-	var currentDate = new Date();
-	currentDate.setMonth(dateArray[0] - 1);
-	currentDate.setDate(dateArray[1]);
-	currentDate.setFullYear(dateArray[2]);
-	currentDate.setHours(0, 0, 0, 0);
+	var middleDate = new Date();
+	middleDate.setMonth(dateArray[0] - 1);
+	middleDate.setDate(dateArray[1]);
+	middleDate.setFullYear(dateArray[2]);
+	middleDate.setHours(0, 0, 0, 0);
 	// Setup date time display options.
 	var dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 	// Remove listing navigation bar.
 	document.getElementById(announcementListNavBarId).innerHTML = '';
 	// Remove listing search and sor bar.
-	document.getElementById(announcementListSearchBar).innerHTML = '';
+	document.getElementById(announcementListSearchBarId).innerHTML = '';
 
+	var today = new Date();
+	today.setHours(0, 0, 0, 0);
 	switch (announcement.timetable) {
 		case 1:	// Per day timetable
 			// Insert tables.
@@ -112,9 +122,9 @@ function drawTimetable(reservations, announcement, scheduleItems, date) {
 			$('#week-table-date-row').append('<td rowspan="2"><button class="' + navigationButtonClassName + '">left arrow</button></td>');
 			// Fill table body.
 			for (var index = 0; index < 7; index++) {
-				var res = '0';
+				var res = 0;
 				var dt = new Date();
-				dt.setDate(currentDate.getDate() - 3 + index);
+				dt.setDate(middleDate.getDate() - 3 + index);
 				dt.setHours(0, 0, 0, 0);
 				if (reservations[index] != null) {
 					res = reservations[index];
@@ -125,21 +135,73 @@ function drawTimetable(reservations, announcement, scheduleItems, date) {
 				to.setHours(0, 0, 0, 0);
 
 				if (dt < from || dt > to) {
-					$('#week-table-date-row').append('<td class="' + weekTimetableTableCellDisabledClassName + '">' + dt.toLocaleDateString('en-US', dateOptions) + '</td>');
-					$('#week-table-content-row').append('<td class="' + weekTimetableTableCellDisabledClassName + '">&nbsp</td>');
+					if (dt.getDay() != today.getDay() ||
+						dt.getMonth() != today.getMonth() ||
+						dt.getFullYear() != today.getFullYear()) {
+						$('#week-table-date-row').append('<td class="' + weekTimetableCellDisabledClassName + '">' + dt.toLocaleDateString('en-US', dateOptions) + '</td>');
+					}
+					else {
+						$('#week-table-date-row').append('<td class="' + weekTimetableCellHighlightClassName + '">' + dt.toLocaleDateString('en-US', dateOptions) + '</td>');
+					}
+					$('#week-table-content-row').append('<td class="' + weekTimetableCellDisabledClassName + '">Reservations ' + res + '/' + announcement.maxReservations + '</td>');
 				}
 				else {
-					$('#week-table-date-row').append('<td class="' + weekTimetableTableHeaderCellClassName + '">' + dt.toLocaleDateString('en-US', dateOptions) + '</td>');
-					$('#week-table-content-row').append('<td class="' + weekTimetableTableCellClassName + '" onClick="">Reservations ' + res + '/' + announcement.maxReservations + '</td>');
+					if (dt.getDay() != today.getDay() ||
+						dt.getMonth() != today.getMonth() ||
+						dt.getFullYear() != today.getFullYear()) {
+						$('#week-table-date-row').append('<td class="' + weekTimetableHeaderCellClassName + '">' + dt.toLocaleDateString('en-US', dateOptions) + '</td>');
+					}
+					else {
+						$('#week-table-date-row').append('<td class="' + weekTimetableCellHighlightClassName + '">' + dt.toLocaleDateString('en-US', dateOptions) + '</td>');
+					}
+					$('#week-table-content-row').append('<td class="' + weekTimetableCellClassName + '" onClick="">Reservations ' + res + '/' + announcement.maxReservations + '</td>');
 				}
 			}
 			// Add right navigation button.
 			$('#week-table-date-row').append('<td rowspan="2"><button class="' + navigationButtonClassName + '">right arrow</button></td>');
 			break;
 		case 2:	// Per hour timetable
+			// Add day table.
+			document.getElementById(mainContainerName).innerHTML = '<table class="' + dayTimetableTableClassName + '" id="day-timetable-table"></table>';
+			document.getElementById('day-timetable-table').innerHTML = '<tr id="day-timetable-header"></tr>';
+			// Add date header and navigation buttons.
+			if (middleDate.getDay() != today.getDay() ||
+				middleDate.getMonth() != today.getMonth() ||
+				middleDate.getFullYear() != today.getFullYear()) {
+				$('#day-timetable-header').append('<td rowspan="' + (scheduleItems.length + 1) + '"><button onclick="" class="' + navigationButtonClassName + '">left arrow</button></td>' +
+					'<td class="' + dayTimetableHeaderCellClassName + '">' + middleDate.toLocaleDateString('en-US', dateOptions) + '</td>' +
+					'<td rowspan="' + (scheduleItems.length + 1) + '"><button onclick="" class="' + navigationButtonClassName + '">right arrow</button></td>');
+			}
+			else {
+				$('#day-timetable-header').append('<td rowspan="' + (scheduleItems.length + 1) + '"><button onclick="" class="' + navigationButtonClassName + '">left arrow</button></td>' +
+					'<td class="' + dayTimetableHeaderCellHighlightClassName + '">' + middleDate.toLocaleDateString('en-US', dateOptions) + '</td>' +
+					'<td rowspan="' + (scheduleItems.length + 1) + '"><button onclick="" class="' + navigationButtonClassName + '">right arrow</button></td>');
+			}
+			// Add schedule items with reservations.
+			var index = 0;
+			for (var item of scheduleItems) {
+				var res = 0;
+				if (reservations[index] != null) {
+					res = reservations[index];
+				}
+				var from = new Date(announcement.from);
+				from.setHours(0, 0, 0, 0);
+				var to = new Date(announcement.to);
+				to.setHours(0, 0, 0, 0);
+				if (dt < from || dt > to) {
+					$('#day-timetable-table').append('<tr onclick="" class="' + dayTimetableCellDisabledClassName + '"><td>' +
+						(item.from.toString() + ':00-') + (item.to.toString() + ':00') +
+						' Reservations' + res + '/' + item.maxReservations + '</td></tr>');
+				}
+				else {
+					$('#day-timetable-table').append('<tr onclick="" class="' + dayTimetableCellClassName + '"><td>' +
+						(item.from.toString() + ':00-') + (item.to.toString() + ':00') +
+						' Reservations' + res + '/' + item.maxReservations + '</td></tr>');
+				}
+				index++;
+			}
 			break;
 	}
-
 }
 
 function getReservations(announcementID, date) {
@@ -153,6 +215,7 @@ function getReservations(announcementID, date) {
 		}
 	})
 }
+
 
 function getAnnouncements() {
 	return JSON.parse(sessionStorage.getItem('userAnnouncements'));

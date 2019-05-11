@@ -162,8 +162,10 @@ namespace BedAndBreakfast.Controllers
                     .Select(s => s.ScheduleItem)
                     .OrderBy(s => s.From)
                     .ToList();
-                foreach (ScheduleItem scheduleItem in scheduleItems) {
-                    scheduleItemsViewModel.Add(new ScheduleItemViewModel {
+                foreach (ScheduleItem scheduleItem in scheduleItems)
+                {
+                    scheduleItemsViewModel.Add(new ScheduleItemViewModel
+                    {
                         From = scheduleItem.From,
                         To = scheduleItem.To,
                         MaxReservations = scheduleItem.MaxReservations
@@ -171,7 +173,13 @@ namespace BedAndBreakfast.Controllers
                 }
                 reservations = AnnouncementServiceLogic.GetReservations(announcement, date, context);
             }
-            return Json(new { reservations, announcement = announcement, scheduleItems = scheduleItemsViewModel});
+            return Json(new { reservations,
+                announcement = new {
+                    from = announcement.From,
+                    to = announcement.To,
+                    timetable = announcement.Timetable,
+                    maxReservations = announcement.MaxReservations
+                }, scheduleItems = scheduleItemsViewModel });
         }
 
     }
