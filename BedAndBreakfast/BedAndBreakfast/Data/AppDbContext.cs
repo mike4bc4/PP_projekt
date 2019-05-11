@@ -32,6 +32,7 @@ namespace BedAndBreakfast.Data
         public DbSet<AnnouncementToTag> AnnouncementToTags { get; set; }
         public DbSet<ScheduleItem> ScheduleItems { get; set; }
         public DbSet<AnnouncementToSchedule> AnnouncementToSchedules { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
 
 
 
@@ -51,6 +52,21 @@ namespace BedAndBreakfast.Data
                 .Property(a => a.Description).HasMaxLength(IoCContainer.DbSettings.Value.MaxAnnouncementDescSize);
 
             // ---------- Configure relations ----------
+
+            // Single reservation has one user, one announcement and one 
+            // schedule item (or none if per day timetable selected).
+            modelBuilder.Entity<Reservation>()
+                .HasOne(r => r.ScheduleItem)
+                .WithMany(s => s.Reservations)
+                .HasForeignKey(r => r.ScheduleItemID);
+            modelBuilder.Entity<Reservation>()
+                .HasOne(r => r.User)
+                .WithMany(u => u.Reservations)
+                .HasForeignKey(r => r.UserID);
+            modelBuilder.Entity<Reservation>()
+                .HasOne(r => r.Announcement)
+                .WithMany(a => a.Reservations)
+                .HasForeignKey(r => r.AnnouncementID);
 
 
             // Many announcements has many schedule items.

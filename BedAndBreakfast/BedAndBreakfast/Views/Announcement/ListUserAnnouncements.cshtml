@@ -44,6 +44,8 @@
         drawAnnouncementsList(getAnnouncements());
     }
 
+
+
 </script>
 
 <style>
@@ -72,15 +74,40 @@
     .sub-table-row-selected:hover{
         background-color: lightgreen;
     }
+    .week-timetable-table{
+        border-collapse: collapse;
+    }
+    .week-timetable-cell{
+        border: 1px solid black;
+    }
+    .week-timetable-cell:hover{
+        background-color: lightgoldenrodyellow;
+    }
+    .week-timetable-cell-highlight{
+        background-color: darkseagreen;
+    }
+    .week-timetable-cell-higlight:hover{
+        background-color: lightgreen;
+    }
+    .week-timetable-cell-disabled{
+        border: 1px solid black;
+        background-color: lightgray;
+    }
+    .week-timetable-header-cell{
+        border: 1px solid black;
+    }
+    .nav-button{
+        height: auto;
+    }
+
 </style>
 
 
 <h2>ListUserAnnouncements</h2>
 
-<div>
+
+<div id="list-ann-search-bar">
     <label>Browser and sort options:</label>
-</div>
-<div>
     <input type="text" id="userAnnouncementSearchField" />
     <a href="#" onclick="">Search</a>
     <select id="userAnnouncementSortField">
@@ -90,23 +117,24 @@
         }
     </select>
     <a href="#" onclick="">Sort</a>
+    <hr />
 </div>
 
-<hr />
+
 
 @*Here JS script puts messages*@
 <div id="announcementManagementMessage"></div>
 
 <hr />
 
-<div>
+<div id="list-ann-nav-bar">
     <a asp-controller="Announcement" asp-action="EditAnnouncement">Create announcement</a>
     <a href="#" onclick="activateSelectedAnnouncements(); redraw();">Activate selected</a>
     <a href="#" onclick="deactivateSelectedAnnouncements(); redraw();">Deactivate selected</a>
     <a href="#" onclick="removeSelectedAnnouncements(); redraw();">Remove selected</a>
+    <hr />
 </div>
 
-<hr />
 
 @*By default display all items received from controller.*@
 <div id="list-ann-main-container"></div>

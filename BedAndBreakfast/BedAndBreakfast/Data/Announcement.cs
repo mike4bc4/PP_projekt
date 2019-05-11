@@ -36,6 +36,7 @@ namespace BedAndBreakfast.Data
 		public List<AnnouncementToPayment> AnnouncementToPayments { get; set; }
         public List<AnnouncementToTag> AnnouncementToTags { get; set; }
         public List<AnnouncementToSchedule> AnnouncementToSchedules { get; set; }
+        public List<Reservation> Reservations { get; set; }
 
         public User User { get; set; }
 		[MaxLength(450)]

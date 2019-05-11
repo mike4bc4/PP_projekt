@@ -408,7 +408,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// <returns></returns>
         public static async Task MakeUserHost(User user, AppDbContext context)
         {
-            user.isHost = true;
+            user.IsHost = true;
             await context.SaveChangesAsync();
         }
 
@@ -552,6 +552,88 @@ namespace BedAndBreakfast.Models.ServicesLogic
             }
             return payments;
         }
+        /// <summary>
+        /// Returns list amount of reservations per day or per schedule item related with announcement.
+        /// If announcement does not use timetable (timetable option equals 0) returns null.
+        /// Note that returned list size is based on announcement related schedule items or is equal 7
+        /// for per day timetable (where 3rd element represents reservations per date specified as function parameter).
+        /// If list represents reservations per schedule item, it is ordered by schedule item begin hour.
+        /// </summary>
+        /// <param name="announcementID"></param>
+        /// <param name="date"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static List<int?> GetReservations(Announcement announcement, DateTime date, AppDbContext context)
+        {
+            if (announcement.Timetable == 1)    // Timetable per day
+            {
+                DateTime dateRangeLowerLimit = date.AddDays(-3);
+                DateTime dateRangeUpperLimit = date.AddDays(3);
+                List<int?> reservations = new List<int?>();
+                List<DateTime> timeRange = new List<DateTime>();
+                for (int i = 0; i < 7; i++)
+                {
+                    timeRange.Add(dateRangeLowerLimit.AddDays(i));
+                    reservations.Add(null);
+                }
+                var reservationsPerDay = context.Reservations.Where(r => r.Announcement == announcement)
+                    .Where(r => r.Date >= dateRangeLowerLimit)
+                    .Where(r => r.Date <= dateRangeUpperLimit)
+                    .GroupBy(r => r.Date)
+                    .Select(grp => new { date = grp.Key, reservations = grp.Count() })
+                    .ToList();
+                int index = 0;
+                foreach (DateTime day in timeRange)
+                {
+                    foreach (var item in reservationsPerDay)
+                    {
+                        if (day == item.date)
+                        {
+                            reservations[index] = item.reservations;
+                        }
+                    }
+                    index++;
+                }
+                return reservations;
+            }
+            else if (announcement.Timetable == 2)   // Timetable per hour
+            {
+                List<int> scheduleItemsFromList = new List<int>();
+                List<int?> reservations = new List<int?>();
+                List<ScheduleItem> announcementScheduleItems = context.AnnouncementToSchedules
+                    .Where(ats => ats.Announcement == announcement)
+                    .Select(ats => ats.ScheduleItem)
+                    .OrderBy(s => s.From)
+                    .ToList();
+                foreach (ScheduleItem item in announcementScheduleItems)
+                {
+                    reservations.Add(null);
+                    scheduleItemsFromList.Add(item.From);
+                }
+                var reservationsPerScheduleItem = context.Reservations
+                    .Include(r => r.ScheduleItem)
+                    .Where(r => r.Announcement == announcement)
+                    .Where(r => r.Date == date)
+                    .GroupBy(r => r.ScheduleItem)
+                    .Select(grp => new { scheduleItemFromDate = grp.Key.From, reservations = grp.Count() });
+                int index = 0;
+                foreach (int from in scheduleItemsFromList)
+                {
+                    foreach (var item in reservationsPerScheduleItem)
+                    {
+                        if (from == item.scheduleItemFromDate)
+                        {
+                            reservations[index] = item.reservations;
+                        }
+                    }
+                    index++;
+                }
+                return reservations;
+            }
+            return null;
+        }
     }
+
+
 
 }

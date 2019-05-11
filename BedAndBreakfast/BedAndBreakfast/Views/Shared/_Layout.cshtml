@@ -58,7 +58,7 @@
         @*If user is not an administrator.*@
         @if (!User.IsInRole(Role.Admin))
         {
-            @if (currentUser == null || !currentUser.isHost)
+            @if (currentUser == null || !currentUser.IsHost)
             {
                 <a id="becomeHostTag" asp-area="" asp-controller="Announcement" asp-action="EditAnnouncement">Become a Host</a>
             }

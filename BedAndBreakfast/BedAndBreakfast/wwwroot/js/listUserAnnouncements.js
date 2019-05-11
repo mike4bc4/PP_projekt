@@ -4,6 +4,15 @@ var subTableHeaderCellClassName = 'sub-table-header-cell';
 var mainTableClassName = 'main-table';
 var subTableRowClassName = 'sub-table-row';
 var subTableRowSelectedClassName = 'sub-table-row-selected';
+var weekTimetableTableClassName = 'week-timetable-table';
+var weekTimetableTableCellClassName = 'week-timetable-cell';
+var weekTimetableTableCellHighlightClassName = 'week-timetable-cell-highlight';
+var weekTimetableTableCellDisabledClassName = 'week-timetable-cell-disabled';
+var weekTimetableTableHeaderCellClassName = 'week-timetable-header-cell';
+var announcementListNavBarId = 'list-ann-nav-bar';
+var announcementListSearchBar = 'list-ann-search-bar';
+var navigationButtonClassName = 'nav-button';
+
 
 
 function drawAnnouncementsList(announcements) {
@@ -67,16 +76,83 @@ function drawAnnouncementsList(announcements) {
 			'<td class="' + subTableHeaderCellClassName + '">' + announcement.to.split('T')[0] + '</td>' +
 			'<td class="' + subTableHeaderCellClassName + '">' + active + '</td>' +
 			'</tr>');
+		var todayDate = new Date();
+		todayDate.setHours(0, 0, 0, 0);
+		todayDate = todayDate.toLocaleDateString('en-US');
 		$('#sub-table-right').append('<tr>' +
 			'<td class="' + subTableHeaderCellClassName + '"><a href="/Announcement/EditAnnouncement/?newModel=false" onClick="editAnnouncement(' + index + ');">Edit announcement</a></td>' +
-			'<td class="' + subTableHeaderCellClassName + '"><a href="/Announcement/EditAnnouncement/?newModel=false" onClick="editAnnouncement(' + index + ');">Edit announcement</a></td>' +
+			'<td class="' + subTableHeaderCellClassName + '"><a href="#" onClick="getReservations(' + announcement.id + ',\'' + todayDate + '\');">Display timetable</a></td>' +
 			'</tr>');
 		index++;
 
 	}
 }
 
+function drawTimetable(reservations, announcement, scheduleItems, date) {
+	// Parse short string date to date format.
+	var dateArray = date.split('/');
+	var currentDate = new Date();
+	currentDate.setMonth(dateArray[0] - 1);
+	currentDate.setDate(dateArray[1]);
+	currentDate.setFullYear(dateArray[2]);
+	currentDate.setHours(0, 0, 0, 0);
+	// Setup date time display options.
+	var dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+	// Remove listing navigation bar.
+	document.getElementById(announcementListNavBarId).innerHTML = '';
+	// Remove listing search and sor bar.
+	document.getElementById(announcementListSearchBar).innerHTML = '';
 
+	switch (announcement.timetable) {
+		case 1:	// Per day timetable
+			// Insert tables.
+			document.getElementById(mainContainerName).innerHTML = '<table class="' + weekTimetableTableClassName + '" id="week-timetable-table"></table>';
+			document.getElementById('week-timetable-table').innerHTML = '<tr id="week-table-date-row"></tr><tr id="week-table-content-row"></tr>'
+			// Add left navigation button.
+			$('#week-table-date-row').append('<td rowspan="2"><button class="' + navigationButtonClassName + '">left arrow</button></td>');
+			// Fill table body.
+			for (var index = 0; index < 7; index++) {
+				var res = '0';
+				var dt = new Date();
+				dt.setDate(currentDate.getDate() - 3 + index);
+				dt.setHours(0, 0, 0, 0);
+				if (reservations[index] != null) {
+					res = reservations[index];
+				}
+				var from = new Date(announcement.from);
+				from.setHours(0, 0, 0, 0);
+				var to = new Date(announcement.to);
+				to.setHours(0, 0, 0, 0);
+
+				if (dt < from || dt > to) {
+					$('#week-table-date-row').append('<td class="' + weekTimetableTableCellDisabledClassName + '">' + dt.toLocaleDateString('en-US', dateOptions) + '</td>');
+					$('#week-table-content-row').append('<td class="' + weekTimetableTableCellDisabledClassName + '">&nbsp</td>');
+				}
+				else {
+					$('#week-table-date-row').append('<td class="' + weekTimetableTableHeaderCellClassName + '">' + dt.toLocaleDateString('en-US', dateOptions) + '</td>');
+					$('#week-table-content-row').append('<td class="' + weekTimetableTableCellClassName + '" onClick="">Reservations ' + res + '/' + announcement.maxReservations + '</td>');
+				}
+			}
+			// Add right navigation button.
+			$('#week-table-date-row').append('<td rowspan="2"><button class="' + navigationButtonClassName + '">right arrow</button></td>');
+			break;
+		case 2:	// Per hour timetable
+			break;
+	}
+
+}
+
+function getReservations(announcementID, date) {
+	$.ajax({
+		url: '/Announcement/GetReservations',
+		data: { announcementID: announcementID, date: date },
+		dataType: 'json',
+		method: 'post',
+		success: function (response) {
+			drawTimetable(response.reservations, response.announcement, response.scheduleItems, date);
+		}
+	})
+}
 
 function getAnnouncements() {
 	return JSON.parse(sessionStorage.getItem('userAnnouncements'));

@@ -85,7 +85,7 @@ namespace BedAndBreakfast.Controllers
                 bool newModel = (bool)TempData["newModel"];
                 await AnnouncementServiceLogic.SaveAnnouncementToDatabase(viewModel, context, currentUser, newModel);
                 // Change user role to host if it's his first announcement.
-                if (!currentUser.isHost)
+                if (!currentUser.IsHost)
                 {
                     await AnnouncementServiceLogic.MakeUserHost(currentUser, context);
                 }
@@ -150,21 +150,28 @@ namespace BedAndBreakfast.Controllers
             return View(model);
         }
 
-        public IActionResult GetReservations(int announcementID, DateTime from, DateTime to)
+        public IActionResult GetReservations(int announcementID, DateTime date)
         {
+            List<int?> reservations = new List<int?>();
+            List<ScheduleItemViewModel> scheduleItemsViewModel = new List<ScheduleItemViewModel>();
             Announcement announcement = context.Announcements.Where(a => a.ID == announcementID).SingleOrDefault();
             if (announcement != null)
             {
-                switch (announcement.Timetable)
-                {
-                    case 1:
-
-                        break;
-                    case 2:
-                        break;
+                List<ScheduleItem> scheduleItems = context.AnnouncementToSchedules
+                    .Where(s => s.Announcement == announcement)
+                    .Select(s => s.ScheduleItem)
+                    .OrderBy(s => s.From)
+                    .ToList();
+                foreach (ScheduleItem scheduleItem in scheduleItems) {
+                    scheduleItemsViewModel.Add(new ScheduleItemViewModel {
+                        From = scheduleItem.From,
+                        To = scheduleItem.To,
+                        MaxReservations = scheduleItem.MaxReservations
+                    });
                 }
+                reservations = AnnouncementServiceLogic.GetReservations(announcement, date, context);
             }
-
+            return Json(new { reservations, announcement = announcement, scheduleItems = scheduleItemsViewModel});
         }
 
     }
