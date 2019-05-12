@@ -150,36 +150,185 @@ namespace BedAndBreakfast.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Allows to retrieve list of numbers that represent amount of reservations per day or per schedule item.
+        /// If announcement uses "per day" timetable action returns list of 7 items where 3rd is amount of
+        /// reservations for specified date. If announcement uses "per hour/scheduled timetable" then list represents
+        /// amount of reservations per schedule item (ordered ascending by schedule item begin time). Note that list 
+        /// always has size of schedule items per day or seven (indexes where is no reservations are null).
+        /// </summary>
+        /// <param name="announcementID"></param>
+        /// <param name="date"></param>
+        /// <returns></returns>
         public IActionResult GetReservations(int announcementID, DateTime date)
         {
             List<int?> reservations = new List<int?>();
             List<ScheduleItemViewModel> scheduleItemsViewModel = new List<ScheduleItemViewModel>();
             Announcement announcement = context.Announcements.Where(a => a.ID == announcementID).SingleOrDefault();
-            if (announcement != null)
+            if (announcement == null)
             {
-                List<ScheduleItem> scheduleItems = context.AnnouncementToSchedules
-                    .Where(s => s.Announcement == announcement)
-                    .Select(s => s.ScheduleItem)
-                    .OrderBy(s => s.From)
-                    .ToList();
-                foreach (ScheduleItem scheduleItem in scheduleItems)
-                {
-                    scheduleItemsViewModel.Add(new ScheduleItemViewModel
-                    {
-                        From = scheduleItem.From,
-                        To = scheduleItem.To,
-                        MaxReservations = scheduleItem.MaxReservations
-                    });
-                }
-                reservations = AnnouncementServiceLogic.GetReservations(announcement, date, context);
+                return null;
             }
-            return Json(new { reservations,
-                announcement = new {
+            List<ScheduleItem> scheduleItems = context.AnnouncementToSchedules
+                .Where(s => s.Announcement == announcement)
+                .Select(s => s.ScheduleItem)
+                .OrderBy(s => s.From)
+                .ToList();
+            foreach (ScheduleItem scheduleItem in scheduleItems)
+            {
+                scheduleItemsViewModel.Add(new ScheduleItemViewModel
+                {
+                    From = scheduleItem.From,
+                    To = scheduleItem.To,
+                    MaxReservations = scheduleItem.MaxReservations
+                });
+            }
+            reservations = AnnouncementServiceLogic.GetReservations(announcement, date, context);
+
+            return Json(new
+            {
+                reservations,
+                announcement = new
+                {
+                    id = announcement.ID,
                     from = announcement.From,
                     to = announcement.To,
                     timetable = announcement.Timetable,
                     maxReservations = announcement.MaxReservations
-                }, scheduleItems = scheduleItemsViewModel });
+                },
+                scheduleItems = scheduleItemsViewModel
+            });
+        }
+
+        /// <summary>
+        /// Returns list of users and reservations per user for specified day or schedule item.
+        /// Will return null if there is no announcement or schedule item with specified id/unique data.
+        /// </summary>
+        /// <param name="announcementID"></param>
+        /// <param name="date"></param>
+        /// <param name="scheduleItem"></param>
+        /// <returns></returns>
+        public IActionResult GetUsersReservations(int announcementID, DateTime date, ScheduleItemViewModel scheduleItem)
+        {
+            Announcement announcement = context.Announcements.Where(a => a.ID == announcementID).SingleOrDefault();
+            if (announcement == null)
+            {
+                return Json(null);
+            }
+            IQueryable<Tuple<User, int>> data = null;
+            if (announcement.Timetable == 1)
+            {
+                data = context.Reservations
+                    .Include(r => r.User)
+                    .Include(r => r.User.Profile)
+                    .Where(r => r.Announcement == announcement)
+                    .Where(r => r.Date.Date == date.Date)
+                    .GroupBy(r => r.User)
+                    .Select(grp => new Tuple<User, int>(grp.Key, grp.Count()));
+            }
+            else if (announcement.Timetable == 2)
+            {
+                ScheduleItem schItem = context.ScheduleItems
+                       .Where(s => s.From == scheduleItem.From)
+                       .Where(s => s.To == scheduleItem.To)
+                       .Where(s => s.MaxReservations == scheduleItem.MaxReservations)
+                       .SingleOrDefault();
+                if (schItem == null)
+                {
+                    return Json(null);
+                }
+                data = context.Reservations
+                    .Include(r => r.User)
+                    .Include(r => r.User.Profile)
+                    .Where(r => r.Announcement == announcement)
+                    .Where(r => r.Date.Date == date.Date)
+                    .Where(r => r.ScheduleItem == schItem)
+                    .GroupBy(r => r.User)
+                    .Select(grp => new Tuple<User, int>(grp.Key, grp.Count()));
+
+            }
+            List<object> reservationsPerUser = new List<object>();
+            foreach (var item in data)
+            {
+                var userData = new
+                {
+                    userName = item.Item1.UserName,
+                    firstName = item.Item1.Profile.FirstName,
+                    lastName = item.Item1.Profile.LastName
+                };
+                reservationsPerUser.Add(new { userData = userData, reservations = item.Item2 });
+            }
+            return Json(new { reservationsPerUser });
+        }
+
+        /// <summary>
+        /// Updated amount of reservations for specified announcement, user and schedule item (not obligatory).
+        /// If provided reservation count is higher than current number of such relations in database then 
+        /// reservations are added - else removed. Return number of added (removed) reservations or null
+        /// if error occurs.
+        /// </summary>
+        /// <param name="announcementID"></param>
+        /// <param name="userName"></param>
+        /// <param name="date"></param>
+        /// <param name="newReservationsAmount"></param>
+        /// <param name="scheduleItem"></param>
+        /// <returns></returns>
+        public IActionResult UpdateReservations(int announcementID, string userName, DateTime date, int newReservationsAmount, ScheduleItemViewModel scheduleItem)
+        {
+            Announcement announcement = context.Announcements.Where(a => a.ID == announcementID).SingleOrDefault();
+            User user = context.Users.Where(u => u.UserName == userName).SingleOrDefault();
+            // Amount validation - amount of new reservations cannot be lower than 0.
+            if (announcement == null || user == null || newReservationsAmount < 0)
+            {
+                return Json(null);
+            }
+            List<Reservation> reservations = new List<Reservation>();
+            ScheduleItem schItem = null;
+            if (announcement.Timetable == 1)        // Per day reservations
+            {
+                reservations = context.Reservations
+                    .Where(r => r.Announcement == announcement)
+                    .Where(r => r.User == user)
+                    .Where(r => r.Date.Date == date.Date).ToList();
+            }
+            else if (announcement.Timetable == 2)   // Per hour reservations
+            {
+                schItem = context.ScheduleItems
+                    .Where(s => s.From == scheduleItem.From)
+                    .Where(s => s.To == scheduleItem.To)
+                    .Where(s => s.MaxReservations == scheduleItem.MaxReservations).SingleOrDefault();
+                if (schItem == null)
+                {
+                    return Json(null);
+                }
+                reservations = context.Reservations
+                    .Where(r => r.Announcement == announcement)
+                    .Where(r => r.User == user)
+                    .Where(r => r.Date.Date == date.Date)
+                    .Where(r => r.ScheduleItem == schItem).ToList();
+            }
+            if (reservations.Count() > newReservationsAmount)
+            {
+                List<Reservation> reservationsToRemove = reservations.Take(reservations.Count() - newReservationsAmount).ToList();
+                context.Reservations.RemoveRange(reservationsToRemove);
+                context.SaveChanges();
+                return Json(new { updated = (newReservationsAmount - reservations.Count()) });
+            }
+            else if (reservations.Count() < newReservationsAmount)
+            {
+                List<Reservation> reservationsToAdd = new List<Reservation>();
+                for (int i = 0; i < newReservationsAmount - reservations.Count(); i++)
+                {
+                    reservationsToAdd.Add(new Reservation() { Announcement = announcement, Date = date, ScheduleItem = schItem, User = user });
+                }
+                context.Reservations.AddRange(reservationsToAdd);
+                context.SaveChanges();
+                return Json(new { updated = (reservations.Count() - newReservationsAmount) });
+            }
+            else
+            {
+                return Json(new { updated = 0 });
+            }
         }
 
     }

@@ -577,8 +577,8 @@ namespace BedAndBreakfast.Models.ServicesLogic
                     reservations.Add(null);
                 }
                 var reservationsPerDay = context.Reservations.Where(r => r.Announcement == announcement)
-                    .Where(r => r.Date >= dateRangeLowerLimit)
-                    .Where(r => r.Date <= dateRangeUpperLimit)
+                    .Where(r => r.Date.Date >= dateRangeLowerLimit.Date)
+                    .Where(r => r.Date.Date <= dateRangeUpperLimit.Date)
                     .GroupBy(r => r.Date)
                     .Select(grp => new { date = grp.Key, reservations = grp.Count() })
                     .ToList();
@@ -613,7 +613,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 var reservationsPerScheduleItem = context.Reservations
                     .Include(r => r.ScheduleItem)
                     .Where(r => r.Announcement == announcement)
-                    .Where(r => r.Date == date)
+                    .Where(r => r.Date.Date == date.Date)
                     .GroupBy(r => r.ScheduleItem)
                     .Select(grp => new { scheduleItemFromDate = grp.Key.From, reservations = grp.Count() });
                 int index = 0;
@@ -632,8 +632,6 @@ namespace BedAndBreakfast.Models.ServicesLogic
             }
             return null;
         }
+
     }
-
-
-
 }
