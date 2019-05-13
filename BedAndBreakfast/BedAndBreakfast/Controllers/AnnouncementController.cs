@@ -115,6 +115,19 @@ namespace BedAndBreakfast.Controllers
             return View(model);
         }
 
+        public IActionResult GetAnnouncementOwnerInfo(int announcementID) {
+            Announcement announcement = context.Announcements.Include(a => a.User).Include(a => a.User.Profile).Where(a => a.ID == announcementID).SingleOrDefault();
+            if (announcement == null) {
+                return Json(null);
+            }
+            var userData = new {
+                userName = announcement.User.UserName,
+                firstName = announcement.User.Profile.FirstName,
+                lastName = announcement.User.Profile.LastName
+            };
+            return Json(userData);
+        }
+
 
         [Authorize(Roles = Role.User)]
         public async Task<IActionResult> ChangeAnnouncementsStatus(List<int> announcementsIDs, bool? areActive)
@@ -146,6 +159,7 @@ namespace BedAndBreakfast.Controllers
                 .Where(vm => vm.Removed == false).ToList();
 
             model.announcements = viewModel;
+            model.query = annBrowserQuery;
 
             return View(model);
         }

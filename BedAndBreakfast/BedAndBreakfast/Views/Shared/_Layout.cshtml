@@ -20,6 +20,11 @@
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            setAnnouncementSearchField();
+        }
+    </script>
 </head>
 <body>
     @*User identity*@
@@ -45,7 +50,7 @@
     <div>
         <form asp-controller="Announcement" asp-action="Browse">
             <label>Find announcement:</label>
-            <input type="text" name="annBrowserQuery" />
+            <input id="ann-browser-qry-in-fld" type="text" name="annBrowserQuery" />
             <input type="submit" value="Find announcement"/>
         </form>
     </div>

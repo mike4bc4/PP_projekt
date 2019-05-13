@@ -16,6 +16,7 @@
 
 
     window.onload = function () {
+        setAnnouncementSearchField();
         sessionStorage.setItem('userAnnouncements', JSON.stringify(@Html.Raw(Json.Serialize(usersAnnouncements))));
         redraw();
     };

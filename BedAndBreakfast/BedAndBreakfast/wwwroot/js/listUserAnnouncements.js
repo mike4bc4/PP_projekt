@@ -105,7 +105,7 @@ function drawTimetable(reservations, announcement, scheduleItems, date) {
 	var from = new Date(announcement.from);
 	from.setHours(0, 0, 0, 0);
 	var to = new Date(announcement.to);
-	from.setHours(0, 0, 0, 0);
+	to.setHours(0, 0, 0, 0);
 
 	switch (announcement.timetable) {
 		case 1:	// Per day timetable

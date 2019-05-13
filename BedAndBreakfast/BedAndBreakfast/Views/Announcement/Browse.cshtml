@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "BrowseAnnouncements";
     List<EditAnnouncementViewModel> announcements = Model.announcements;
-
+    string query = Model.query;
 
     List<string> announcementTypes = Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementType)).ToList();
     List<string> houseSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.HouseSubtype)).ToList();
@@ -51,6 +51,9 @@
     function getAnnouncements() {
         return @Html.Raw(Json.Serialize(announcements));
     }
+    function getQuery() {
+        return @Html.Raw(Json.Serialize(query));
+    }
 </script>
 
 <style>
@@ -65,8 +68,21 @@
     .ann-row-subtitle {
         font-weight: bold;
     }
+    p, h4{
+        margin: 3px;
+    }
+    table {
+        border-collapse: collapse;
+    }
+    td{
+        border: 1px solid black;
+    }
+    .clickable:hover{
+        cursor: pointer;
+        background-color: slategray;
+    }
 </style>
 
-
+<div id="message-container"></div>
 <div id="browse-ann-view-container"></div>
 
