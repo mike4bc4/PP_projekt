@@ -345,5 +345,10 @@ namespace BedAndBreakfast.Controllers
             }
         }
 
+        public IActionResult MakeReservations(List<ReservationViewModel> reservations) {
+
+            return Json(null);
+        }
+
     }
 }

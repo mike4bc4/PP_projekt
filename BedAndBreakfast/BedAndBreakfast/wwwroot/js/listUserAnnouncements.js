@@ -450,6 +450,7 @@ function editAnnouncement(announcementIndex) {
 	sessionStorage.setItem('model', JSON.stringify(announcement));
 }
 
+var messageTimeout;
 function setAnnouncementManagementMessage(messageCode) {
 	var messageTag = document.getElementById('announcementManagementMessage');
 
@@ -482,6 +483,13 @@ function setAnnouncementManagementMessage(messageCode) {
 			messageTag.innerText = "";
 			break;
 	}
+	// Message will be visible for 5 seconds.
+    if (messageTimeout != null) {
+        window.clearTimeout(messageTimeout);
+    }
+    messageTimeout = window.setTimeout(function () {
+        document.getElementById('announcementManagementMessage').innerText = '';
+    }, 5000);
 }
 
 

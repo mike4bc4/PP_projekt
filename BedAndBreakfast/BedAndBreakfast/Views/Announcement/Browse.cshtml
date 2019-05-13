@@ -23,6 +23,7 @@
 <script type="text/javascript">
     window.onload = function () {
         drawAnnouncementsList();
+        setSessionReservations(null);
     };
     function getAnnouncementTypes() {
         return @Html.Raw(Json.Serialize(announcementTypes));

@@ -1,6 +1,7 @@
 ﻿var mainViewContainerId = 'browse-ann-view-container';
 var announcementTimetableContainerId = 'ann-timetable-container';
 var reservationsContainerId = 'reservations-container';
+var makeReservationButtonContainerId = 'make-reservation-button-container';
 
 function drawAnnouncementsList() {
     saveQueryInSession();
@@ -100,8 +101,9 @@ function drawAnnouncement(announcementIndex, ownerData) {
     });
     html += '</tr></td></table>';
     $('#selected-announcement-table').append(html);
-    $('#' + mainViewContainerId).append('<div id="' + announcementTimetableContainerId + '"><div>');
-    $('#' + mainViewContainerId).append('<div id="' + reservationsContainerId + '"><div>');
+    $('#' + mainViewContainerId).append('<div id="' + announcementTimetableContainerId + '"></div>');
+    $('#' + mainViewContainerId).append('<div id="' + reservationsContainerId + '"></div>');
+    $('#' + mainViewContainerId).append('<div id="' + makeReservationButtonContainerId + '"></div>');
     getReservations(announcement.id, todayDate.toLocaleDateString('en-US'));
 
 }
@@ -179,7 +181,7 @@ function drawTimetable(reservations, announcement, scheduleItems, date) {
 
             var index = 0;
             for (var item of scheduleItems) {
-                var rowTag = '<tr onClick="" class="clickable" >';
+                var rowTag = '<tr onClick="addReservationItem(\'' + middleDate.toLocaleDateString('en-US') + '\',' + reservations[index] + ',' + item.maxReservations + ',{from: ' + item.from + ', to:' + item.to + ', maxReservations:' + item.maxReservations + '});" class="clickable" >';
                 if (middleDate.getTime() < today.getTime() || middleDate.getTime() > to.getTime()) {
                     rowTag = '<tr bgcolor="lightgray">';  // Make row not-clickable. 
                 }
@@ -203,31 +205,179 @@ function addReservationItem(date, currentReservations, maxReservations, schedule
         reservations = [];
         setSessionReservations(reservations);
     }
-    var reservationIndex = reservations.length;
-    var reservationDate = new Date(date);
-    reservationDate.setHours(0, 0, 0, 0);
-    container.append('<div style="border: 1px solid black; width:400px; margin: 3px;" id="reservation-' + reservationIndex + '"></div>');
-    $('#reservation-' + reservationIndex).append('Date: ' + reservationDate.toLocaleDateString('en-US') + ' ');
-    if (scheduleItem != null) {
-        var to;
-        if (parseInt(scheduleItem.to) != 24) {
-            to = scheduleItem.to.toString() + ':00';
+    var existingReservation = getSessionReservation(date, scheduleItem);
+    if (existingReservation == null) {
+        var reservationIndex = reservations.length;
+        var reservationDate = new Date(date);
+        reservationDate.setHours(0, 0, 0, 0);
+        container.append('<div style="border: 1px solid black; width:450px; margin: 3px;" id="reservation-' + reservationIndex + '"></div>');
+        $('#reservation-' + reservationIndex).append('Date: ' + reservationDate.toLocaleDateString('en-US') + ' ');
+        if (scheduleItem != null) {
+            var to;
+            if (parseInt(scheduleItem.to) != 24) {
+                to = scheduleItem.to.toString() + ':00';
+            }
+            else {
+                to = '23:59';
+            }
+            $('#reservation-' + reservationIndex).append(scheduleItem.from.toString() + ':00-' + to + ' ');
+        }
+        $('#reservation-' + reservationIndex).append('Reservations: <input onchange="validateReservation(' + reservationIndex + ',' + currentReservations + ',' + maxReservations + ');" id="reservation-input-fld-' + reservationIndex + '" value="1" type="text"  size="5" maxlength="5" />');
+        $('#reservation-' + reservationIndex).append('<button onclick="removeReservation(' + reservationIndex + ');">Remove</button>');
+        $('#reservation-' + reservationIndex).append('<span id="reservation-msg-' + reservationIndex + '"></span>');
+        addReservationToSession({ date: date, reservations: parseInt(document.getElementById('reservation-input-fld-' + reservationIndex).value), scheduleItem: scheduleItem, reservationIndex: reservationIndex, isValid: true });
+        addMakeReservationButton();
+    }
+    else {
+        var currentReservationsNumber = parseInt(document.getElementById('reservation-input-fld-' + existingReservation.reservationIndex).value);
+        if (currentReservations + currentReservationsNumber + 1 <= maxReservations) {
+            document.getElementById('reservation-input-fld-' + existingReservation.reservationIndex).value = (currentReservationsNumber + 1);
+            reservations[existingReservation.reservationIndex].reservations = (currentReservationsNumber + 1);
+            setSessionReservations(reservations);
         }
         else {
-            to = '23:59';
+            setMessage(1);
         }
-        $('#reservation-' + reservationIndex).append(scheduleItem.from.toString() + ':00-' + to + ' ');
+        addMakeReservationButton();
     }
-    $('#reservation-' + reservationIndex).append('Reservations: <input onchange="" id="reservation-input-fld-' + reservationIndex + '" value="1" type="text"  size="5" maxlength="5" />');
-    $('#reservation-' + reservationIndex).append('<button onclick="">Remove</button>');
-    $('#reservation-' + reservationIndex).append('<span id="reservation-msg-' + reservationIndex + '"></span>');
-    addReservationToSession({ date: date, reservations: document.getElementById('reservation-input-fld-' + reservationIndex), scheduleItem: scheduleItem });
+}
+
+function makeReservations() {
+    var reservations = getSessionReservations();
+    var reservationsEmpty = true;
+    var reservationsValid = true;
+    for (var item of reservations) {
+        if (item != null) {
+            reservationsEmpty = false;
+            break;
+        }
+    }
+    if (reservationsEmpty == true) {
+        setMessage(2);
+        return;
+    }
+    for (var item of reservations) {
+        if (item != null && item.isValid == false) {
+            reservationsValid = false;
+            break;
+        }
+    }
+    if (reservationsValid == false) {
+        setMessage(3);
+        return;
+    }
+    // List of reservations valid and not empty.
+    // Parse before sending.
+    var simpleReservations = [];
+    for (var item of reservations) {
+        if (item != null) {
+            if (item.scheduleItem != null) {
+                simpleReservations.push({
+                    date: item.date,
+                    reservations: item.reservations,
+                    from: item.scheduleItem.from,
+                    to: item.scheduleItem.to,
+                    maxReservations: item.scheduleItem.maxReservations
+                });
+            }
+            else {
+                simpleReservations.push({
+                    date: item.date,
+                    reservations: item.reservations,
+                    from: null,
+                    to: null,
+                    maxReservations: null
+                });
+            }
+        }
+    }
+    $.ajax({
+        url: '/Announcement/MakeReservations',
+        data: {reservations: simpleReservations},
+        dataType: 'json',
+        method: 'post',
+        success: function(response){
+
+        } 
+    });
+
+}
+
+function validateReservation(reservationIndex, currentReservations, maxReservations) {
+    var reservations = getSessionReservations();
+    var currentReservationsNumber = parseInt(document.getElementById('reservation-input-fld-' + reservationIndex).value);
+    reservations[reservationIndex].reservations = currentReservationsNumber;
+    if (currentReservationsNumber <= 0) {
+        removeReservation(reservationIndex);
+        return;
+    }
+    if (currentReservationsNumber + currentReservations <= maxReservations) {
+        document.getElementById('reservation-msg-' + reservationIndex).innerText = '';
+        reservations[reservationIndex].isValid = true;
+    }
+    else {
+        document.getElementById('reservation-msg-' + reservationIndex).innerText = 'Value exceeds maximum number of reservations for this event.';
+        reservations[reservationIndex].isValid = false;
+    }
+    setSessionReservations(reservations);
+}
+
+function removeReservation(reservationIndex) {
+    document.getElementById('reservation-' + reservationIndex).remove();
+    var reservations = getSessionReservations();
+    reservations[reservationIndex] = null;
+    setSessionReservations(reservations);
+    var reservationsEmpty = true;
+    for (var item of reservations) {
+        if (item != null) {
+            reservationsEmpty = false;
+            break;
+        }
+    }
+    if (reservationsEmpty == true) {
+        removeMakeReservationButton();
+    }
 }
 
 function addReservationToSession(reservation) {
     var reservations = getSessionReservations();
     reservations.push(reservation);
     setSessionReservations(reservations);
+}
+
+function addMakeReservationButton() {
+    var button = document.getElementById(makeReservationButtonContainerId).innerHTML;
+    if (button == '') {
+        document.getElementById(makeReservationButtonContainerId).innerHTML = '<button onclick="makeReservations();">Make reservation</button>';
+    }
+}
+
+function removeMakeReservationButton() {
+    document.getElementById(makeReservationButtonContainerId).innerHTML = '';
+}
+
+function getSessionReservation(date, scheduleItem) {
+    var reservations = getSessionReservations();
+    if (scheduleItem != null) {
+        for (var item of reservations) {
+            if (item != null &&
+                item.date == date &&
+                item.scheduleItem.from == scheduleItem.from &&
+                item.scheduleItem.to == scheduleItem.to &&
+                item.scheduleItem.maxReservations == scheduleItem.maxReservations) {
+                return item;
+            }
+        }
+    }
+    else {
+        for (var item of reservations) {
+            if (item != null &&
+                item.date == date) {
+                return item;
+            }
+        }
+    }
+    return null;
 }
 
 function getSessionReservations() {
@@ -245,6 +395,8 @@ function saveQueryInSession() {
     sessionStorage.setItem('announcementSearchQuery', query);
 }
 
+var messageTimeout;
+
 function setMessage(messageCode) {
     var messageTag = document.getElementById('message-container');
     switch (messageCode) {
@@ -252,10 +404,22 @@ function setMessage(messageCode) {
             messageTag.innerText = 'An error occurred while browsing announcement data.';
             break;
         case 1:
-            messageTag.innerText = 'Cannot make reservation for specified item.';
+            messageTag.innerText = 'Cannot make reservation for specified time.';
             break;
+        case 2:
+            messageTag.innerText = 'Reservations list cannot be empty.';
+            break;
+        case 3:
+            messageTag.innerText = 'Some of reservations seems to be invalid, please correct those.';
         default:
             messageTag.innerText = '';
             break;
     }
+    // Message will be visible for 5 seconds.
+    if (messageTimeout != null) {
+        window.clearTimeout(messageTimeout);
+    }
+    messageTimeout = window.setTimeout(function () {
+        document.getElementById('message-container').innerText = '';
+    }, 5000);
 }
