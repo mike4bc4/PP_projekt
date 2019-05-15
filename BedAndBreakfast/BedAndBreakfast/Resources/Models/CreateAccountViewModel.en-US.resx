@@ -120,19 +120,4 @@
   <data name="EmptyBirthDate" xml:space="preserve">
     <value>Please insert your birth date.</value>
   </data>
-  <data name="InvalidBirthDate" xml:space="preserve">
-    <value>You have to be at least 18 to use this web service.</value>
-  </data>
-  <data name="InvalidEmail" xml:space="preserve">
-    <value>Insert valid email address.</value>
-  </data>
-  <data name="Required" xml:space="preserve">
-    <value>This field is required.</value>
-  </data>
-  <data name="TooLong" xml:space="preserve">
-    <value>Inserted value is too long.</value>
-  </data>
-  <data name="TooShort" xml:space="preserve">
-    <value>Inserted value is too short.</value>
-  </data>
 </root>

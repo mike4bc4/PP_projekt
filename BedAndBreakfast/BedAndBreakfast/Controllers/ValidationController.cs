@@ -63,11 +63,11 @@ namespace BedAndBreakfast.Controllers
 
         public JsonResult ValidPasswordLenght(string password) {
             if (password.Length > IoCContainer.DbSettings.Value.PasswordMaxLength) {
-                return Json(sharedResources["TooLong"].ToString());
+                return Json(sharedResources["TooLongPass"].ToString());
             }
             if (password.Length < IoCContainer.DbSettings.Value.PasswordMinLength) {
                 var asd = sharedResources["TooShort"];
-                return Json(sharedResources["TooShort"].ToString());
+                return Json(sharedResources["TooShortPass"].ToString());
             }
             return Json(true);
         }

@@ -117,13 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="InvalidBirthDate" xml:space="preserve">
-    <value>You have to be at least 18 to use this web service.</value>
-  </data>
-  <data name="InvalidEmail" xml:space="preserve">
-    <value>Insert valid email address.</value>
-  </data>
-  <data name="Required" xml:space="preserve">
-    <value>This field is required.</value>
-  </data>
 </root>
