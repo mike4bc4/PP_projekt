@@ -25,6 +25,7 @@ namespace BedAndBreakfast.Models
 		public List<Announcement> Announcements { get; set; }
         public bool IsHost { get; set; } = false;
         public List<Reservation> Reservations { get; set; }
+        public List<Review> Reviews { get; set; }
 
 
     }

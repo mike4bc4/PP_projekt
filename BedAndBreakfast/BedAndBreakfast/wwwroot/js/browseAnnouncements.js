@@ -2,6 +2,9 @@
 var announcementTimetableContainerId = 'ann-timetable-container';
 var reservationsContainerId = 'reservations-container';
 var makeReservationButtonContainerId = 'make-reservation-button-container';
+var reviewEditorContainerId = 'review-editor-container';
+var reviewItemsContainerId = 'review-items-container';
+var reviewMaxSize = 512;
 
 function drawAnnouncementsList() {
     saveQueryInSession();
@@ -104,8 +107,86 @@ function drawAnnouncement(announcementIndex, ownerData) {
     $('#' + mainViewContainerId).append('<div id="' + announcementTimetableContainerId + '"></div>');
     $('#' + mainViewContainerId).append('<div id="' + reservationsContainerId + '"></div>');
     $('#' + mainViewContainerId).append('<div id="' + makeReservationButtonContainerId + '"></div>');
-    getReservations(announcement.id, todayDate.toLocaleDateString('en-US'));
+    $('#' + mainViewContainerId).append('<div id="' + reviewEditorContainerId + '"></div>');
+    $('#' + mainViewContainerId).append('<div id="' + reviewItemsContainerId + '"></div>');
 
+    getReservations(announcement.id, todayDate.toLocaleDateString('en-US'));
+    if (isUserAuthenticated() == true) {
+        drawReviewEditor(announcement.id);
+    }
+}
+
+function getReviews(announcementID) {
+
+}
+
+function drawReviewEditor(announcementID) {
+    var container = $('#' + reviewEditorContainerId);
+    if (container == null) {
+        return;
+    }
+    container.append('Announcement rating: <input id="rating-in-fld" data-valid="true" onchange="validateReviewRating();" type="text" maxLength="2" size="2" /> / 10 <span id="rating-in-fld-msg-container"></span> <br />');
+    container.append('Your name: <input id="name-in-fld" type="text" maxLength="50" size="50" /><span id="name-in-fld-msg-container"></span><br />');
+    container.append('Review*: <textarea oninput="updateReviewCharacterCounter();" data-valid="true" id="review-textarea" style="resize: none;" rows="6" cols="100"></textarea><span id="review-textarea-msg-container"></span><br />');
+    container.append('<p id="review-char-counter-container"></p>');
+    container.append('<button onClick="postReview(' + announcementID + ');">Post review</button>');
+
+}
+
+function updateReviewCharacterCounter() {
+    var textarea = document.getElementById('review-textarea');
+    var counterContainer = document.getElementById('review-char-counter-container');
+    var reviewSize = textarea.value.length;
+    if (reviewSize != 0) {
+        counterContainer.innerText = 'Review size: ' + reviewSize.toString() + '/' + reviewMaxSize;
+    }
+    else {
+        counterContainer.innerText = '';
+    }
+    // Validation
+    if (reviewSize > reviewMaxSize) {
+        document.getElementById('review-textarea-msg-container').innerText = 'Review is too long.';
+        textarea.setAttribute('data-valid', 'false');
+        return false;
+    }
+    else if (reviewSize == 0){
+        document.getElementById('review-textarea-msg-container').innerText = 'Review cannot be empty.';
+        textarea.setAttribute('data-valid', 'false');
+        return false;
+    }
+    else {
+        document.getElementById('review-textarea-msg-container').innerText = '';
+        textarea.setAttribute('data-valid', 'true');
+        return true;
+    }
+}
+
+function validateReviewRating() {
+    // Validation
+    var ratingInputField = document.getElementById('rating-in-fld');
+    var rating = parseInt(ratingInputField.value);
+    if (rating < 0 || rating > 10 || isNaN(rating)) {
+        document.getElementById('rating-in-fld-msg-container').innerText = 'Rating is incorrect.';
+        ratingInputField.setAttribute('data-valid', 'false');
+        return false;
+    }
+    else {
+        document.getElementById('rating-in-fld-msg-container').innerText = '';
+        ratingInputField.setAttribute('data-valid', 'true');
+        return true;
+    }
+}
+
+function postReview(announcementID) {
+    var name = document.getElementById('name-in-fld').value;
+    if(name == null || name == ''){
+        name = 'Anonym';
+    }
+    var ratingValid = validateReviewRating();
+    var reviewValid = updateReviewCharacterCounter();
+    if(reviewValid == true && ratingValid == true){
+        // Save review to database.
+    }
 }
 
 function getReservations(announcementID, date) {

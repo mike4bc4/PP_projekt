@@ -12,7 +12,7 @@ namespace BedAndBreakfast.Data
 {
     public class AppDbContext : IdentityDbContext<User>
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         // Tables
         public DbSet<User> Users { get; set; }
@@ -22,12 +22,12 @@ namespace BedAndBreakfast.Data
         public DbSet<HelpPageHelpTag> HelpPageHelpTags { get; set; }
         public DbSet<NotificationsSetting> NotificationSettings { get; set; }
         public DbSet<PrivacySetting> PrivacySettings { get; set; }
-		public DbSet<Address> Addresses { get; set; }
-		public DbSet<Announcement> Announcements { get; set; }
-		public DbSet<AdditionalContact> AdditionalContacts { get; set; }
-		public DbSet<PaymentMethod> PaymentMethods { get; set; }
-		public DbSet<AnnouncementToContact> AnnouncementToContacts { get; set; }
-		public DbSet<AnnouncementToPayment> AnnouncementToPayments { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<Announcement> Announcements { get; set; }
+        public DbSet<AdditionalContact> AdditionalContacts { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<AnnouncementToContact> AnnouncementToContacts { get; set; }
+        public DbSet<AnnouncementToPayment> AnnouncementToPayments { get; set; }
         public DbSet<AnnouncementTag> AnnouncementTags { get; set; }
         public DbSet<AnnouncementToTag> AnnouncementToTags { get; set; }
         public DbSet<ScheduleItem> ScheduleItems { get; set; }
@@ -36,7 +36,8 @@ namespace BedAndBreakfast.Data
 
 
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
 
             // This method must be called to map keys for user identity tables.
             base.OnModelCreating(modelBuilder);
@@ -50,8 +51,19 @@ namespace BedAndBreakfast.Data
                 .Property(hp => hp.Title).HasMaxLength(IoCContainer.DbSettings.Value.MaxHelpPageTitleSize);
             modelBuilder.Entity<Announcement>()
                 .Property(a => a.Description).HasMaxLength(IoCContainer.DbSettings.Value.MaxAnnouncementDescSize);
+            modelBuilder.Entity<Review>()
+                .Property(r => r.Content).HasMaxLength(IoCContainer.DbSettings.Value.MaxReviewContentLength);
 
             // ---------- Configure relations ----------
+
+            // One review has one announcement and on user that both may have
+            // multiple reviews.
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.User)
+                .WithMany(u => u.Reviews);
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.Announcement)
+                .WithMany(a => a.Reviews);
 
             // Single reservation has one user, one announcement and one 
             // schedule item (or none if per day timetable selected).
@@ -97,8 +109,8 @@ namespace BedAndBreakfast.Data
                 .HasOne(att => att.AnnouncementTag)
                 .WithMany(at => at.AnnouncementToTags)
                 .HasForeignKey(att => att.AnnouncementTagID);
-       
-            
+
+
             // One user has one profile.
             modelBuilder.Entity<Profile>()
                 .HasOne(p => p.User)
@@ -132,46 +144,46 @@ namespace BedAndBreakfast.Data
                 .WithOne(u => u.PrivacySetting)
                 .HasForeignKey<PrivacySetting>(s => s.UserFK);
 
-			// Multiple profiles may be related to the same address.
-			modelBuilder.Entity<Profile>()
-				.HasOne(p => p.Address)
-				.WithMany(a=>a.Profiles)
-				.HasForeignKey(p => p.AddressFK);
+            // Multiple profiles may be related to the same address.
+            modelBuilder.Entity<Profile>()
+                .HasOne(p => p.Address)
+                .WithMany(a => a.Profiles)
+                .HasForeignKey(p => p.AddressFK);
 
-			// Each user has many announcements
-			modelBuilder.Entity<User>()
-				.HasMany(u => u.Announcements)
-				.WithOne(a => a.User)
-				.HasForeignKey(a => a.UserFK);
+            // Each user has many announcements
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Announcements)
+                .WithOne(a => a.User)
+                .HasForeignKey(a => a.UserFK);
 
-			// Multiple announcements may have multiple additional contacts
-			modelBuilder.Entity<AnnouncementToContact>()
-				.HasKey(ac => new { ac.AdditionalContactID, ac.AnnouncementID });
-				
+            // Multiple announcements may have multiple additional contacts
+            modelBuilder.Entity<AnnouncementToContact>()
+                .HasKey(ac => new { ac.AdditionalContactID, ac.AnnouncementID });
 
-			modelBuilder.Entity<AnnouncementToContact>()
-				.HasOne(ac => ac.Announcement)
-				.WithMany(a => a.AnnouncementToContacts)
-				.HasForeignKey(ac => ac.AnnouncementID);
 
-			modelBuilder.Entity<AnnouncementToContact>()
-				.HasOne(ac => ac.AdditionalContact)
-				.WithMany(a => a.AnnouncementToContacts)
-				.HasForeignKey(ac => ac.AdditionalContactID);
+            modelBuilder.Entity<AnnouncementToContact>()
+                .HasOne(ac => ac.Announcement)
+                .WithMany(a => a.AnnouncementToContacts)
+                .HasForeignKey(ac => ac.AnnouncementID);
 
-			// Multiple announcements may have multiple payment methods
-			modelBuilder.Entity<AnnouncementToPayment>()
-				.HasKey(ap => new { ap.AnnouncementID, ap.PaymentMethodID });
+            modelBuilder.Entity<AnnouncementToContact>()
+                .HasOne(ac => ac.AdditionalContact)
+                .WithMany(a => a.AnnouncementToContacts)
+                .HasForeignKey(ac => ac.AdditionalContactID);
 
-			modelBuilder.Entity<AnnouncementToPayment>()
-				.HasOne(ap => ap.Announcement)
-				.WithMany(a => a.AnnouncementToPayments)
-				.HasForeignKey(ap => ap.AnnouncementID);
+            // Multiple announcements may have multiple payment methods
+            modelBuilder.Entity<AnnouncementToPayment>()
+                .HasKey(ap => new { ap.AnnouncementID, ap.PaymentMethodID });
 
-			modelBuilder.Entity<AnnouncementToPayment>()
-				.HasOne(ap => ap.PaymentMethod)
-				.WithMany(a => a.AnnouncementToPayments)
-				.HasForeignKey(ap => ap.PaymentMethodID);
+            modelBuilder.Entity<AnnouncementToPayment>()
+                .HasOne(ap => ap.Announcement)
+                .WithMany(a => a.AnnouncementToPayments)
+                .HasForeignKey(ap => ap.AnnouncementID);
+
+            modelBuilder.Entity<AnnouncementToPayment>()
+                .HasOne(ap => ap.PaymentMethod)
+                .WithMany(a => a.AnnouncementToPayments)
+                .HasForeignKey(ap => ap.PaymentMethodID);
 
             // One address may be related to multiple announcements.
             modelBuilder.Entity<Announcement>()
@@ -181,7 +193,7 @@ namespace BedAndBreakfast.Data
 
 
 
-		}
+        }
 
-	}
+    }
 }

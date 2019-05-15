@@ -19,5 +19,6 @@ namespace BedAndBreakfast.Settings
         public int DefHelpPages { get; set; }
         public int DefUsersDisplayed { get; set; }
         public int DefAnnouncementsDisplayed { get; set; }
+        public int MaxReviewContentLength { get; set; }
     }
 }
