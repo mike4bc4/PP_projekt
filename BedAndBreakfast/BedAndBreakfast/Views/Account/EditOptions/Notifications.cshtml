@@ -12,8 +12,9 @@
 
 <form asp-controller="Account" asp-action="EditNotifications">
     <div>
+        <h3>General messages</h3>
         <p>
-            General messages
+            Receive messages from hosts and guests, including booking requests.
         </p>
         <div>
             <label asp-for="GeneralByEmail"></label>
@@ -34,8 +35,9 @@
     </div>
 
     <div>
+        <h3>Reminds</h3>
         <p>
-            Reminds
+            Receive booking reminds.
         </p>
         <div>
             <label asp-for="RemindByEmail"></label>
@@ -56,8 +58,9 @@
     </div>
 
     <div>
+        <h3>Discounts and tips</h3>
         <p>
-            Discounts and tips
+            Receive messages with coupons, promotions and tips.
         </p>
         <div>
             <label asp-for="DiscountAnTipsByEmail"></label>
@@ -78,9 +81,11 @@
     </div>
 
     <div>
+        <h3>Rules and community</h3>
         <p>
-            Rules and community
+            Receive updates about changes in law.
         </p>
+
         <div>
             <label asp-for="RulesAndCommunityByEmail"></label>
             <input asp-for="RulesAndCommunityByEmail" value="true" checked="@notificationsSettings.RulesAndCommunityByEmail" />
@@ -100,8 +105,9 @@
     </div>
 
     <div>
+        <h3>Service</h3>
         <p>
-            Service
+            Receive messages from support about your account. 
         </p>
         <div>
             <label asp-for="ServiceByEmail"></label>
