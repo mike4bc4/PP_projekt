@@ -7,6 +7,7 @@ namespace BedAndBreakfast.Models
 {
     public class ReservationViewModel
     {
+        public int AnnouncementID { get; set; }
         public DateTime Date { get; set; }
         public int Reservations { get; set; }
         public int? From { get; set; }

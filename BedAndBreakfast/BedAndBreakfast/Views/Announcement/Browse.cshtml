@@ -55,6 +55,9 @@
     function getQuery() {
         return @Html.Raw(Json.Serialize(query));
     }
+    function isUserAuthenticated() {
+        return @Html.Raw(Json.Serialize(User.Identity.IsAuthenticated));
+    }
 </script>
 
 <style>

@@ -115,12 +115,15 @@ namespace BedAndBreakfast.Controllers
             return View(model);
         }
 
-        public IActionResult GetAnnouncementOwnerInfo(int announcementID) {
+        public IActionResult GetAnnouncementOwnerInfo(int announcementID)
+        {
             Announcement announcement = context.Announcements.Include(a => a.User).Include(a => a.User.Profile).Where(a => a.ID == announcementID).SingleOrDefault();
-            if (announcement == null) {
+            if (announcement == null)
+            {
                 return Json(null);
             }
-            var userData = new {
+            var userData = new
+            {
                 userName = announcement.User.UserName,
                 firstName = announcement.User.Profile.FirstName,
                 lastName = announcement.User.Profile.LastName
@@ -222,6 +225,7 @@ namespace BedAndBreakfast.Controllers
         /// <param name="date"></param>
         /// <param name="scheduleItem"></param>
         /// <returns></returns>
+        [Authorize(Roles = Role.User)]
         public IActionResult GetUsersReservations(int announcementID, DateTime date, ScheduleItemViewModel scheduleItem)
         {
             Announcement announcement = context.Announcements.Where(a => a.ID == announcementID).SingleOrDefault();
@@ -287,6 +291,7 @@ namespace BedAndBreakfast.Controllers
         /// <param name="newReservationsAmount"></param>
         /// <param name="scheduleItem"></param>
         /// <returns></returns>
+        [Authorize(Roles = Role.User)]
         public IActionResult UpdateReservations(int announcementID, string userName, DateTime date, int newReservationsAmount, ScheduleItemViewModel scheduleItem)
         {
             Announcement announcement = context.Announcements.Where(a => a.ID == announcementID).SingleOrDefault();
@@ -345,9 +350,54 @@ namespace BedAndBreakfast.Controllers
             }
         }
 
-        public IActionResult MakeReservations(List<ReservationViewModel> reservations) {
+        /// <summary>
+        /// Performs simple validation and inserts specified amount of reservation records into db.
+        /// Returns number of modified rows (added reservations) or null if announcement related
+        /// to reservation or user who is making reservation is not found.
+        /// </summary>
+        /// <param name="reservations"></param>
+        /// <returns></returns>
+        [Authorize(Roles = Role.User)]
+        public async Task<IActionResult> MakeReservations(List<ReservationViewModel> reservations)
+        {
+            List<Reservation> reservationsToAdd = new List<Reservation>();
+            Announcement announcement = await context.Announcements.Where(a => a.ID == reservations[0].AnnouncementID).SingleOrDefaultAsync();
+            User currentUser = await userManager.GetUserAsync(HttpContext.User);
 
-            return Json(null);
+            if (reservations == null || reservations.Count() == 0 || announcement == null || currentUser == null)
+            {
+                return Json(null);
+            }
+
+            foreach (ReservationViewModel reservation in reservations)
+            {
+                ScheduleItem scheduleItem = null;
+                if (reservation.From != null || reservation.To != null || reservation.MaxReservations != null)
+                {
+                    scheduleItem = context.ScheduleItems
+                        .Where(s => s.From == reservation.From)
+                        .Where(s => s.To == reservation.To)
+                        .Where(s => s.MaxReservations == reservation.MaxReservations)
+                        .SingleOrDefault();
+                    if (scheduleItem == null)
+                    {
+                        return Json(null);
+                    }
+                }
+                for (int i = 0; i < reservation.Reservations; i++)
+                {
+                    reservationsToAdd.Add(new Reservation()
+                    {
+                        Announcement = announcement,
+                        Date = reservation.Date,
+                        ScheduleItem = scheduleItem,
+                        User = currentUser
+                    });
+                }
+            }
+            await context.AddRangeAsync(reservationsToAdd);
+            int addedReservationRecords = await context.SaveChangesAsync();
+            return Json(addedReservationRecords);
         }
 
     }

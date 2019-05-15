@@ -154,7 +154,7 @@ function drawTimetable(reservations, announcement, scheduleItems, date) {
                 var timetableDay = new Date();
                 var d3 = middleDate.getTime() - 1000 * 60 * 60 * 24 * 3 + 1000 * 60 * 60 * 24 * index;
                 timetableDay.setTime(d3);
-                var cellTag = '<td onClick="addReservationItem(\'' + timetableDay.toLocaleDateString('en-US') + '\',' + reservations[index] + ',' + announcement.maxReservations + ',' + null + ');" class="clickable" >';
+                var cellTag = '<td onClick="addReservationItem(' + announcement.id + ',\'' + timetableDay.toLocaleDateString('en-US') + '\',' + reservations[index] + ',' + announcement.maxReservations + ',' + null + ');" class="clickable" >';
                 if (timetableDay.getTime() < today.getTime() || timetableDay.getTime() > to.getTime()) {
                     cellTag = '<td bgcolor="lightgray">';  // Make cell not-clickable. 
                 }
@@ -181,7 +181,7 @@ function drawTimetable(reservations, announcement, scheduleItems, date) {
 
             var index = 0;
             for (var item of scheduleItems) {
-                var rowTag = '<tr onClick="addReservationItem(\'' + middleDate.toLocaleDateString('en-US') + '\',' + reservations[index] + ',' + item.maxReservations + ',{from: ' + item.from + ', to:' + item.to + ', maxReservations:' + item.maxReservations + '});" class="clickable" >';
+                var rowTag = '<tr onClick="addReservationItem(' + announcement.id + ',\'' + middleDate.toLocaleDateString('en-US') + '\',' + reservations[index] + ',' + item.maxReservations + ',{from: ' + item.from + ', to:' + item.to + ', maxReservations:' + item.maxReservations + '});" class="clickable" >';
                 if (middleDate.getTime() < today.getTime() || middleDate.getTime() > to.getTime()) {
                     rowTag = '<tr bgcolor="lightgray">';  // Make row not-clickable. 
                 }
@@ -194,7 +194,11 @@ function drawTimetable(reservations, announcement, scheduleItems, date) {
     }
 }
 
-function addReservationItem(date, currentReservations, maxReservations, scheduleItem) {
+function addReservationItem(announcementID, date, currentReservations, maxReservations, scheduleItem) {
+    if (isUserAuthenticated() == false) {
+        setMessage(4);
+        return;
+    }
     if (currentReservations >= maxReservations) {
         setMessage(1);
         return;
@@ -225,7 +229,7 @@ function addReservationItem(date, currentReservations, maxReservations, schedule
         $('#reservation-' + reservationIndex).append('Reservations: <input onchange="validateReservation(' + reservationIndex + ',' + currentReservations + ',' + maxReservations + ');" id="reservation-input-fld-' + reservationIndex + '" value="1" type="text"  size="5" maxlength="5" />');
         $('#reservation-' + reservationIndex).append('<button onclick="removeReservation(' + reservationIndex + ');">Remove</button>');
         $('#reservation-' + reservationIndex).append('<span id="reservation-msg-' + reservationIndex + '"></span>');
-        addReservationToSession({ date: date, reservations: parseInt(document.getElementById('reservation-input-fld-' + reservationIndex).value), scheduleItem: scheduleItem, reservationIndex: reservationIndex, isValid: true });
+        addReservationToSession({ announcementID: announcementID, date: date, reservations: parseInt(document.getElementById('reservation-input-fld-' + reservationIndex).value), scheduleItem: scheduleItem, reservationIndex: reservationIndex, isValid: true });
         addMakeReservationButton();
     }
     else {
@@ -241,6 +245,8 @@ function addReservationItem(date, currentReservations, maxReservations, schedule
         addMakeReservationButton();
     }
 }
+
+
 
 function makeReservations() {
     var reservations = getSessionReservations();
@@ -273,6 +279,7 @@ function makeReservations() {
         if (item != null) {
             if (item.scheduleItem != null) {
                 simpleReservations.push({
+                    announcementID: item.announcementID,
                     date: item.date,
                     reservations: item.reservations,
                     from: item.scheduleItem.from,
@@ -282,6 +289,7 @@ function makeReservations() {
             }
             else {
                 simpleReservations.push({
+                    announcementID: item.announcementID,
                     date: item.date,
                     reservations: item.reservations,
                     from: null,
@@ -293,14 +301,30 @@ function makeReservations() {
     }
     $.ajax({
         url: '/Announcement/MakeReservations',
-        data: {reservations: simpleReservations},
+        data: { reservations: simpleReservations },
         dataType: 'json',
         method: 'post',
-        success: function(response){
-
-        } 
+        success: function (response) {
+            if (response != null) {
+                drawResponse(response);
+            }
+            else {
+                setMessage(0);
+            }
+        }
     });
+}
 
+function drawResponse(numberOfReservations) {
+    document.getElementById(mainViewContainerId).innerHTML = '<div id="final-msg-container"></div>';
+    $('#final-msg-container').append('<p>You just made ' + numberOfReservations + ' reservation(s).' +
+        'Announcement owner has just received message about your request, give him a moment to answer.</p>');
+    $('#final-msg-container').append('<button onclick="goBackButtonFunction();">Go back to announcement browser</button>');
+
+}
+
+function goBackButtonFunction() {
+    document.getElementById('ann-browser-qry-button').click();
 }
 
 function validateReservation(reservationIndex, currentReservations, maxReservations) {
@@ -411,6 +435,10 @@ function setMessage(messageCode) {
             break;
         case 3:
             messageTag.innerText = 'Some of reservations seems to be invalid, please correct those.';
+            break;
+        case 4:
+            messageTag.innerText = "You have to be logged in to make reservation.";
+            break;
         default:
             messageTag.innerText = '';
             break;
