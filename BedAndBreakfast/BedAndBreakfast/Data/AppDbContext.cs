@@ -33,6 +33,7 @@ namespace BedAndBreakfast.Data
         public DbSet<ScheduleItem> ScheduleItems { get; set; }
         public DbSet<AnnouncementToSchedule> AnnouncementToSchedules { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
 
 

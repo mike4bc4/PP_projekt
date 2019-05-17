@@ -125,12 +125,12 @@ function drawReviewEditor(announcementID) {
     if (container == null) {
         return;
     }
-    container.append('Announcement rating: <input id="rating-in-fld" data-valid="true" onchange="validateReviewRating();" type="text" maxLength="2" size="2" /> / 10 <span id="rating-in-fld-msg-container"></span> <br />');
+    container.empty();
+    container.append('Announcement rating*: <input id="rating-in-fld" data-valid="true" onchange="validateReviewRating();" type="text" maxLength="2" size="2" /> / 10 <span id="rating-in-fld-msg-container"></span> <br />');
     container.append('Your name: <input id="name-in-fld" type="text" maxLength="50" size="50" /><span id="name-in-fld-msg-container"></span><br />');
     container.append('Review*: <textarea oninput="updateReviewCharacterCounter();" data-valid="true" id="review-textarea" style="resize: none;" rows="6" cols="100"></textarea><span id="review-textarea-msg-container"></span><br />');
     container.append('<p id="review-char-counter-container"></p>');
     container.append('<button onClick="postReview(' + announcementID + ');">Post review</button>');
-
 }
 
 function updateReviewCharacterCounter() {
@@ -149,7 +149,7 @@ function updateReviewCharacterCounter() {
         textarea.setAttribute('data-valid', 'false');
         return false;
     }
-    else if (reviewSize == 0){
+    else if (reviewSize == 0) {
         document.getElementById('review-textarea-msg-container').innerText = 'Review cannot be empty.';
         textarea.setAttribute('data-valid', 'false');
         return false;
@@ -179,13 +179,39 @@ function validateReviewRating() {
 
 function postReview(announcementID) {
     var name = document.getElementById('name-in-fld').value;
-    if(name == null || name == ''){
+    var reviewDate = new Date();
+    var content = document.getElementById('review-textarea').value;
+    var rating = parseInt(document.getElementById('rating-in-fld').value);
+    if (name == null || name == '') {
         name = 'Anonym';
     }
     var ratingValid = validateReviewRating();
     var reviewValid = updateReviewCharacterCounter();
-    if(reviewValid == true && ratingValid == true){
+    if (reviewValid == true && ratingValid == true) {
         // Save review to database.
+        $.ajax({
+            url: '/Announcement/PostReview',
+            data: {
+                announcementID: announcementID, reviewViewModel: {
+                    name: name,
+                    rating: rating,
+                    content: content,
+                    reviewDate: reviewDate.toISOString()
+                }
+            },
+            dataType: 'json',
+            method: 'post',
+            success: function (response) {
+                if (response == null) {
+                    setMessage(5);
+                }
+                else {
+                    setMessage(6)
+                    // Draw review editor again to reset input data.
+                    drawReviewEditor();
+                }
+            }
+        });
     }
 }
 
@@ -518,8 +544,15 @@ function setMessage(messageCode) {
             messageTag.innerText = 'Some of reservations seems to be invalid, please correct those.';
             break;
         case 4:
-            messageTag.innerText = "You have to be logged in to make reservation.";
+            messageTag.innerText = 'You have to be logged in to make reservation.';
             break;
+        case 5:
+            messageTag.innerText = 'Internal error occurred. Cannot post review, try again later!';
+            break;
+        case 6:
+            messageTag.innerText = 'Your review has been posted. Soon it will be visible under this announcement.';
+            break;
+
         default:
             messageTag.innerText = '';
             break;

@@ -20,5 +20,6 @@ namespace BedAndBreakfast.Settings
         public int DefUsersDisplayed { get; set; }
         public int DefAnnouncementsDisplayed { get; set; }
         public int MaxReviewContentLength { get; set; }
+        public int MaxReviewNameLength { get; set; }
     }
 }

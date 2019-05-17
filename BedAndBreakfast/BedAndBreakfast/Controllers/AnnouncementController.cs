@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BedAndBreakfast.Data;
 using BedAndBreakfast.Models;
 using BedAndBreakfast.Models.ServicesLogic;
+using BedAndBreakfast.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -398,6 +399,59 @@ namespace BedAndBreakfast.Controllers
             await context.AddRangeAsync(reservationsToAdd);
             int addedReservationRecords = await context.SaveChangesAsync();
             return Json(addedReservationRecords);
+        }
+
+        /// <summary>
+        /// Allows to save review related to specified announcement. Before saving review is validated.
+        /// Rating and content are obligatory but user can provide no name or name shorter than amount specified
+        /// in database settings. 
+        /// </summary>
+        /// <param name="announcementID"></param>
+        /// <param name="reviewViewModel"></param>
+        /// <returns></returns>
+        [Authorize(Roles = Role.User)]
+        public async Task<IActionResult> PostReview(int announcementID, ReviewViewModel reviewViewModel)
+        {
+            Announcement announcement = await context.Announcements.Where(a => a.ID == announcementID).SingleOrDefaultAsync();
+            User currentUser = await userManager.GetUserAsync(HttpContext.User);
+            if (announcement == null || currentUser == null)
+            {
+                return Json(null);
+            }
+            // Validate review
+            if (string.IsNullOrEmpty(reviewViewModel.Name) ||
+                reviewViewModel.Name.Count() > IoCContainer.DbSettings.Value.MaxReviewNameLength ||
+                reviewViewModel.ReviewDate == null ||
+                string.IsNullOrEmpty(reviewViewModel.Content) ||
+                reviewViewModel.Content.Count() > IoCContainer.DbSettings.Value.MaxReviewContentLength)
+            {
+                return Json(null);
+            }
+            if (reviewViewModel.Rating < 0 ||
+                reviewViewModel.Rating > 10)
+            {
+                return Json(null);
+            }
+            // Save review
+            Review review = new Review()
+            {
+                Announcement = announcement,
+                User = currentUser,
+                Name = reviewViewModel.Name,
+                Rating = (byte)reviewViewModel.Rating,
+                Content = reviewViewModel.Content,
+                ReviewDate = reviewViewModel.ReviewDate
+            };
+            await context.Reviews.AddAsync(review);
+            var result = await context.SaveChangesAsync();
+            if (result == 0)
+            {
+                return Json(null);
+            }
+            else
+            {
+                return Json(result);
+            }
         }
 
     }
