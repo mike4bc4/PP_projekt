@@ -454,5 +454,32 @@ namespace BedAndBreakfast.Controllers
             }
         }
 
+        /// <summary>
+        /// Finds reviews related to announcement specified by id number.
+        /// If there is no such announcement null is returned, otherwise this action
+        /// returns list of reviews (parsed to view model) ordered descending by review date.
+        /// </summary>
+        /// <param name="announcementID"></param>
+        /// <returns></returns>
+        [Authorize(Roles = Role.User)]
+        public async Task<IActionResult> GetReviews(int announcementID) {
+            Announcement announcement = await context.Announcements.Where(a => a.ID == announcementID).SingleOrDefaultAsync();
+            if (announcement == null) {
+                return Json(null);
+            }
+            List<Review> announcementReviews = await context.Reviews.Where(ar => ar.Announcement == announcement).OrderByDescending(ar=>ar.ReviewDate).ToListAsync();
+            List<ReviewViewModel> reviewViewModels = new List<ReviewViewModel>();
+            foreach (Review review in announcementReviews) {
+                reviewViewModels.Add(new ReviewViewModel
+                {
+                    Name = review.Name,
+                    Rating = review.Rating,
+                    Content = review.Content,
+                    ReviewDate = review.ReviewDate
+                });
+            }
+            return Json(new { reviews = reviewViewModels });
+        }
+
     }
 }

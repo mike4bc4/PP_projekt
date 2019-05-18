@@ -114,10 +114,37 @@ function drawAnnouncement(announcementIndex, ownerData) {
     if (isUserAuthenticated() == true) {
         drawReviewEditor(announcement.id);
     }
+    getReviews(announcement.id);
 }
 
 function getReviews(announcementID) {
+    $.ajax({
+        url: '/Announcement/GetReviews',
+        data: { announcementID },
+        dataType: 'json',
+        method: 'post',
+        success: function (response) {
+            if (response == null) {
+                setMessage(0);
+            }
+            else {
+                drawReviews(response.reviews);
+            }
+        }
+    });
+}
 
+function drawReviews(reviews) {
+    $('#' + reviewItemsContainerId).empty();
+    if (reviews.length == 0) {
+        $('#' + reviewItemsContainerId).append('There are no reviews of this announcement.');
+        return;
+    }
+    for (var review of reviews) {
+        var reviewDate = new Date(review.reviewDate);
+        $('#' + reviewItemsContainerId).append('<div><p>' + review.name + ' rated this announcement as: ' + review.rating + '/10 on ' + reviewDate.toLocaleDateString() + ' ' + reviewDate.toLocaleTimeString() + '</p>' +
+            '<p>' + review.content + '</p></div>');
+    }
 }
 
 function drawReviewEditor(announcementID) {
@@ -209,6 +236,8 @@ function postReview(announcementID) {
                     setMessage(6)
                     // Draw review editor again to reset input data.
                     drawReviewEditor();
+                    // Draw updated reviews.
+                    getReviews(announcementID);
                 }
             }
         });
