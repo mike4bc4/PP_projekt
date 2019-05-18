@@ -142,7 +142,7 @@ function drawReviews(reviews) {
     }
     for (var review of reviews) {
         var reviewDate = new Date(review.reviewDate);
-        $('#' + reviewItemsContainerId).append('<div><p>' + review.name + ' rated this announcement as: ' + review.rating + '/10 on ' + reviewDate.toLocaleDateString() + ' ' + reviewDate.toLocaleTimeString() + '</p>' +
+        $('#' + reviewItemsContainerId).append('<div><p>' + review.name + ' rated this announcement as ' + review.rating + '/10 on ' + reviewDate.toLocaleDateString() + ' ' + reviewDate.toLocaleTimeString() + '</p>' +
             '<p>' + review.content + '</p></div>');
     }
 }

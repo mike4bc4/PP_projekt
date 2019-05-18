@@ -1,0 +1,61 @@
+﻿@using BedAndBreakfast.Data;
+@{
+    List<ShowReservationsViewModel> reservations = Model.reservations;
+    ViewData["Title"] = "ShowReservations";
+    List<string> announcementTypes = Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementType)).ToList();
+    List<string> houseSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.HouseSubtype)).ToList();
+    List<string> entertainmnetSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.EntertainmentSubtype)).ToList();
+    List<string> foodSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.FoodSubtype)).ToList();
+    List<string> houseSharedParts = Enum.GetNames(typeof(EnumeratedDbValues.HouseSharedPart)).ToList();
+
+}
+
+<h2>ShowReservations</h2>
+<script type="text/javascript" src="~/js/showReservations.js"></script>
+<script type="text/javascript">
+    function getReservations() {
+        return @Html.Raw(Json.Serialize(reservations));
+    }
+</script>
+
+<div id="show-res-view-container">
+    @if (reservations.Count() != 0)
+    {
+        @foreach (var reservation in reservations)
+        {
+            <div style="border: 1px solid black; margin: 3px;">
+                @announcementTypes[reservation.AnnouncementType]
+                @switch (reservation.AnnouncementType)
+                {
+                    case 0:
+                        @houseSubtypes[reservation.AnnouncementSubtype]
+                        @houseSharedParts[(int)reservation.HouseSharedPart]
+                        break;
+                    case 1:
+                        @entertainmnetSubtypes[reservation.AnnouncementSubtype]
+                        break;
+                    case 2:
+                        @foodSubtypes[reservation.AnnouncementSubtype]
+                        break;
+                }
+                @reservation.Country
+                @reservation.Region
+                @reservation.City
+                @reservation.Street
+                @reservation.StreetNumber
+                @reservation.Date
+                @if (reservation.ScheduleItem != null)
+                {
+                    @:from @reservation.ScheduleItem.From
+                    @:to @reservation.ScheduleItem.To
+                }
+                @reservation.Amount
+            </div>
+        }
+    }
+    else
+    {
+        @: You don't have any reservations.
+    }
+</div>
+

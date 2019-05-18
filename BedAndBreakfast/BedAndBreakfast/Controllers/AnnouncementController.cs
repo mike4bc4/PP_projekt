@@ -481,5 +481,36 @@ namespace BedAndBreakfast.Controllers
             return Json(new { reviews = reviewViewModels });
         }
 
+        [Authorize(Roles = Role.User)]
+        public async Task<IActionResult> ShowReservations() {
+            User user = await userManager.GetUserAsync(HttpContext.User);
+            if (user == null) {
+                return View();
+            }
+            List<ShowReservationsViewModel> reservations = context.Reservations
+                .Include(r=>r.Announcement)
+                .Include(r=>r.Announcement.Address)
+                .Include(r=>r.ScheduleItem)
+                .Where(r => r.User == user)
+                .GroupBy(r => new { r.Announcement, r.ScheduleItem })
+                .Select(grp => new ShowReservationsViewModel(grp.First().ScheduleItem)
+                {
+                    AnnouncementID = grp.First().AnnouncementID,
+                    AnnouncementType = grp.First().Announcement.Type,
+                    AnnouncementSubtype = grp.First().Announcement.Subtype,
+                    HouseSharedPart = grp.First().Announcement.SharedPart,
+                    Country = grp.First().Announcement.Address.Country,
+                    Region = grp.First().Announcement.Address.Region,
+                    City = grp.First().Announcement.Address.City,
+                    Street = grp.First().Announcement.Address.Street,
+                    StreetNumber = grp.First().Announcement.Address.StreetNumber,
+                    Date = grp.First().Date,
+                    ScheduleItemID = grp.First().ScheduleItemID, 
+                    Amount = grp.Count() }).ToList();
+            dynamic model = new ExpandoObject();
+            model.reservations = reservations;
+            return View(model);
+        }
+
     }
 }
