@@ -27,6 +27,7 @@ function drawAnnouncementsList(announcements) {
 	document.getElementById('sub-table-left-container').innerHTML = '<table class="' + subTableClassName + '" id="sub-table-left"></table>';
 	document.getElementById('sub-table-right-container').innerHTML = '<table class="' + subTableClassName + '" id="sub-table-right"></table>';
 	$('#sub-table-left').append('<tr>' +
+		'<td class="' + subTableHeaderCellClassName + '">ID</td>' +
 		'<td class="' + subTableHeaderCellClassName + '">Type</td>' +
 		'<td class="' + subTableHeaderCellClassName + '">Subtype</td>' +
 		'<td class="' + subTableHeaderCellClassName + '">Additional options</td>' +
@@ -70,6 +71,7 @@ function drawAnnouncementsList(announcements) {
 		}
 
 		$('#sub-table-left').append('<tr class="' + rowClass + '" onClick="toggleAnnouncementSelection(' + index + '); redraw();">' +
+			'<td class="' + subTableHeaderCellClassName + '">' + announcement.id + '</td>' +
 			'<td class="' + subTableHeaderCellClassName + '">' + getTypes()[announcement.type] + '</td>' +
 			'<td class="' + subTableHeaderCellClassName + '">' + announcementSubtype + '</td>' +
 			'<td class="' + subTableHeaderCellClassName + '">' + announcementSharedPart + '</td>' +
@@ -484,12 +486,12 @@ function setAnnouncementManagementMessage(messageCode) {
 			break;
 	}
 	// Message will be visible for 5 seconds.
-    if (messageTimeout != null) {
-        window.clearTimeout(messageTimeout);
-    }
-    messageTimeout = window.setTimeout(function () {
-        document.getElementById('announcementManagementMessage').innerText = '';
-    }, 5000);
+	if (messageTimeout != null) {
+		window.clearTimeout(messageTimeout);
+	}
+	messageTimeout = window.setTimeout(function () {
+		document.getElementById('announcementManagementMessage').innerText = '';
+	}, 5000);
 }
 
 

@@ -66,6 +66,12 @@ namespace BedAndBreakfast.Data
 
             // ---------- Configure relations ----------
 
+            // Each conversation has multiple messages.
+            modelBuilder.Entity<Conversation>()
+                .HasMany(c => c.Messages)
+                .WithOne(m => m.Conversation)
+                .HasForeignKey(m => m.ConversationID);
+
             // Each message has single sender and is related to single conversation.
             modelBuilder.Entity<Message>()
                 .HasOne(m => m.Conversation)

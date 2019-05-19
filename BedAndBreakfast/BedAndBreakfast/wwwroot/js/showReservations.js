@@ -10,13 +10,14 @@ function getReservations() {
                 setMessage(0);
             }
             else {
-                drawReservations(response);
+                drawMakeReservationsResponse(response);
             }
         }
     });
 }
 
-function drawReservations(reservations) {
+function drawMakeReservationsResponse(reservations) {
+    var tempCellStyle = 'border: 1px solid black; padding: 3px;'; // Development option.
     var container = $('#' + showReservationsViewContainerId);
     if (reservations == null) {
         return;
@@ -26,28 +27,42 @@ function drawReservations(reservations) {
         container.append('<p>You have no reservations yet.</p>');
         return;
     }
+    container.append('<table id="user-reservation-table" style="border-collapse:collapse;"></table>');
+    $('#user-reservation-table').append('<tr>' +
+        '<td style="' + tempCellStyle + '">Announcement ID</td>' +
+        '<td style="' + tempCellStyle + '">Type</td>' +
+        '<td style="' + tempCellStyle + '">Subtype</td>' +
+        '<td style="' + tempCellStyle + '">Additional</td>' +
+        '<td style="' + tempCellStyle + '">Address</td>' +
+        '<td style="' + tempCellStyle + '">Date</td>' +
+        '<td style="' + tempCellStyle + '">Time</td>' +
+        '<td style="' + tempCellStyle + '">Amount of reservations</td>' +
+        '<td style="">&nbsp</td>' +
+        '</tr>')
     var index = 0;
     for (var reservation of reservations) {
         var reservationDate = new Date(reservation.date);
         var todayDate = new Date();
         todayDate.setHours(0, 0, 0, 0);
-        container.append('<div id="reservation-' + index + '" style="border: 1px solid black; margin: 3px;"></div>')
-        $('#reservation-' + index).append(getAnnouncementTypes()[reservation.announcementType] + ' ');
+        var html = '<tr><td style="' + tempCellStyle + '">' + reservation.announcementID + '</td>';
+        html += '<td style="' + tempCellStyle + '">' + getAnnouncementTypes()[reservation.announcementType] + '</td>';
         switch (reservation.announcementType) {
             case 0:     // House
-                $('#reservation-' + index).append(getHouseSubtypes()[reservation.announcementSubtype] + ' ');
-                $('#reservation-' + index).append(getHouseSharedParts()[reservation.houseSharedPart] + ' ');
+                html += '<td style="' + tempCellStyle + '">' + getHouseSubtypes()[reservation.announcementSubtype] + '</td>';
+                html += '<td style="' + tempCellStyle + '">' + getHouseSharedParts()[reservation.houseSharedPart] + '</td>';
                 break;
             case 1:     // Entertainment
-                $('#reservation-' + index).append(getEntertainmentSubtypes()[reservation.announcementSubtype] + ' ');
+                html += '<td style="' + tempCellStyle + '">' + getEntertainmentSubtypes()[reservation.announcementSubtype] + '</td>';
+                html += '<td style="' + tempCellStyle + '">&nbsp</td>';
                 break;
             case 2:     // Food
-                $('#reservation-' + index).append(getFoodSubtypes()[reservation.announcementSubtype] + ' ');
+                html += '<td style="' + tempCellStyle + '">' + getFoodSubtypes()[reservation.announcementSubtype] + '</td>';
+                html += '<td style="' + tempCellStyle + '">&nbsp</td>';
                 break;
         }
-        $('#reservation-' + index).append('Address: ' + reservation.country + ' ' + reservation.region + ' ' +
-            reservation.city + ' ' + reservation.street + ' ' + reservation.streetNumber + ' ');
-        $('#reservation-' + index).append(reservationDate.toLocaleDateString('en-US') + ' ');
+        html += '<td style="' + tempCellStyle + '">' + reservation.country + ' ' + reservation.region + ' ' +
+            reservation.city + ' ' + reservation.street + ' ' + reservation.streetNumber + '</td>';
+        html += '<td style="' + tempCellStyle + '">' + reservationDate.toLocaleDateString('en-US') + '</td>';
         if (reservation.scheduleItem != null) {
             var from = reservation.scheduleItem.from.toString() + ':00';
             var to;
@@ -57,16 +72,18 @@ function drawReservations(reservations) {
             else {
                 to = '23:59';
             }
-            $('#reservation-' + index).append('From: ' + from +
-                ' To: ' + to + ' ');
+            html += '<td style="' + tempCellStyle + '">' + from + '-' + to + '</td>';
         }
-        $('#reservation-' + index).append('Reservations: ' + reservation.amount + ' ');
-
+        else {
+            html += '<td style="' + tempCellStyle + '">&nbsp</td>';
+        }
+        html += '<td style="' + tempCellStyle + '">' + reservation.amount + '</td>';
         if (reservationDate > todayDate) {
-            $('#reservation-' + index).append('<button onclick="requestRemoval(' + reservation.announcementID +
+            html += '<td><button onclick="requestRemoval(' + reservation.announcementID +
                 ',\'' + reservationDate.toLocaleDateString('en-US') +
-                '\',' + reservation.scheduleItemID + ');">Request removal</button>');
+                '\',' + reservation.scheduleItemID + ');">Request removal</button></td></tr>';
         }
+        $('#user-reservation-table').append(html);
         index++;
     }
 }

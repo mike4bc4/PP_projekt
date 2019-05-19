@@ -11,6 +11,5 @@ namespace BedAndBreakfast.Models
         public DateTime DateStarted { get; set; }
         public bool ReadOnly { get; set; }
         public bool IsHidden { get; set; }
-        public int MessagesAmount { get; set; }
     }
 }

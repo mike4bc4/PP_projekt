@@ -241,5 +241,19 @@ namespace BedAndBreakfast.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        /// <summary>
+        /// Returns current logged in account user name or null if for some reason
+        /// currently logged in user is not in database. This function returns Json object.
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = Role.User + "," + Role.Admin)]
+        public async Task<IActionResult> GetCurrentUserName() {
+            User currentUser = await userManager.GetUserAsync(HttpContext.User);
+            if (currentUser == null) {
+                return Json(null);
+            }
+            return Json(currentUser.UserName);
+        }
+
     }
 }

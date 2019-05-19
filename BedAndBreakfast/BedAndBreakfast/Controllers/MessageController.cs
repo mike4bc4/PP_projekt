@@ -84,7 +84,7 @@ namespace BedAndBreakfast.Controllers
             }
             await context.UserToConversations.AddRangeAsync(userToConversationRelations);
             int result = await context.SaveChangesAsync();
-            return Json(result);
+            return Json(addedConversation.ConversationID);
         }
 
 
@@ -130,8 +130,9 @@ namespace BedAndBreakfast.Controllers
             }
 
             List<Conversation> currentUserConversations = context.UserToConversations
-                .Include(utc => utc.Conversation.Messages)
+                .Include(utc => utc.Conversation)
                 .Where(utc => utc.User == currentUser)
+                .OrderByDescending(utc => utc.Conversation.DateStarted)
                 .Select(utc => utc.Conversation).ToList();
             if (currentUserConversations.Count() == 0)
             {
@@ -144,7 +145,6 @@ namespace BedAndBreakfast.Controllers
                 {
                     DateStarted = conversation.DateStarted,
                     IsHidden = conversation.IsHidden,
-                    MessagesAmount = conversation.Messages.Count(),
                     ReadOnly = conversation.ReadOnly,
                     Title = conversation.Title,
                 });

@@ -537,5 +537,20 @@ namespace BedAndBreakfast.Controllers
             return Json(reservations);
         }
 
+        /// <summary>
+        /// Returns user name of owner of announcement specified by given ID. If for some reason
+        /// user cannot be found null is returned. This function returns Json object.
+        /// </summary>
+        /// <param name="announcementID"></param>
+        /// <returns></returns>
+        [Authorize(Roles = Role.User + "," + Role.Admin)]
+        public async Task<IActionResult> GetAnnouncementOwnerUserName(int announcementID) {
+            User announcementOwner = await context.Announcements.Where(a => a.ID == announcementID).Select(a=>a.User).SingleOrDefaultAsync();
+            if (announcementOwner == null) {
+                return Json(null);
+            }
+            return Json(announcementOwner.UserName);
+        }
+
     }
 }
