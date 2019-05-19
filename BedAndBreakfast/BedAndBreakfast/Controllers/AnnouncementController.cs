@@ -392,7 +392,8 @@ namespace BedAndBreakfast.Controllers
                         Announcement = announcement,
                         Date = reservation.Date,
                         ScheduleItem = scheduleItem,
-                        User = currentUser
+                        User = currentUser,
+                        ReservationDate = DateTime.Now
                     });
                 }
             }
@@ -496,7 +497,7 @@ namespace BedAndBreakfast.Controllers
 
         /// <summary>
         /// Finds ad returns all reservations related to user grouped by announcement, date
-        /// and schedule item. Reservations are ordered by date in descending order (most recent first).
+        /// and schedule item. Reservations are ordered by reservation date in descending order (most recent first).
         /// If for some reason user cannot be found null is returned.
         /// </summary>
         /// <returns></returns>
@@ -527,10 +528,11 @@ namespace BedAndBreakfast.Controllers
                     Street = grp.First().Announcement.Address.Street,
                     StreetNumber = grp.First().Announcement.Address.StreetNumber,
                     Date = grp.First().Date,
+                    ReservationDate = grp.First().ReservationDate,
                     ScheduleItemID = grp.First().ScheduleItemID,
                     Amount = grp.Count()
                 })
-                .OrderByDescending(grp => grp.Date)
+                .OrderByDescending(grp => grp.ReservationDate)
                 .ToList();
             return Json(reservations);
         }

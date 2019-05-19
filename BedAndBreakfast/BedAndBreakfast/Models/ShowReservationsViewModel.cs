@@ -30,6 +30,7 @@ namespace BedAndBreakfast.Models
         public string Street { get; set; }
         public string StreetNumber { get; set; }
         public DateTime Date { get; set; }
+        public DateTime ReservationDate { get; set; }
         public int? ScheduleItemID { get; set; }
         public ScheduleItemViewModel ScheduleItem { get; set; } = null;
         public int Amount { get; set; }
