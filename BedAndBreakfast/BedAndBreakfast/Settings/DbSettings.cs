@@ -21,5 +21,7 @@ namespace BedAndBreakfast.Settings
         public int DefAnnouncementsDisplayed { get; set; }
         public int MaxReviewContentLength { get; set; }
         public int MaxReviewNameLength { get; set; }
+        public int MaxConversationTitleLength { get; set; }
+        public int MaxConversationMessageLength { get; set; }
     }
 }

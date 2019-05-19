@@ -26,7 +26,8 @@ namespace BedAndBreakfast.Models
         public bool IsHost { get; set; } = false;
         public List<Reservation> Reservations { get; set; }
         public List<Review> Reviews { get; set; }
-
+        public List<Message> Messages { get; set; }
+        public List<UserToConversation> UserToConversations { get; set; }
 
     }
 }

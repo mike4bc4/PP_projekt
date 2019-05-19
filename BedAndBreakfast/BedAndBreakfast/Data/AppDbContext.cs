@@ -34,6 +34,9 @@ namespace BedAndBreakfast.Data
         public DbSet<AnnouncementToSchedule> AnnouncementToSchedules { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<Conversation> Conversations { get; set; }
+        public DbSet<UserToConversation> UserToConversations { get; set; }
 
 
 
@@ -54,8 +57,34 @@ namespace BedAndBreakfast.Data
                 .Property(a => a.Description).HasMaxLength(IoCContainer.DbSettings.Value.MaxAnnouncementDescSize);
             modelBuilder.Entity<Review>()
                 .Property(r => r.Content).HasMaxLength(IoCContainer.DbSettings.Value.MaxReviewContentLength);
+            modelBuilder.Entity<Message>()
+                .Property(m => m.Content).HasMaxLength(IoCContainer.DbSettings.Value.MaxConversationMessageLength);
+            modelBuilder.Entity<Conversation>()
+                .Property(c => c.Title).HasMaxLength(IoCContainer.DbSettings.Value.MaxConversationTitleLength);
+            modelBuilder.Entity<UserToConversation>()
+                .HasKey(utc => new { utc.ConversationID, utc.UserID });
 
             // ---------- Configure relations ----------
+
+            // Each message has single sender and is related to single conversation.
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.Conversation)
+                .WithMany(c => c.Messages)
+                .HasForeignKey(m => m.ConversationID);
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.Sender)
+                .WithMany(s => s.Messages)
+                .HasForeignKey(m => m.SenderID);
+
+            // Many conversations have multiple users involved.
+            modelBuilder.Entity<UserToConversation>()
+                .HasOne(utc => utc.User)
+                .WithMany(u => u.UserToConversations)
+                .HasForeignKey(utc => utc.UserID);
+            modelBuilder.Entity<UserToConversation>()
+                .HasOne(utc => utc.Conversation)
+                .WithMany(c => c.UserToConversations)
+                .HasForeignKey(utc => utc.ConversationID);
 
             // One review has one announcement and on user that both may have
             // multiple reviews.
