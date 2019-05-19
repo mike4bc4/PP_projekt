@@ -462,14 +462,17 @@ namespace BedAndBreakfast.Controllers
         /// <param name="announcementID"></param>
         /// <returns></returns>
         [Authorize(Roles = Role.User)]
-        public async Task<IActionResult> GetReviews(int announcementID) {
+        public async Task<IActionResult> GetReviews(int announcementID)
+        {
             Announcement announcement = await context.Announcements.Where(a => a.ID == announcementID).SingleOrDefaultAsync();
-            if (announcement == null) {
+            if (announcement == null)
+            {
                 return Json(null);
             }
-            List<Review> announcementReviews = await context.Reviews.Where(ar => ar.Announcement == announcement).OrderByDescending(ar=>ar.ReviewDate).ToListAsync();
+            List<Review> announcementReviews = await context.Reviews.Where(ar => ar.Announcement == announcement).OrderByDescending(ar => ar.ReviewDate).ToListAsync();
             List<ReviewViewModel> reviewViewModels = new List<ReviewViewModel>();
-            foreach (Review review in announcementReviews) {
+            foreach (Review review in announcementReviews)
+            {
                 reviewViewModels.Add(new ReviewViewModel
                 {
                     Name = review.Name,
@@ -481,18 +484,37 @@ namespace BedAndBreakfast.Controllers
             return Json(new { reviews = reviewViewModels });
         }
 
+        /// <summary>
+        /// Redirects user to his/her reservations page.
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = Role.User)]
-        public async Task<IActionResult> ShowReservations() {
+        public IActionResult ShowReservations()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Finds ad returns all reservations related to user grouped by announcement, date
+        /// and schedule item. Reservations are ordered by date in descending order (most recent first).
+        /// If for some reason user cannot be found null is returned.
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = Role.User)]
+        [ActionName("UserReservations")]
+        public async Task<IActionResult> GetReservations()
+        {
             User user = await userManager.GetUserAsync(HttpContext.User);
-            if (user == null) {
-                return View();
+            if (user == null)
+            {
+                return Json(null);
             }
             List<ShowReservationsViewModel> reservations = context.Reservations
-                .Include(r=>r.Announcement)
-                .Include(r=>r.Announcement.Address)
-                .Include(r=>r.ScheduleItem)
+                .Include(r => r.Announcement)
+                .Include(r => r.Announcement.Address)
+                .Include(r => r.ScheduleItem)
                 .Where(r => r.User == user)
-                .GroupBy(r => new { r.Announcement, r.ScheduleItem })
+                .GroupBy(r => new { r.Announcement, r.Date, r.ScheduleItem })
                 .Select(grp => new ShowReservationsViewModel(grp.First().ScheduleItem)
                 {
                     AnnouncementID = grp.First().AnnouncementID,
@@ -505,11 +527,12 @@ namespace BedAndBreakfast.Controllers
                     Street = grp.First().Announcement.Address.Street,
                     StreetNumber = grp.First().Announcement.Address.StreetNumber,
                     Date = grp.First().Date,
-                    ScheduleItemID = grp.First().ScheduleItemID, 
-                    Amount = grp.Count() }).ToList();
-            dynamic model = new ExpandoObject();
-            model.reservations = reservations;
-            return View(model);
+                    ScheduleItemID = grp.First().ScheduleItemID,
+                    Amount = grp.Count()
+                })
+                .OrderByDescending(grp => grp.Date)
+                .ToList();
+            return Json(reservations);
         }
 
     }

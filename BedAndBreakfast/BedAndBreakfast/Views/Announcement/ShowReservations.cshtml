@@ -1,6 +1,6 @@
 ﻿@using BedAndBreakfast.Data;
 @{
-    List<ShowReservationsViewModel> reservations = Model.reservations;
+
     ViewData["Title"] = "ShowReservations";
     List<string> announcementTypes = Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementType)).ToList();
     List<string> houseSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.HouseSubtype)).ToList();
@@ -13,49 +13,27 @@
 <h2>ShowReservations</h2>
 <script type="text/javascript" src="~/js/showReservations.js"></script>
 <script type="text/javascript">
-    function getReservations() {
-        return @Html.Raw(Json.Serialize(reservations));
+    window.onload = function () {
+        getReservations();
+    }
+
+    function getAnnouncementTypes() {
+        return @Html.Raw(Json.Serialize(announcementTypes));
+    }
+    function getHouseSubtypes() {
+        return @Html.Raw(Json.Serialize(houseSubtypes));
+    }
+    function getEntertainmentSubtypes() {
+        return @Html.Raw(Json.Serialize(entertainmnetSubtypes));
+    }
+    function getFoodSubtypes() {
+        return @Html.Raw(Json.Serialize(foodSubtypes));
+    }
+    function getHouseSharedParts() {
+        return @Html.Raw(Json.Serialize(houseSharedParts));
     }
 </script>
 
-<div id="show-res-view-container">
-    @if (reservations.Count() != 0)
-    {
-        @foreach (var reservation in reservations)
-        {
-            <div style="border: 1px solid black; margin: 3px;">
-                @announcementTypes[reservation.AnnouncementType]
-                @switch (reservation.AnnouncementType)
-                {
-                    case 0:
-                        @houseSubtypes[reservation.AnnouncementSubtype]
-                        @houseSharedParts[(int)reservation.HouseSharedPart]
-                        break;
-                    case 1:
-                        @entertainmnetSubtypes[reservation.AnnouncementSubtype]
-                        break;
-                    case 2:
-                        @foodSubtypes[reservation.AnnouncementSubtype]
-                        break;
-                }
-                @reservation.Country
-                @reservation.Region
-                @reservation.City
-                @reservation.Street
-                @reservation.StreetNumber
-                @reservation.Date
-                @if (reservation.ScheduleItem != null)
-                {
-                    @:from @reservation.ScheduleItem.From
-                    @:to @reservation.ScheduleItem.To
-                }
-                @reservation.Amount
-            </div>
-        }
-    }
-    else
-    {
-        @: You don't have any reservations.
-    }
-</div>
+<div id="message-container"></div>
+<div id="show-res-view-container"></div>
 
