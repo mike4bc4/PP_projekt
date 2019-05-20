@@ -10,3 +10,20 @@ function setAnnouncementSearchField(){
         document.getElementById(announcementSearchFieldId).value = query;
     }
 }
+
+class RequestSynchronizer {
+    constructor() {
+        this.generator;
+        this.requestQueue = [];
+    }
+    run() {
+        var requestQueue = this.requestQueue;
+        function* runRequestsGenerator() {
+            for (var i = 0; i < requestQueue.length; i++) {
+                yield requestQueue[i]();
+            }
+        }
+        this.generator = runRequestsGenerator();
+        this.generator.next();
+    }
+}

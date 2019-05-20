@@ -370,6 +370,7 @@ namespace BedAndBreakfast.Controllers
                 return Json(null);
             }
 
+            List<int> scheduleItemsIDs = new List<int>();
             foreach (ReservationViewModel reservation in reservations)
             {
                 ScheduleItem scheduleItem = null;
@@ -384,6 +385,7 @@ namespace BedAndBreakfast.Controllers
                     {
                         return Json(null);
                     }
+                    scheduleItemsIDs.Add(scheduleItem.ScheduleItemID);
                 }
                 for (int i = 0; i < reservation.Reservations; i++)
                 {
@@ -397,9 +399,16 @@ namespace BedAndBreakfast.Controllers
                     });
                 }
             }
+            if (scheduleItemsIDs.Count() == 0)
+            {
+                scheduleItemsIDs = null;
+            }
+            else {
+                scheduleItemsIDs = scheduleItemsIDs.Distinct().ToList();
+            }
             await context.AddRangeAsync(reservationsToAdd);
             int addedReservationRecords = await context.SaveChangesAsync();
-            return Json(addedReservationRecords);
+            return Json(new { announcementID = announcement.ID, scheduleItemsIDs = scheduleItemsIDs, additions = addedReservationRecords });
         }
 
         /// <summary>

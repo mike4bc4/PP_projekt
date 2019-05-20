@@ -36,6 +36,7 @@ namespace BedAndBreakfast.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Conversation> Conversations { get; set; }
+        public DbSet<ScheduleItemToMessage> ScheduleItemToMessages { get; set; }
         public DbSet<UserToConversation> UserToConversations { get; set; }
 
 
@@ -61,18 +62,28 @@ namespace BedAndBreakfast.Data
                 .Property(m => m.Content).HasMaxLength(IoCContainer.DbSettings.Value.MaxConversationMessageLength);
             modelBuilder.Entity<Conversation>()
                 .Property(c => c.Title).HasMaxLength(IoCContainer.DbSettings.Value.MaxConversationTitleLength);
+            modelBuilder.Entity<ScheduleItemToMessage>()
+                .HasKey(sm => new { sm.MessageID, sm.ScheduleItemID });
             modelBuilder.Entity<UserToConversation>()
-                .HasKey(utc => new { utc.ConversationID, utc.UserID });
-
+                .HasKey(uc => new { uc.ConversationID, uc.UserID });
             // ---------- Configure relations ----------
 
-            // Each conversation has multiple messages.
-            modelBuilder.Entity<Conversation>()
-                .HasMany(c => c.Messages)
-                .WithOne(m => m.Conversation)
-                .HasForeignKey(m => m.ConversationID);
 
-            // Each message has single sender and is related to single conversation.
+            // One conversation may have multiple users and
+            // one user may have multiple conversations.
+            modelBuilder.Entity<UserToConversation>()
+                .HasOne(uc => uc.Conversation)
+                .WithMany(c => c.UserToConversations)
+                .HasForeignKey(uc => uc.ConversationID);
+            modelBuilder.Entity<UserToConversation>()
+                .HasOne(uc => uc.User)
+                .WithMany(u => u.UserToConversations)
+                .HasForeignKey(uc => uc.UserID);
+
+
+            // Message belongs to single conversation,
+            // always has single sender (user) and
+            // is related to single announcement.
             modelBuilder.Entity<Message>()
                 .HasOne(m => m.Conversation)
                 .WithMany(c => c.Messages)
@@ -81,16 +92,23 @@ namespace BedAndBreakfast.Data
                 .HasOne(m => m.Sender)
                 .WithMany(s => s.Messages)
                 .HasForeignKey(m => m.SenderID);
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.Announcement)
+                .WithMany(a => a.RelatedMessages)
+                .HasForeignKey(m => m.AnnouncementID);
 
-            // Many conversations have multiple users involved.
-            modelBuilder.Entity<UserToConversation>()
-                .HasOne(utc => utc.User)
-                .WithMany(u => u.UserToConversations)
-                .HasForeignKey(utc => utc.UserID);
-            modelBuilder.Entity<UserToConversation>()
-                .HasOne(utc => utc.Conversation)
-                .WithMany(c => c.UserToConversations)
-                .HasForeignKey(utc => utc.ConversationID);
+
+            // One message may have multiple schedule items related and
+            // one schedule item may have multiple messages related.
+            modelBuilder.Entity<ScheduleItemToMessage>()
+                .HasOne(sm => sm.Message)
+                .WithMany(m => m.ScheduleItemToMessages)
+                .HasForeignKey(sm => sm.MessageID);
+            modelBuilder.Entity<ScheduleItemToMessage>()
+                .HasOne(sm => sm.ScheduleItem)
+                .WithMany(si => si.ScheduleItemToMessages)
+                .HasForeignKey(sm => sm.ScheduleItemID);
+
 
             // One review has one announcement and on user that both may have
             // multiple reviews.

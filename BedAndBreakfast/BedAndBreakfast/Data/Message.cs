@@ -17,6 +17,9 @@ namespace BedAndBreakfast.Data
         public string SenderID { get; set; }
         public Conversation Conversation { get; set; }
         public int ConversationID { get; set; }
+        public Announcement Announcement { get; set; }
+        public int? AnnouncementID { get; set; }
+        public List<ScheduleItemToMessage> ScheduleItemToMessages { get; set; }
 
     }
 }

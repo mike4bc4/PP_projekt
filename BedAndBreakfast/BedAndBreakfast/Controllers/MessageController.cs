@@ -87,9 +87,20 @@ namespace BedAndBreakfast.Controllers
             return Json(addedConversation.ConversationID);
         }
 
-
+        /// <summary>
+        /// Validates provided information, finds conversation, announcement, schedule items and sender
+        /// related to this message, creates message record and all necessary relations. If provided data
+        /// is invalid json null is returned otherwise action returns number of modified records as json object.
+        /// </summary>
+        /// <param name="conversationID"></param>
+        /// <param name="content"></param>
+        /// <param name="dateSend"></param>
+        /// <param name="senderUserName"></param>
+        /// <param name="announcementID"></param>
+        /// <param name="scheduleItemsIDs"></param>
+        /// <returns></returns>
         [Authorize(Roles = Role.User + "," + Role.Admin)]
-        public async Task<IActionResult> AddMessage(int? conversationID, string content, DateTime dateSend)
+        public async Task<IActionResult> AddMessage(int? conversationID, string content, DateTime dateSend, string senderUserName, int? announcementID, List<int?> scheduleItemsIDs)
         {
             // Validation
             if (conversationID == null ||
@@ -97,25 +108,65 @@ namespace BedAndBreakfast.Controllers
                 content.Count() > IoCContainer.DbSettings.Value.MaxConversationMessageLength ||
                 dateSend == null ||
                 dateSend.Date < DateTime.Today.AddDays(-1).Date ||
-                dateSend.Date > DateTime.Today.AddDays(1).Date)
+                dateSend.Date > DateTime.Today.AddDays(1).Date ||
+                string.IsNullOrEmpty(senderUserName))
             {
                 return Json(null);
             }
-            Conversation conversation = context.Conversations.Where(c => c.ConversationID == conversationID).SingleOrDefault();
-            User currentUser = await userManager.GetUserAsync(HttpContext.User);
-            if (conversation == null || currentUser == null || conversation.ReadOnly == true)
+            if (announcementID != null && scheduleItemsIDs == null ||
+                announcementID == null && scheduleItemsIDs != null)
             {
                 return Json(null);
             }
-            // Adding message to conversation.
-            Message addedMessage = new Message()
+            if (scheduleItemsIDs != null && scheduleItemsIDs.Count() == 0)
             {
+                return Json(null);
+            }
+            Conversation conversation = await context.Conversations.Where(c => c.ConversationID == conversationID).SingleOrDefaultAsync();
+            if (conversation == null)
+            {
+                return Json(null);
+            }
+            Announcement announcement = null;
+            if (announcementID != null)
+            {
+                announcement = await context.Announcements.Where(a => a.ID == announcementID).SingleOrDefaultAsync();
+                if (announcement == null)
+                {
+                    return Json(null);
+                }
+            }
+            List<ScheduleItem> scheduleItems = null;
+            if (scheduleItemsIDs != null)
+            {
+                scheduleItems = await context.ScheduleItems.Where(s => scheduleItemsIDs.Contains(s.ScheduleItemID)).ToListAsync();
+                if (scheduleItems.Count() == 0)
+                {
+                    return Json(null);
+                }
+            }
+            User sender = await context.Users.Where(u => u.UserName == senderUserName).SingleOrDefaultAsync();
+            if (sender == null) {
+                return Json(null);
+            }
+            // Add messages
+            Message message = new Message()
+            {
+                Announcement = announcement,
                 Content = content,
                 Conversation = conversation,
                 DateSend = dateSend,
-                Sender = currentUser,
+                Sender = sender,
             };
-            await context.Messages.AddAsync(addedMessage);
+            await context.Messages.AddAsync(message);
+            List<ScheduleItemToMessage> scheduleItemToMessage = new List<ScheduleItemToMessage>();
+            foreach (ScheduleItem scheduleItem in scheduleItems) {
+                scheduleItemToMessage.Add(new ScheduleItemToMessage()
+                {
+                    Message = message,
+                    ScheduleItem = scheduleItem,
+                });
+            }
             int result = await context.SaveChangesAsync();
             return Json(result);
         }

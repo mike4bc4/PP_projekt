@@ -382,8 +382,6 @@ function addReservationItem(announcementID, date, currentReservations, maxReserv
     }
 }
 
-
-
 function makeReservations() {
     var reservations = getSessionReservations();
     var reservationsEmpty = true;
@@ -410,11 +408,11 @@ function makeReservations() {
     }
     // List of reservations valid and not empty.
     // Parse before sending.
-    var simpleReservations = [];
+    var simplifiedReservations = [];
     for (var item of reservations) {
         if (item != null) {
             if (item.scheduleItem != null) {
-                simpleReservations.push({
+                simplifiedReservations.push({
                     announcementID: item.announcementID,
                     date: item.date,
                     reservations: item.reservations,
@@ -424,7 +422,7 @@ function makeReservations() {
                 });
             }
             else {
-                simpleReservations.push({
+                simplifiedReservations.push({
                     announcementID: item.announcementID,
                     date: item.date,
                     reservations: item.reservations,
@@ -437,13 +435,32 @@ function makeReservations() {
     }
     $.ajax({
         url: '/Announcement/MakeReservations',
-        data: { reservations: simpleReservations },
+        data: { reservations: simplifiedReservations },
         dataType: 'json',
         method: 'post',
         success: function (response) {
             if (response != null) {
-                drawMakeReservationsResponse(response);
-                createReservationConversation(simpleReservations[0].announcementID, response);
+                // response = {announcementID, scheduleItemsIDs, additions}
+                drawMakeReservationsResponse(response.additions);
+                var requestSynchronizer = new RequestSynchronizer();
+                var conversationContext = {
+                    announcementID: response.announcementID,
+                    userNames: [],
+                    title: 'New reservation',
+                    dateStarted: new Date(),
+                    dateSend: new Date(),
+                    readOnly: false,
+                    conversationID: null,
+                    content: MessageContentCreator.createNewReservationContent(simplifiedReservations),
+                    scheduleItemsIDs: response.scheduleItemsIDs,
+                };
+                requestSynchronizer.requestQueue = [
+                    function () { getCurrentUserName(conversationContext, requestSynchronizer) },
+                    function () { getAnnouncementOwnerUserName(conversationContext, requestSynchronizer) },
+                    function () { createConversation(conversationContext, requestSynchronizer) },
+                    function () { addMessage(conversationContext, requestSynchronizer) },
+                ];
+                requestSynchronizer.run();
             }
             else {
                 setMessage(0);
@@ -452,67 +469,6 @@ function makeReservations() {
     });
 }
 
-function createReservationConversation(announcementID, reservationAmount) {
-    var makeReservationConversationTitle = 'New Reservation';
-    var dateStarted = new Date();
-    getCurrentUserName();
-    getAnnouncementOwnerUserName(announcementID);
-    var currentUserName = JSON.parse(sessionStorage.getItem('currentUserName'));
-    var announcementOwnerUserName = JSON.parse(sessionStorage.getItem('announcementOwnerUserName'));
-    if (currentUserName == null || announcementOwnerUserName == null) {
-        return;
-    }
-    var userNames = [currentUserName, announcementOwnerUserName];
-    $.ajax({
-        url: '/Message/CreateConversation',
-        data: { title: makeReservationConversationTitle, userNames: userNames, dateStarted: dateStarted.toISOString(), readOnly: false },
-        dataType: 'json',
-        method: 'post',
-        success: function (response) {
-            // Response contains conversation ID.
-            if (response != null) {
-                var message = 'Hello! I have just made ' + reservationAmount + ' reservation(s) for announcement ' + announcementID;
-                sendReservationMessage(response, message);
-            }
-        }
-    });
-}
-
-function sendReservationMessage(conversationID, message) {
-    var todayDate = new Date();
-    if (conversationID == null) {
-        return;
-    }
-    $.ajax({
-        url: '/Message/AddMessage',
-        data: { conversationID: conversationID, content: message, dateSend: todayDate.toISOString() },
-        dataType: 'json',
-        method: 'post',
-    });
-}
-
-function getCurrentUserName() {
-    $.ajax({
-        url: '/Account/GetCurrentUserName',
-        dataType: 'json',
-        method: 'post',
-        success: function (response) {
-            sessionStorage.setItem('currentUserName', JSON.stringify(response));
-        }
-    });
-}
-
-function getAnnouncementOwnerUserName(announcementID) {
-    $.ajax({
-        url: '/Announcement/GetAnnouncementOwnerUserName',
-        data: { announcementID: announcementID },
-        dataType: 'json',
-        method: 'post',
-        success: function (response) {
-            sessionStorage.setItem('announcementOwnerUserName', JSON.stringify(response));
-        }
-    });
-}
 
 function drawMakeReservationsResponse(numberOfReservations) {
     document.getElementById(mainViewContainerId).innerHTML = '<div id="final-msg-container"></div>';
