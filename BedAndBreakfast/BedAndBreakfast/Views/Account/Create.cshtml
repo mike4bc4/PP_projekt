@@ -11,8 +11,9 @@
         <div id="create_acc_text">Create account</div>
         <div class="form-group">
             <label asp-for="EmailAddress" class="create_text"></label>
-            <input asp-for="EmailAddress" class="create_bar" />
-            <span asp-validation-for="EmailAddress" class="text-danger"></span>
+            <input asp-for="EmailAddress" class="create_bar" value="radek" />
+            <span asp-validation-for="EmailAddress" class="text-danger" ></span>
+            <div style="clear:both;"></div>
         </div>
         <div class="form-group">
             <label asp-for="FirstName" class="create_text"></label>
@@ -22,7 +23,7 @@
         </div>
         <div class="form-group">
             <label asp-for="LastName" class="create_text"></label>
-            <input asp-for="LastName" class="create_bar" />
+            <input asp-for="LastName" class="create_bar"  />
             <span asp-validation-for="LastName" class="text-danger"></span>
             <div style="clear:both;"></div>
         </div>
