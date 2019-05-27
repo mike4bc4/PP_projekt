@@ -191,8 +191,8 @@ body {
     width: 130px;
     height: 45px;
     background-color: rgb(94, 102, 255);
-    float: right;
     border-radius: 2px;
+    float: right;
     margin-right: 20px;
     bottom: -30px;
 }
@@ -220,5 +220,168 @@ body {
 
 
 
+/*-------------- edit.html --------------*/
+
+#edit_div {
+    background-color: white;
+    width: 650px;
+    height: 1800px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -450px;
+    border-radius: 2px;
+}
+
+#edit_head_text {
+    width: 100%;
+    height: 50px;
+    font-family: 'Lato', sans-serif;
+    font-size: 42px;
+    color: Black;
+    margin-left: 20px;
+    padding-top: 10px;
+}
+
+#edit_prop_div {
+    width: 100%;
+    height: 90px;
+    font-family: 'Lato', sans-serif;
+    font-size: 24px;
+    color: Black;
+    margin-left: 20px;
+    padding-top: 10px;
+}
+
+.edit_options {
+    background-color: white;
+    width: 200px;
+    height: 38px;
+    float: left;
+    border-radius: 2px;
+    border: 1px solid lightgrey;
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    padding-top: 12px;
+}
+
+.edit_small_head {
+    width: 100%;
+    height: 40px;
+    font-family: 'Lato', sans-serif;
+    font-size: 26px;
+    color: Black;
+    margin-left: 20px;
+    padding-top: 10px;
+}
+
+.edit_smaller_head {
+    width: 100%;
+    height: 20px;
+    font-family: 'Lato', sans-serif;
+    font-size: 22px;
+    color: Black;
+    margin-left: 20px;
+    padding-top: 10px;
+}
+
+.edit_expl {
+    width: 100%;
+    height: 30px;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: Black;
+    margin-left: 20px;
+    padding-top: 10px;
+}
+
+.edit_box {
+    width: 100%;
+    height: 230px;
+    margin-left: 20px;
+}
+
+.edit_box_bar {
+    background-color: white;
+    width: 100px;
+    height: 38px;
+    border-radius: 2px;
+    border: 1px solid lightgrey;
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    padding-top: 12px;
+}
+
+.edit_box1 {
+    width: 100%;
+    height: 230px;
+    margin-left: 20px;
+}
+
+.edit_box_bar1 {
+    background-color: white;
+    width: 290px;
+    height: 38px;
+    border-radius: 2px;
+    border: 1px solid lightgrey;
+    text-align: left;
+    margin-left: 20px;
+    margin-top: 20px;
+    padding-left: 10px;
+    font-family: 'Lato', sans-serif;
+    padding-top: 12px;
+    float: left;
+}
+
+.edit_box_bar2 {
+    background-color: white;
+    width: 290px;
+    height: 38px;
+    border-radius: 2px;
+    border: 1px solid lightgrey;
+    text-align: left;
+    margin-top: 20px;
+    padding-left: 10px;
+    font-family: 'Lato', sans-serif;
+    padding-top: 12px;
+    float: left;
+}
+#bg_div {
+    height: 2000px;
+    width: 100%;
+    background-color: #66ccff;
+}
+
+#save_button {
+    position: relative;
+    width: 130px;
+    height: 45px;
+    background-color: rgb(94, 102, 255);
+    border-radius: 2px;
+    float: right;
+    margin-right: 20px;
+    bottom: -30px;
+}
+
+.my_button {
+    color: white;
+    font-family: 'Lato', sans-serif;
+    font-size: 30px;
+    text-decoration: none;
+    float: left;
+    width: 130px;
+    height: 45px;
+    margin-left: 20px;
+    text-align: center;
+}
+
+#login_div {
+    background-color: white;
+    width: 650px;
+    height: 350px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0px;
+    border-radius: 2px;
+}
 
 
