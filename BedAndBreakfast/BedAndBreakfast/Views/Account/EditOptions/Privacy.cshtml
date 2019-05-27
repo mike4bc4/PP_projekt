@@ -6,16 +6,24 @@
     PrivacySetting privacySettings = (PrivacySetting)ViewData["privacySettings"];
 }
 
-<h2>Privacy</h2>
-
+<div class="edit_small_head">Privacy</div>
 <form asp-action="EditPrivacy">
     <div>
-        <label asp-for="ShowProfileToFriends"></label>
-        <input asp-for="ShowProfileToFriends" value="true" checked="@privacySettings.ShowProfileToFriends" />
-    </div>
-    <div>
-        <label asp-for="ShowProfileToWorld"></label>
-        <input asp-for="ShowProfileToWorld" value="true" checked="@privacySettings.ShowProfileToWorld" />
-    </div>
-    <input type="submit" value="Save" class="btn btn-default" />
+        <div class="edit_box">
+            <div>
+                <label asp-for="ShowProfileToFriends" class="edit_box_bar"></label>
+                <input asp-for="ShowProfileToFriends" value="true" checked="@privacySettings.ShowProfileToFriends" />
+            </div>
+            <div>
+                <label asp-for="ShowProfileToWorld" class="edit_box_bar"></label>
+                <input asp-for="ShowProfileToWorld" value="true" checked="@privacySettings.ShowProfileToWorld" />
+            </div>
+
+        </div>
+        <div class="edit_box_pr">
+            <div class="save_button">
+                <input type="submit" value="Save" class="my_button" />
+            </div>
+        </div>
+        </div>
 </form>

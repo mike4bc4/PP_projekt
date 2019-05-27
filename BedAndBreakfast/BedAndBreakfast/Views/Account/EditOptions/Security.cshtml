@@ -4,24 +4,36 @@
     ViewData["Title"] = "Security";
 }
 
-<h2>Security</h2>
 
-<form asp-action="EditSecurity">
-    <div asp-validation-summary="ModelOnly"></div>
-    <div>
-        <label asp-for="CurrentPassword"></label>
-        <input asp-for="CurrentPassword" />
-        <span asp-validation-for="CurrentPassword"></span>
-    </div>
-    <div>
-        <label asp-for="NewPassword"></label>
-        <input asp-for="NewPassword" />
-        <span asp-validation-for="NewPassword"></span>
-    </div>
-    <div>
-        <label asp-for="PrepeatNewPassword"></label>
-        <input asp-for="PrepeatNewPassword" />
-        <span asp-validation-for="PrepeatNewPassword"></span>
-    </div>
-    <input type="submit" value="Change" />
-</form>
+<div class="edit_small_head">Security</div>
+<div>
+    <form asp-action="EditSecurity">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="edit_box1">
+            <div>
+                <label asp-for="CurrentPassword" class="edit_box_bar1"></label>
+                <input asp-for="CurrentPassword"  class="edit_box_bar1" />
+                <span asp-validation-for="CurrentPassword"></span>
+                <div style="clear:both;"></div>
+            </div>
+            <div>
+                <label asp-for="NewPassword" class="edit_box_bar1"></label>
+                <input asp-for="NewPassword" class="edit_box_bar1" />
+                <span asp-validation-for="NewPassword"></span>
+                <div style="clear:both;"></div>
+            </div>
+            <div>
+                <label asp-for="PrepeatNewPassword" class="edit_box_bar1"></label>
+                <input asp-for="PrepeatNewPassword" class="edit_box_bar1" />
+                <span asp-validation-for="PrepeatNewPassword"></span>
+                <div style="clear:both;"></div>
+            </div>
+        </div>
+        <div class="edit_box_pr">
+            <div class="save_button">
+                <input type="submit" value="Change" class="my_button" />
+            </div>
+        </div>
+
+    </form>
+</div>
