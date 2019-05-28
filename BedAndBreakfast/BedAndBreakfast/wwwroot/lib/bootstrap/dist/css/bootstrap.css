@@ -8,7 +8,7 @@ body {
 #header {
     position: relative;
     width: 100%;
-    height: 100px;
+    height: 200px;
     /*background-size: 100%;*/
 }
 
@@ -224,11 +224,11 @@ body {
 
 #edit_div {
     background-color: white;
-    width: 670px;
-    height: 120%;
+    width: 650px;
+    height: 1800px;
     margin-left: auto;
     margin-right: auto;
-    margin-top: -0px;
+    margin-top: -450px;
     border-radius: 2px;
 }
 
@@ -244,7 +244,7 @@ body {
 
 #edit_prop_div {
     width: 100%;
-    height: 60px;
+    height: 90px;
     font-family: 'Lato', sans-serif;
     font-size: 24px;
     color: Black;
@@ -281,8 +281,7 @@ body {
     font-size: 22px;
     color: Black;
     margin-left: 20px;
-    margin-top: 5px;
-    padding-top: 5px;
+    padding-top: 10px;
 }
 
 .edit_expl {
@@ -297,20 +296,11 @@ body {
 
 .edit_box {
     width: 100%;
-    height: 100%;
+    height: 230px;
     margin-left: 20px;
 }
 
-
-.edit_box_pr {
-    width: 100%;
-    height: 55px;
-    margin-left: 00px;
-    margin-top: 10px;
-}
-
 .edit_box_bar {
-    position: relative;
     background-color: white;
     width: 100px;
     height: 38px;
@@ -318,7 +308,7 @@ body {
     border: 1px solid lightgrey;
     text-align: center;
     font-family: 'Lato', sans-serif;
-    padding-top: 2px;
+    padding-top: 12px;
 }
 
 .edit_box1 {
