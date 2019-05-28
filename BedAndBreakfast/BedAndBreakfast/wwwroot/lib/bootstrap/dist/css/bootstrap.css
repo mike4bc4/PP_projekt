@@ -130,6 +130,16 @@ body {
     height: 45px;
 }
 
+#create_div {
+    position: absolute;
+    width: 700px;
+    height: 380px;
+    background-color: white;
+    border-radius: 10px;
+    left: 30%;
+    top: 30%;
+}
+
 .form_grp {
     position: absolute;
     width: 630px;
@@ -138,75 +148,3 @@ body {
     border-radius: 2px;
     border: 0px;
 }
-
-#create_div {
-    background-color: white;
-    width: 400px;
-    height: 520px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: -20%;
-    border-radius: 2px;
-}
-
-.create_bar {
-    background-color: white;
-    width: 245px;
-    height: 50px;
-    margin-right: 20px;
-    margin-top: 20px;
-    float: right;
-    border-radius: 2px;
-    border: 1px solid lightgrey;
-}
-
-.create_text {
-    background-color: white;
-    width: 111px;
-    height: 38px;
-    margin-left: 20px;
-    margin-top: 20px;
-    float: left;
-    border-radius: 2px;
-    border: 1px solid lightgrey;
-    text-align: center;
-    font-family: 'Lato', sans-serif;
-    padding-top: 12px;
-}
-
-#create_button {
-    position: relative;
-    width: 130px;
-    height: 45px;
-    background-color: rgb(94, 102, 255);
-    float: right;
-    border-radius: 2px;
-    margin-right: 20px;
-    bottom: -30px;
-}
-
-#button {
-    color: white;
-    font-family: 'Lato', sans-serif;
-    font-size: 30px;
-    text-decoration: none;
-    display: block;
-    width: 130px;
-    height: 45px;
-    text-align: center;
-}
-
-#create_acc_text {
-    width: 100%;
-    height: 40px;
-    font-family: 'Lato', sans-serif;
-    font-size: 30px;
-    color: Black;
-    margin-left: 20px;
-    padding-top: 10px;
-}
-
-
-
-
-
