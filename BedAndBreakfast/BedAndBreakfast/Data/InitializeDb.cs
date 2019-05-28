@@ -30,6 +30,9 @@ namespace BedAndBreakfast.Data
             };
             await userManager.CreateAsync(addedAdmins[0], IoCContainer.PredefinedAccounts.Value.Admin1.Password);
             await userManager.CreateAsync(addedAdmins[1], IoCContainer.PredefinedAccounts.Value.Admin2.Password);
+
+            await userManager.AddToRoleAsync(addedAdmins[0], Role.Admin);
+            await userManager.AddToRoleAsync(addedAdmins[1], Role.Admin);
         }
 
         /// <summary>
