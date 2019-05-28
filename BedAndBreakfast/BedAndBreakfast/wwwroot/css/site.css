@@ -1,153 +1,39 @@
-﻿body {
-    margin: 0px;
-    background-image: url('img/back.jpg');
-    background-repeat: no-repeat;
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
+for details on configuring this project to bundle and minify static web assets. */
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
 }
 
-#header
-{
-	position: relative;
-	width: 100%;
-	height: 600px;
-	
-	/*background-size: 100%;*/
+/* Wrapping element */
+/* Set some basic padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
-#nav
-{
-	position: absolute;
-	width: 100%;
-	height: 50px;
-	/*background-color: red;*/
+/* Carousel */
+.carousel-caption p {
+    font-size: 20px;
+    line-height: 1.4;
 }
 
-#logo
-{	
-	width: 80px;
-	height: 80px;
-	margin-top: 15px;
-	margin-left: 15px;	 
+/* Make .svg files in the carousel display properly in older browsers */
+.carousel-inner .item img[src$=".svg"] {
+    width: 100%;
 }
 
-.tilelink
-	{
-		color: #ffffff;
-		text-decoration: none;
-		font-family: sans-serif;		
-		float: right;
-		margin: 20px;
-		padding: 8px;
-		/*border: 1px solid white;
-		border-radius: 3px;
-		padding: 10px;*/
-	}
-	
-.tilelink:hover
-{
-	border-bottom: 1px solid white;
-	padding-bottom: 30px;
+/* QR code generator */
+#qrCode {
+    margin: 15px;
 }
 
-#searchbar_div
-{
-	position: relative;
-	width: 700px;
-	height: 380px;
-	background-color: rgba(0, 0, 0, 0.65);
-	border-radius: 10px;
-	left: 8%;
-	top: 40%;
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 767px) {
+    /* Hide captions */
+    .carousel-caption {
+        display: none;
+    }
 }
-
-#hello_text
-{	
-	position: absolute;
-	width: 100%;
-	height: 100px;
-	
-	font-family: 'Lato', sans-serif;
-	font-size: 70px;
-	color: white;
-	text-shadow: 5px 5px 10px black;
-	
-	top:10%;
-	text-align: center;
-}
-
-#under_text
-{	
-	position: absolute;
-	width: 100%;
-	height: 20px;
-	text-align: center;
-	font-family: 'Lato', sans-serif;
-	font-size: 20px;
-	color: white;
-	margin-top: 20%;
-}
-
-#where_div
-{
-	position: relative;
-	width: 630px;
-	height: 90px;
-	top: 60%;	
-	left: 5%;
-}
-
-#searchbar
-{
-	position: absolute;
-	width: 630px;
-	height: 45px;
-	background-color: white;
-	border-radius: 2px;
-}
-
-#where_text
-{
-	color: grey;
-	font-family: 'Lato', sans-serif;
-	font-size: 14px;
-	margin-left: 15px;
-}
-
-#search_button
-{
-	position: absolute;
-	width: 130px;
-	height: 45px;
-	background-color: rgb(94, 102, 255);
-	float: right;
-	border-radius: 2px;
-	bottom: 0px;
-	right: 0px;
-}
-
-#search_button:hover
-{
-	background-color: #4d55ee;
-}
-
-#font_icon
-{
-	color: white;
-	font-family: 'Lato', sans-serif;
-	font-size: 22px;
-	text-decoration: none;
-	display: block;
-	width: 120px;
-	height: 45px;
-}
-
-
-
-
-
-
-
-
-
-
 
 
