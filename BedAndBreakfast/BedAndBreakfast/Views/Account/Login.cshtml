@@ -4,28 +4,27 @@
     ViewData["Title"] = "Login";
 }
 
+<h2>Login</h2>
 
-<div id="login_div">
-    <form asp-action="Login">
-        <div style="clear:both;"></div>
-        <div class="edit_small_head">Login</div>
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="Login" class="edit_box_bar1"></label>
-            <input asp-for="Login" class="edit_box_bar2" />
-            <span asp-validation-for="Login" class="create_text_danger"></span>
-            <div style="clear:both;"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Password" class="edit_box_bar1"></label>
-            <input asp-for="Password" class="edit_box_bar2" />
-            <span asp-validation-for="Password" class="create_text_danger"></span>
-            <div style="clear:both;"></div>
-        </div>
-        <div class="form-group" id="save_button">
-            <input type="submit" value="Login" id="button" />
-            <div style="clear:both;"></div>
-        </div>
-    </form>
-    <div class="create_text_danger"><b>@ViewBag.Message</b></div>
+<h4>@ViewBag.Message</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Login">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Login" class="control-label"></label>
+                <input asp-for="Login" class="form-control" />
+                <span asp-validation-for="Login" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Login" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
 </div>
