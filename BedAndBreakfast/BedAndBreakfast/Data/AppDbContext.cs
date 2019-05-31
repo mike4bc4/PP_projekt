@@ -38,6 +38,7 @@ namespace BedAndBreakfast.Data
         public DbSet<Conversation> Conversations { get; set; }
         public DbSet<ScheduleItemToMessage> ScheduleItemToMessages { get; set; }
         public DbSet<UserToConversation> UserToConversations { get; set; }
+        public DbSet<HiddenConversationToUser> HiddenConversationToUsers { get; set; }
 
 
 
@@ -66,7 +67,20 @@ namespace BedAndBreakfast.Data
                 .HasKey(sm => new { sm.MessageID, sm.ScheduleItemID });
             modelBuilder.Entity<UserToConversation>()
                 .HasKey(uc => new { uc.ConversationID, uc.UserID });
+            modelBuilder.Entity<HiddenConversationToUser>()
+                .HasKey(uc => new { uc.ConversationID, uc.UserID });
             // ---------- Configure relations ----------
+
+            // User may have multiple hidden conversations.
+            // Conversation may have multiple users that wish to hide it.
+            modelBuilder.Entity<HiddenConversationToUser>()
+                .HasOne(cu => cu.Conversation)
+                .WithMany(c => c.HiddenConversationToUsers)
+                .HasForeignKey(cu => cu.ConversationID);
+            modelBuilder.Entity<HiddenConversationToUser>()
+                .HasOne(cu => cu.User)
+                .WithMany(u => u.HiddenConversationToUsers)
+                .HasForeignKey(cu => cu.UserID);
 
 
             // One conversation may have multiple users and

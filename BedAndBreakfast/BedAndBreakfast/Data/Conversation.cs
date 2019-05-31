@@ -16,6 +16,6 @@ namespace BedAndBreakfast.Data
         public List<Message> Messages { get; set; }
         public bool ReadOnly { get; set; }
         public DateTime DateStarted { get; set; }
-        public bool IsHidden { get; set; }
+        public List<HiddenConversationToUser> HiddenConversationToUsers { get; set; }
     }
 }

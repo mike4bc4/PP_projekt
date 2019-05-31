@@ -68,7 +68,6 @@ namespace BedAndBreakfast.Controllers
             Conversation addedConversation = new Conversation()
             {
                 DateStarted = dateStarted,
-                IsHidden = false,
                 ReadOnly = readOnly,
                 Title = title,
             };
@@ -100,7 +99,7 @@ namespace BedAndBreakfast.Controllers
         /// <param name="scheduleItemsIDs"></param>
         /// <returns></returns>
         [Authorize(Roles = Role.User + "," + Role.Admin)]
-        public async Task<IActionResult> AddMessage(int? conversationID, string content, DateTime dateSend, string senderUserName, int? announcementID, List<int?> scheduleItemsIDs)
+        public async Task<IActionResult> AddMessage(int? conversationID, string content, DateTime dateSend, string senderUserName, int? announcementID, List<int> scheduleItemsIDs)
         {
             // Validation
             if (conversationID == null ||
@@ -110,15 +109,6 @@ namespace BedAndBreakfast.Controllers
                 dateSend.Date < DateTime.Today.AddDays(-1).Date ||
                 dateSend.Date > DateTime.Today.AddDays(1).Date ||
                 string.IsNullOrEmpty(senderUserName))
-            {
-                return Json(null);
-            }
-            if (announcementID != null && scheduleItemsIDs == null ||
-                announcementID == null && scheduleItemsIDs != null)
-            {
-                return Json(null);
-            }
-            if (scheduleItemsIDs != null && scheduleItemsIDs.Count() == 0)
             {
                 return Json(null);
             }
@@ -136,8 +126,8 @@ namespace BedAndBreakfast.Controllers
                     return Json(null);
                 }
             }
-            List<ScheduleItem> scheduleItems = null;
-            if (scheduleItemsIDs != null)
+            List<ScheduleItem> scheduleItems = new List<ScheduleItem>();
+            if (scheduleItemsIDs.Count() != 0)
             {
                 scheduleItems = await context.ScheduleItems.Where(s => scheduleItemsIDs.Contains(s.ScheduleItemID)).ToListAsync();
                 if (scheduleItems.Count() == 0)
@@ -171,6 +161,13 @@ namespace BedAndBreakfast.Controllers
             return Json(result);
         }
 
+        /// <summary>
+        /// Gets current user and if present collects his conversations,
+        /// parses it to suitable form and sends as returns as JSON object.
+        /// If there is no such user returns JSON null. If amount of messages
+        /// is equal to 0 returns JSON object with 0 value.
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = Role.User + "," + Role.Admin)]
         public async Task<IActionResult> GetConversations()
         {
@@ -194,13 +191,46 @@ namespace BedAndBreakfast.Controllers
             {
                 conversations.Add(new ConversationViewModel()
                 {
+                    ConversationID = conversation.ConversationID,
                     DateStarted = conversation.DateStarted,
-                    IsHidden = conversation.IsHidden,
                     ReadOnly = conversation.ReadOnly,
                     Title = conversation.Title,
                 });
             }
             return Json(conversations);
+        }
+
+        [Authorize(Roles = Role.User + "," + Role.Admin)]
+        public async Task<IActionResult> GetMessages(int conversationID) {
+            Conversation conversation = await context.Conversations
+                .Where(c => c.ConversationID == conversationID).SingleOrDefaultAsync();
+            if (conversation == null) {
+                return Json(null);
+            }
+            List<Message> messages = await context.Messages.Where(m => m.Conversation == conversation).ToListAsync();
+            if (messages.Count == 0) {
+                return Json(0);
+            }
+            List<MessageViewModel> messageViewModels = new List<MessageViewModel>();
+            foreach (Message message in messages) {
+                User sender = await context.Users
+                    .Include(u=>u.Profile)
+                    .Where(u => u == message.Sender).SingleOrDefaultAsync();
+                if (sender == null) {
+                    return Json(null);
+                }
+
+                messageViewModels.Add(new MessageViewModel()
+                {
+                    AnnouncementID = message.AnnouncementID,
+                    Content = message.Content,
+                    DateSend = message.DateSend,
+                    SenderUserName = sender.UserName,
+                    SenderFirstName = sender.Profile?.FirstName,
+                    SenderLastName = sender.Profile?.LastName,
+                });
+            }
+            return Json(messageViewModels);
         }
     }
 }

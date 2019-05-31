@@ -6,11 +6,15 @@
 <h2>ShowConversations</h2>
 
 <script type="text/javascript" src="~/js/showConversations.js"></script>
+<script type="text/javascript" src="~/js/messageSystem.js"></script>
 <script type="text/javascript">
     window.onload = function () {
-        getConversations();
+        currentCButtonHandler();
     }
 </script>
-
+<div id="navigation-bar">
+    <button onclick="currentCButtonHandler();">Current conversations</button>
+    <button onclick="hiddenCButtonHandler();">Hidden conversations</button>
+</div>
 <div id="message-container"></div>
 <div id="show-conversations-view-container"></div>
