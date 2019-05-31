@@ -81,12 +81,26 @@ function addMessage(context, requestSynchronizer) {
         },
         dataType: 'json',
         method: 'post',
-        success: function (response) {       
+        success: function (response) {
+            context.messageResponse = response;
             requestSynchronizer.generator.next();
         }
     });
 
 
+}
+
+function getMessages(context, synchronizer) {
+    $.ajax({
+        url: '/Message/GetMessages',
+        method: 'post',
+        dataType: 'json',
+        data: { conversationID: context.conversationID },
+        success: function (response) {
+            context.messages = response;
+            synchronizer.generator.next();
+        }
+    });
 }
 
 

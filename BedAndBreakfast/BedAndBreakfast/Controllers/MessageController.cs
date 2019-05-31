@@ -136,7 +136,8 @@ namespace BedAndBreakfast.Controllers
                 }
             }
             User sender = await context.Users.Where(u => u.UserName == senderUserName).SingleOrDefaultAsync();
-            if (sender == null) {
+            if (sender == null)
+            {
                 return Json(null);
             }
             // Add messages
@@ -150,7 +151,8 @@ namespace BedAndBreakfast.Controllers
             };
             await context.Messages.AddAsync(message);
             List<ScheduleItemToMessage> scheduleItemToMessage = new List<ScheduleItemToMessage>();
-            foreach (ScheduleItem scheduleItem in scheduleItems) {
+            foreach (ScheduleItem scheduleItem in scheduleItems)
+            {
                 scheduleItemToMessage.Add(new ScheduleItemToMessage()
                 {
                     Message = message,
@@ -201,22 +203,29 @@ namespace BedAndBreakfast.Controllers
         }
 
         [Authorize(Roles = Role.User + "," + Role.Admin)]
-        public async Task<IActionResult> GetMessages(int conversationID) {
+        public async Task<IActionResult> GetMessages(int conversationID)
+        {
             Conversation conversation = await context.Conversations
                 .Where(c => c.ConversationID == conversationID).SingleOrDefaultAsync();
-            if (conversation == null) {
+            if (conversation == null)
+            {
                 return Json(null);
             }
-            List<Message> messages = await context.Messages.Where(m => m.Conversation == conversation).ToListAsync();
-            if (messages.Count == 0) {
+            List<Message> messages = await context.Messages
+                .Include(m => m.Sender)
+                .Where(m => m.Conversation == conversation).ToListAsync();
+            if (messages.Count == 0)
+            {
                 return Json(0);
             }
             List<MessageViewModel> messageViewModels = new List<MessageViewModel>();
-            foreach (Message message in messages) {
+            foreach (Message message in messages)
+            {
                 User sender = await context.Users
-                    .Include(u=>u.Profile)
+                    .Include(u => u.Profile)
                     .Where(u => u == message.Sender).SingleOrDefaultAsync();
-                if (sender == null) {
+                if (sender == null)
+                {
                     return Json(null);
                 }
 
