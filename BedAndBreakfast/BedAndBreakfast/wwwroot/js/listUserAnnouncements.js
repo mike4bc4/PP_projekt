@@ -87,7 +87,8 @@ function drawAnnouncementsList(announcements) {
 			displayTimetableContent = '<a href="#" onClick="getReservations(' + announcement.id + ',\'' + todayDate + '\');">Display timetable</a>';
 		}
 		$('#sub-table-right').append('<tr>' +
-			'<td class="' + subTableHeaderCellClassName + '"><a href="/Announcement/EditAnnouncement/?newModel=false" onClick="editAnnouncement(' + index + ');">Edit announcement</a></td>' +
+			'<td class="' + subTableHeaderCellClassName + '"><a href="/Announcement/EditAnnouncement/?newModel=false"\
+			 onClick="editAnnouncement(' + index + ');">Edit announcement</a></td>' +
 			'<td class="' + subTableHeaderCellClassName + '">' + displayTimetableContent + '</td>' +
 			'</tr>');
 		index++;
@@ -235,6 +236,7 @@ function getReservations(announcementID, date) {
 			// Response will be null if announcement with specified id cannot be found (database error).
 			if (response != null) {
 				drawTimetable(response.reservations, response.announcement, response.scheduleItems, date);
+				setAnnouncementManagementMessage(7);
 			}
 			else {
 				setAnnouncementManagementMessage(5);
@@ -458,7 +460,8 @@ function setAnnouncementManagementMessage(messageCode) {
 
 	switch (messageCode) {
 		case 0:
-			messageTag.innerText = 'Some announcements cannot be activated because of improper activation date range.';
+			messageTag.innerText = 'Some announcements cannot be activated because \
+			of improper activation date range.';
 			break;
 		case 1:
 			messageTag.innerText = 'Selected announcements have been marked as active.';

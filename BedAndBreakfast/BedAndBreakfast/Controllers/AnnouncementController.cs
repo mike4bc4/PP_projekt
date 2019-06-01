@@ -561,5 +561,32 @@ namespace BedAndBreakfast.Controllers
             return Json(announcementOwner.UserName);
         }
 
+        /// <summary>
+        /// Allows to recover schedule item from database with specified
+        /// ID number. If validation fails or there is no such schedule item
+        /// null is returned. Note that method returns JSON objects.
+        /// </summary>
+        /// <param name="scheduleItemID"></param>
+        /// <returns></returns>
+        [Authorize(Roles = Role.User + "," + Role.Admin)]
+        public async Task<IActionResult> GetScheduleItem(int? scheduleItemID) {
+            if (scheduleItemID == null) {
+                return Json(null);
+            }
+            ScheduleItem scheduleItem = await context.ScheduleItems
+                .Where(si => si.ScheduleItemID == scheduleItemID)
+                .SingleOrDefaultAsync();
+            if (scheduleItem == null) {
+                return Json(null);
+            }
+            ScheduleItemViewModel scheduleItemViewModel = new ScheduleItemViewModel()
+            {
+                From = scheduleItem.From,
+                MaxReservations = scheduleItem.From,
+                To = scheduleItem.To,
+            };
+            return Json(scheduleItemViewModel);
+        }
+
     }
 }

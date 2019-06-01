@@ -81,9 +81,7 @@ function hideRevertConversation(context, requestSynchronizer) {
 }
 
 function handleSendMessageButton(conversationID, senderUserName) {
-    if (conversationReadOnly)
-
-        var textarea = document.getElementById('message-textarea');
+    var textarea = document.getElementById('message-textarea');
     var error = document.getElementById('message-textarea-error');
     var text = textarea.value;
     if (text.length > MaxConversationMessageLength) {
@@ -158,7 +156,8 @@ function getConversations(context, synchronizer) {
 function drawMessageCreator(conversationID, senderUserName) {
     var container = $('#' + MessageCreatorContainerId);
     container.empty();
-    html = '<textarea oninput="handleMessageTextarea();" id="message-textarea" style="resize: none;" rows="6" cols="100" data-valid="false"></textarea>';
+    html = '<textarea oninput="handleMessageTextarea();" id="message-textarea" style="resize: none;" rows="6" \
+    cols="100" data-valid="false"></textarea>';
     html += '<span id="message-textarea-counter">Characters: 0/' + MaxConversationMessageLength + '</span>';
     html += '<span id="message-textarea-error"></span>';
     html += '<br /><button onclick="handleSendMessageButton(' + conversationID + ',\'' + senderUserName + '\');">Send</button>';
@@ -180,11 +179,12 @@ function drawMessagesList(messages, currentUserName) {
             tempMessageStyle = 'width: 600px; margin: 5px; border: 1px solid black;';
         }
         var dateSend = new Date(message.dateSend);
-        html = '<div id="message-' + index + '" style="' + tempMessageStyle + '"><table border="1" style="width: 600px;"><tr><td>';
+        html = '<div id="message-' + index + '" style="' + tempMessageStyle + '"><table border="1" \
+        style="width: 600px;"><tr><td>';
         html += '<p>' + message.senderFirstName + ' ' + message.senderLastName +
             ' (' + message.senderUserName + ') ' + dateSend.toLocaleDateString('en-US') + ' '
             + dateSend.toLocaleTimeString('en-US') + '</p></td></tr>';
-        html += '<tr><td><p>' + message.content + '</p></td></tr></table></div>';
+        html += '<tr><td><p style="white-space: pre-wrap">' + message.content + '</p></td></tr></table></div>';
         container.append(html);
     }
 }

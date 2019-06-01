@@ -1,6 +1,6 @@
 ﻿
 class MessageContentCreator {
-    static createNewReservationContent(simplifiedReservations) {
+    static CreateNewReservationContent(simplifiedReservations) {
         var content = 'Hello, I have just made reservation(s) for: \n';
         for (var reservation of simplifiedReservations) {
             content += '\tAnnouncement ' + reservation.announcementID + ' on ' + reservation.date;
@@ -15,39 +15,29 @@ class MessageContentCreator {
             }
             content += ' for ' + reservation.reservations + ' place(s).\n';
         }
+        content += '\n\nThis message was generated automatically.';
         return content;
     }
-}
-
-function getCurrentUserName(context, requestSynchronizer) {
-    $.ajax({
-        url: '/Account/GetCurrentUserName',
-        dataType: 'json',
-        method: 'post',
-        success: function (response) {
-            if (context.userNames == null) {
-                context.userNames = [];
+    static CreateRequestRemovalContent(announcementID, date, scheduleItem) {
+        var content = 'Hello, I am writing to ask you about removing my reservation(s) for: \n';
+        content += '\tAnnouncement: ' + announcementID + ' on ' + date.toLocaleDateString('en-US');
+        if (scheduleItem != null) {
+            content += ' from ' + scheduleItem.from.toString() + ':00 to ';
+            if (scheduleItem.to != 24) {
+                content += scheduleItem.to.toString() + ':00';
             }
-            context.userNames.push(response);
-            requestSynchronizer.generator.next();
-        }
-    });
-}
-
-function getAnnouncementOwnerUserName(context, requestSynchronizer) {
-    $.ajax({
-        url: '/Announcement/GetAnnouncementOwnerUserName',
-        data: { announcementID: context.announcementID },
-        dataType: 'json',
-        method: 'post',
-        success: function (response) {
-            if (context.userNames == null) {
-                context.userNames = [];
+            else {
+                content += '23:59';
             }
-            context.userNames.push(response);
-            requestSynchronizer.generator.next();
         }
-    });
+        content += '\n\nThis message was generated automatically.';
+        return content;
+    }
+    static CreateAskAboutAnnouncementContent(announcementID) {
+        var content = 'Hello, I would like to ask you a question about your announcement (' + announcementID + ').';
+        content += '\n\nThis message was generated automatically.';
+        return content;
+    }
 }
 
 function createConversation(context, requestSynchronizer) {
@@ -86,8 +76,6 @@ function addMessage(context, requestSynchronizer) {
             requestSynchronizer.generator.next();
         }
     });
-
-
 }
 
 function getMessages(context, synchronizer) {
