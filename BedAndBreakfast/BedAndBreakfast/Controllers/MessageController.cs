@@ -127,7 +127,8 @@ namespace BedAndBreakfast.Controllers
         /// <summary>
         /// Creates simple message with content, date send, sender and related conversation.
         /// Returns amount of modified (added) records in database. If validation fails
-        /// returns null. Note that returned objects are JSON type.
+        /// returns null. Value of 0 is returned if message cannot be send because
+        /// conversation is marked as read only. Note that returned objects are JSON type.
         /// </summary>
         /// <param name="conversationID"></param>
         /// <param name="content"></param>
@@ -153,6 +154,11 @@ namespace BedAndBreakfast.Controllers
             {
                 return Json(null);
             }
+            // Signalize with different output if message cannot be send.
+            if (conversation.ReadOnly == true) {
+                return Json(0);
+            }
+
             User sender = await context.Users.Where(u => u.UserName == senderUserName).SingleOrDefaultAsync();
             if (sender == null)
             {
@@ -221,6 +227,15 @@ namespace BedAndBreakfast.Controllers
                     });
                 }
 
+                // Check if conversation is marked as hidden for current user.
+                HiddenConversationToUser hiddenConversationToUser = await context.HiddenConversationToUsers
+                    .Include(hc => hc.User)
+                    .Include(hc => hc.Conversation)
+                    .Where(hc => hc.User == currentUser)
+                    .Where(hc => hc.Conversation == conversation)
+                    .SingleOrDefaultAsync();
+
+
                 // Add conversation to view model.
                 conversations.Add(new ConversationViewModel()
                 {
@@ -230,7 +245,7 @@ namespace BedAndBreakfast.Controllers
                     ReadOnly = conversation.ReadOnly,
                     Title = conversation.Title,
                     ScheduleItems = scheduleItemViewModels,
-
+                    IsHidden = (hiddenConversationToUser != null) ? true : false,
                 });
             }
             return Json(conversations);
@@ -283,6 +298,52 @@ namespace BedAndBreakfast.Controllers
                 });
             }
             return Json(messageViewModels);
+        }
+
+        /// <summary>
+        /// Allows to create relation which indicates that conversation
+        /// is hidden for specific user also allows to revert this action
+        /// by removing mentioned relation. If validation of input data fails
+        /// returns null else returns amount of rows affected in database.
+        /// Note that method returns JSON objects.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="conversationID"></param>
+        /// <returns></returns>
+        [Authorize(Roles = Role.User + "," + Role.Admin)]
+        public async Task<IActionResult> HideRevertConversation(string userName, int? conversationID, bool hide = true) {
+            User user = null;
+            Conversation conversation = null;
+            if (userName != null && conversationID != null) {
+                user = await context.Users.Where(u => u.UserName == userName).SingleOrDefaultAsync();
+                conversation = await context.Conversations.Where(c => c.ConversationID == conversationID).SingleOrDefaultAsync();
+            }
+            if (user == null || conversation == null) {
+                return Json(null);
+            }
+            if (hide == true)
+            {
+                HiddenConversationToUser hiddenConversationToUser = new HiddenConversationToUser()
+                {
+                    Conversation = conversation,
+                    User = user,
+                };
+                await context.HiddenConversationToUsers.AddAsync(hiddenConversationToUser);
+            }
+            else {
+                HiddenConversationToUser hiddenConversationToUser = await context.HiddenConversationToUsers
+                    .Include(hc => hc.User)
+                    .Include(hc => hc.Conversation)
+                    .Where(hc => hc.User == user)
+                    .Where(hc => hc.Conversation == conversation)
+                    .SingleOrDefaultAsync();
+                if (hiddenConversationToUser == null) {
+                    return Json(null);
+                }
+                context.HiddenConversationToUsers.Remove(hiddenConversationToUser);
+            }
+            var result = await context.SaveChangesAsync();
+            return Json(result);
         }
     }
 }
