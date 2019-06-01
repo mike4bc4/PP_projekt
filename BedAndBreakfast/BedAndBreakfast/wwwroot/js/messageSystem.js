@@ -57,6 +57,8 @@ function createConversation(context, requestSynchronizer) {
             title: context.title,
             userNames: context.userNames,
             dateStarted: context.dateStarted.toISOString(),
+            announcementID: context.announcementID,
+            scheduleItemsIDs: context.scheduleItemsIDs,
             readOnly: context.readOnly
         },
         dataType: 'json',
@@ -76,8 +78,6 @@ function addMessage(context, requestSynchronizer) {
             content: context.content,
             dateSend: context.dateSend.toISOString(),
             senderUserName: context.userNames[0],
-            announcementID: context.announcementID,
-            scheduleItemsIDs: context.scheduleItemsIDs
         },
         dataType: 'json',
         method: 'post',

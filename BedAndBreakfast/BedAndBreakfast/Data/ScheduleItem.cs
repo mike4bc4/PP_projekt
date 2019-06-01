@@ -15,7 +15,7 @@ namespace BedAndBreakfast.Data
         public int MaxReservations { get; set; }
         public List<AnnouncementToSchedule> AnnouncementToSchedules { get; set; }
         public List<Reservation> Reservations { get; set; }
-        public List<ScheduleItemToMessage> ScheduleItemToMessages { get; set; }
+        public List<ScheduleItemToConversation> ScheduleItemToConversations { get; set; }
 
     }
 }

@@ -13,6 +13,5 @@ namespace BedAndBreakfast.Models
         public string SenderUserName { get; set; }
         public string SenderFirstName { get; set; }
         public string SenderLastName { get; set; }
-        public int? AnnouncementID { get; set; }
     }
 }

@@ -11,5 +11,7 @@ namespace BedAndBreakfast.Models
         public string Title { get; set; }
         public DateTime DateStarted { get; set; }
         public bool ReadOnly { get; set; }
+        public int? AnnouncementID { get; set; }
+        public List<ScheduleItemViewModel> ScheduleItems { get; set; }
     }
 }
