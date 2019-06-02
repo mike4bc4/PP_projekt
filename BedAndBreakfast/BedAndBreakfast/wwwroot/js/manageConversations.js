@@ -24,12 +24,33 @@ function findUsersByQuery(context, requestSynchronizer) {
     });
 }
 
-function handleUserClicked(user) {
-
+function handleSendClicked(){
+    
 }
 
-function handleReceiverClicked(receiverItemID) {
+function handleUserClicked(user) {
+    var userClickedBox = document.getElementById("user-" + user.userName);
+    var selected = userClickedBox.getAttribute("data-selected");
+    if (selected == "true") {
+        // Do not perform any action if user is already selected.
+        return;
+    }
 
+    // Change style attribute to display as selected.
+    userClickedBox.setAttribute("style", "background-color: gray;");
+    userClickedBox.setAttribute("data-selected", "true");
+    drawReceiver(user);
+}
+
+function handleReceiverClicked(userName) {
+    // Delete clicked receiver box.
+    var receiver = document.getElementById("receiver-" + userName);
+    receiver.remove();
+    // Recover user from users tab.
+    var user = document.getElementById("user-" + userName);
+    // Change item style to mark as not selected.
+    user.setAttribute("style", "background-color: white;");
+    user.setAttribute("data-selected", "false");
 }
 
 function handleSearchClicked() {
@@ -54,7 +75,11 @@ function handleSearchClicked() {
 
 function drawReceiver(user) {
     var container = $('#receivers-list-container');
-    container.append('<div id="receiver-' + user.userName + '" onclick="handleReceiverClicked(this.id);">' +
+    var lockedString = '';
+    if (user.isLocked == true) {
+        lockedString == 'Locked';
+    }
+    container.append('<div id="receiver-' + user.userName + '" class="user-select-box" onclick="handleReceiverClicked(\'' + user.userName + '\');">' +
         user.userName + ' ' + user.firstName + ' ' + user.lastName + ' ' + lockedString + '</div>');
 }
 
@@ -66,12 +91,17 @@ function drawUsers(users) {
         if (user.isLocked == true) {
             lockedString == 'Locked';
         }
-        container.append('<div id="user-' + user.userName + '" style="border: 1px solid black;\
-            margin: 3px; padding: 3px;" data-selected="false" \
-            onclick="handleUserClicked({userName: \'' +
-            user.userName + '\', firstName: \'' + user.firstName + '\',\'' + user.lastName +
-            '\',\'' + user.isLocked + '\' });">' + user.userName + ' ' + user.firstName +
-            ' ' + user.lastName + ' ' + lockedString + '</div>');
+        container.append("<div id='user-" + user.userName + "' onclick='handleUserClicked(" + JSON.stringify(user) + ");' \
+        class='user-select-box' data-selected='false'>"+ user.userName + " " + user.firstName + " " + user.lastName +
+            " " + lockedString + "</div>");
+        var receiver = document.getElementById("receiver-" + user.userName);
+        if (receiver != null) {
+            // Drawn user already in receivers box.
+            // Mark it as clicked.
+            var addedUser = document.getElementById("user-" + user.userName);
+            addedUser.setAttribute("style", "background-color:gray;");
+            addedUser.setAttribute("data-selected", "true");
+        }
     }
 }
 
@@ -89,6 +119,6 @@ function setGlobalMessage(messageIndex) {
         clearTimeout(globalMessageTimeout);
     }
     globalMessageTimeout = setTimeout(function () {
-        context.innerText = '';
+        container.innerText = '';
     }, 5000);
 }

@@ -4,6 +4,23 @@
 }
 <script type="text/javascript" src="~/js/messageSystem.js"></script>
 <script type="text/javascript" src="~/js/manageConversations.js"></script>
+<script type="text/javascript">
+    window.onload = function(){
+        handleSearchClicked();
+    }
+</script>
+<style>
+    .user-select-box{
+        border: 1px solid black;
+        margin: 3px; 
+        padding: 3px;
+    }
+    .user-select-box:hover{
+        background-color: lightgray;
+        cursor: pointer;
+    }
+</style>
+
 
 <h2>ManageConversations</h2>
 
@@ -11,12 +28,14 @@
 <table>
     <tr>
         <td style="width: 300px;">
-            <div id="receivers-list-container" style="height: 300px; border: 1px solid black; overflow-x: hidden; overflow-y: auto; margin-top: 42px;"></div>
+            <div style="margin-top: 42px;">Receivers</div>
+            <div id="receivers-list-container" style="height: 300px; border: 1px solid black; overflow-x: hidden; overflow-y: auto;"></div>
         </td>
-        <td style="width: 300px;">
+        <td style="width: 300px;">           
             <input id="search-query-input-field" type="text" />
             <br />
             <button onclick="handleSearchClicked();">Search</button>
+            <div>Receivers browser</div>
             <div id="users-list-container" style="height: 300px; border: 1px solid black; overflow-x: hidden; overflow-y: auto;"></div>
         </td>
     </tr>
@@ -27,7 +46,7 @@
             <label>Message read only</label>
             <input id="readonly-checkbox" type="checkbox" checked>
             <br />
-            <button>Send</button>
+            <button onclick="handleSendClicked();">Send</button>
         </td>
     </tr>
 </table>
