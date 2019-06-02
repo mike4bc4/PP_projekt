@@ -130,39 +130,44 @@
 
 </style>
 
+<div id="edit_ann_list">
+    <div id="edit_head_text">List of your announcements</div>
 
-<h2>ListUserAnnouncements</h2>
+  
 
-
-<div id="list-ann-search-bar">
-    <label>Browser and sort options:</label>
-    <input type="text" id="userAnnouncementSearchField" />
-    <a href="#" onclick="">Search</a>
-    <select id="userAnnouncementSortField">
-        @foreach (string option in Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementSortOptions)))
-        {
-            <option>@option</option>
-        }
-    </select>
-    <a href="#" onclick="">Sort</a>
-    <hr />
-</div>
-
-
-
-@*Here JS script puts messages*@
-<div id="announcementManagementMessage"></div>
-
-<hr />
-
-<div id="list-ann-nav-bar">
-    <a asp-controller="Announcement" asp-action="EditAnnouncement">Create announcement</a>
-    <a href="#" onclick="activateSelectedAnnouncements(); redraw();">Activate selected</a>
-    <a href="#" onclick="deactivateSelectedAnnouncements(); redraw();">Deactivate selected</a>
-    <a href="#" onclick="removeSelectedAnnouncements(); redraw();">Remove selected</a>
-    <hr />
-</div>
+        <div id="list-ann-search-bar">
+            <label>Browser and sort options:</label>
+            <input type="text" id="userAnnouncementSearchField" />
+            <a href="#" onclick="">Search</a>
+            <select id="userAnnouncementSortField">
+                @foreach (string option in Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementSortOptions)))
+                {
+                    <option>@option</option>
+                }
+            </select>
+            <a href="#" onclick="">Sort</a>
+            <hr />
+        </div>
 
 
-@*By default display all items received from controller.*@
-<div id="list-ann-main-container"></div>
+
+        @*Here JS script puts messages*@
+        <div id="announcementManagementMessage"></div>
+
+        <hr />
+
+        <div id="list-ann-nav-bar">
+            <a asp-controller="Announcement" asp-action="EditAnnouncement">Create announcement</a>
+            <a href="#" onclick="activateSelectedAnnouncements(); redraw();">Activate selected</a>
+            <a href="#" onclick="deactivateSelectedAnnouncements(); redraw();">Deactivate selected</a>
+            <a href="#" onclick="removeSelectedAnnouncements(); redraw();">Remove selected</a>
+            <hr />
+        </div>
+
+
+        @*By default display all items received from controller.*@
+        <div id="list-ann-main-container"></div>
+        <div style="clear:both;"></div>
+   
+    <div class="space_30"></div>
+    </div>

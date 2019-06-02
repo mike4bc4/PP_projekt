@@ -10,11 +10,13 @@
 
     @if (Model.IsCorrect)
     {
-        @:Your announcement has been saved and soon will be visible in out browser!
+        <div class="edit_expl">
+            @:Your announcement has been saved and soon will be visible in out browser!
+        </div>
     }
     else
     {
-        @:There are errors in your announcement. Would you like to fix it?
+        <div class="edit_expl"> @:There are errors in your announcement. Would you like to fix it?</div>
         <a href="#" onclick="return setPartialView(summaryPartialViewName);">Go back</a>
     }
 </div>

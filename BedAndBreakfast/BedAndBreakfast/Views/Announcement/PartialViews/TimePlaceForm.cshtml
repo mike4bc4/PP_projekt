@@ -12,42 +12,42 @@
     <div>
         <div class="form-group">
             <label class="create_text">Country</label>
-            <input type="text" id="country" class="create_bar" value="@Model.Country" />
+            <input type="text" id="country" class="create_bar_con" value="@Model.Country" />
             <div style="clear:both;"></div>
         </div>
         <div class="form-group">
             <label class="create_text">Region</label>
-            <input type="text" id="region" class="create_bar" value="@Model.Region" />
+            <input type="text" id="region" class="create_bar_con" value="@Model.Region" />
             <div style="clear:both;"></div>
         </div>
         <div>
             <label class="create_text">City</label>
-            <input type="text" id="city" class="create_bar" value="@Model.City" />
+            <input type="text" id="city" class="create_bar_con" value="@Model.City" />
             <div style="clear:both;"></div>
         </div>
         <div>
             <label class="create_text">Street</label>
-            <input type="text" id="street" class="create_bar" value="@Model.Street" />
+            <input type="text" id="street" class="create_bar_con" value="@Model.Street" />
             <div style="clear:both;"></div>
         </div>
         <div>
             <label class="create_text">Street number</label>
-            <input type="text" id="streetNumber" class="create_bar" value="@Model.StreetNumber" />
+            <input type="text" id="streetNumber" class="create_bar_con" value="@Model.StreetNumber" />
             <div style="clear:both;"></div>
         </div>
         <div>
             <label class="create_text">From</label>
-            <input type="date" id="from" class="create_bar" value="@Model.From.ToString("yyyy-MM-dd")" />
+            <input type="date" id="from" class="create_bar_con" value="@Model.From.ToString("yyyy-MM-dd")" />
             <div style="clear:both;"></div>
         </div>
         <div>
             <label class="create_text">To</label>
-            <input type="date" id="to" class="create_bar" value="@Model.To.ToString("yyyy-MM-dd")" />
+            <input type="date" id="to" class="create_bar_con" value="@Model.To.ToString("yyyy-MM-dd")" />
             <div style="clear:both;"></div>
         </div>
         <div>
             <label class="create_text">Timetable</label>
-            <select id="timetableOptionSelect" class="create_bar"
+            <select id="timetableOptionSelect" class="create_bar_con"
                     onchange="handleTimetableOptionChange(this.id, 'announcementScheduleContainer');">
                 @foreach (int timetableOption in timetableOptions)
                 {

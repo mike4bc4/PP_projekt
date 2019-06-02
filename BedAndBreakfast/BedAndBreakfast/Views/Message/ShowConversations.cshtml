@@ -3,14 +3,17 @@
     ViewData["Title"] = "ShowConversations";
 }
 
-<h2>ShowConversations</h2>
+<div id="edit_ann_div">
+    <div id="edit_head_text">Your conversations</div>
 
-<script type="text/javascript" src="~/js/showConversations.js"></script>
-<script type="text/javascript">
-    window.onload = function () {
-        getConversations();
-    }
-</script>
+    <script type="text/javascript" src="~/js/showConversations.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            getConversations();
+        }
+    </script>
 
-<div id="message-container"></div>
-<div id="show-conversations-view-container"></div>
+    <div id="message-container"></div>
+    <div id="show-conversations-view-container"></div>
+    <div class="space_30"></div>
+</div>
