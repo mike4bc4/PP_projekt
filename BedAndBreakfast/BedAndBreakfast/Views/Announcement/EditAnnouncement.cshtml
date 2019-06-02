@@ -10,10 +10,10 @@
     bool newModel = Model.newModel;
 }
 
-<h2>EditAnnouncement</h2>
-
-<script src="~/js/editAnnouncement.js" type="text/javascript"></script>
-<script type="text/javascript">
+<div id="edit_ann_div">
+    <div id="edit_head_text">Edit Announcement</div>
+    <script src="~/js/editAnnouncement.js" type="text/javascript"></script>
+    <script type="text/javascript">
 
     var maxInputLength = @Html.Raw(Json.Serialize(IoCContainer.DbSettings.Value.MaxAddressInputLength));
     var contactItemIndex = { value: 0, name: 'contactItemIndex', items: [] };
@@ -55,59 +55,78 @@
             setPartialView(typePartialViewName);
         }
 	}
-</script>
+    </script>
 
-<style>
-    .editAnnouncementSavedHeader {
-        background-color:khaki;
-    }
-
-        .editAnnouncementSavedHeader:hover {
-            background-color:lightgoldenrodyellow;
+    <style>
+        .editAnnouncementSavedHeader {
+            background-color: khaki;
         }
 
-    .editAnnouncementInvalidHeader {
-        background-color:indianred;
-    }
+            .editAnnouncementSavedHeader:hover {
+                background-color: lightgoldenrodyellow;
+            }
 
-        .editAnnouncementInvalidHeader:hover {
-            background-color:lightcoral;
+        .editAnnouncementInvalidHeader {
+            background-color: indianred;
         }
 
-    .editAnnouncementValidHeader {
-        background-color: darkseagreen;
-    }
+            .editAnnouncementInvalidHeader:hover {
+                background-color: lightcoral;
+            }
 
-        .editAnnouncementValidHeader:hover {
-            background-color:lightgreen;
+        .editAnnouncementValidHeader {
+            background-color: darkseagreen;
         }
-</style>
 
-<div id="header">
-    <div id="TypeForm">
-        <a href="#" onclick="return setPartialView(typePartialViewName);">Type</a>
-    </div>
-    <div id="SubtypeForm">
-        <a href="#" onclick="return setPartialView(subtypePartialViewName);">Subtype</a>
-    </div>
-    <div id="TimePlaceForm">
-        <a href="#" onclick="return setPartialView(timePlacePartialViewName);">Time and place</a>
-    </div>
-    <div id="DescriptionForm">
-        <a href="#" onclick="return setPartialView(descriptionPartialViewName);">Description</a>
-    </div>
-    <div id="ContactsForm">
-        <a href="#" onclick="return setPartialView(contactPartialViewName);">Contact types</a>
-    </div>
-    <div id="PaymentsForm">
-        <a href="#" onclick="return setPartialView(paymentPartialViewName);">Payment methods</a>
-    </div>
-    <div id="Summary">
-        <a href="#" onclick="return setPartialView(summaryPartialViewName);">Summary</a>
-    </div>
-</div>
-<div id="errorMessage"></div>
-<div id="content">
+            .editAnnouncementValidHeader:hover {
+                background-color: lightgreen;
+            }
+    </style>
+    <div id="edit_ann_container">
+        <div id="header">
+            <div class="edit_ann_bar">
+                <div id="TypeForm">
+                    <a href="#" class="edit_ann_text" onclick="return setPartialView(typePartialViewName);">Type</a>
+                </div>
+            </div>
+            <div class="edit_ann_bar">
+                <div id="SubtypeForm">
+                    <a href="#" class="edit_ann_text" onclick="return setPartialView(subtypePartialViewName);">Subtype</a>
+                </div>
+            </div>
+            <div style="clear:both;"></div>
+            <div class="edit_ann_bar">
+                <div id="TimePlaceForm">
+                    <a href="#" class="edit_ann_text" onclick="return setPartialView(timePlacePartialViewName);">Time and place</a>
+                </div>
+            </div>
+            <div class="edit_ann_bar">
+                <div id="DescriptionForm">
+                    <a href="#" class="edit_ann_text" onclick="return setPartialView(descriptionPartialViewName);">Description</a>
+                </div>
+            </div>
+            <div style="clear:both;"></div>
+            <div class="edit_ann_bar">
+                <div id="ContactsForm">
+                    <a href="#" class="edit_ann_text" onclick="return setPartialView(contactPartialViewName);">Contact types</a>
+                </div>
+            </div>
+            <div class="edit_ann_bar">
+                <div id="PaymentsForm">
+                    <a href="#" class="edit_ann_text" onclick="return setPartialView(paymentPartialViewName);">Payment methods</a>
+                </div>
+            </div>
+            <div style="clear:both;"></div>
+            <div class="edit_ann_bar" style="width: 608px">
+                <div id="Summary">
+                    <a href="#" class="edit_ann_text" onclick="return setPartialView(summaryPartialViewName);">Summary</a>
+                </div>
+            </div>
+        </div>
+                            </div>
+        <div id="errorMessage"></div>
+        <div id="content">
 
-</div>
+        </div>
+    </div>
 

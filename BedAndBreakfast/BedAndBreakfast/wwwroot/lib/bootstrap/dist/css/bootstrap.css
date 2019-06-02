@@ -395,3 +395,183 @@ body {
 }
 
 
+#browse_div {
+    position: relative;
+    width: 650px;
+    height: 100%;
+    background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 2px;
+    margin-bottom: 50px;
+}
+
+#search_div {
+    position: relative;
+    width: 100%;
+    height: 95px;
+    margin-left: 20px;
+}
+
+.help_div {
+    margin-top: 20px;
+    width: 610px;
+    height: 120px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid lightgrey;
+    border-radius: 2px;
+}
+
+#searchbar_help {
+    position: absolute;
+    width: 608px;
+    height: 45px;
+    background-color: white;
+    border-radius: 2px;
+    border: 1px solid lightgrey;
+}
+
+#help_button {
+    position: absolute;
+    width: 130px;
+    height: 45px;
+    background-color: rgb(94, 102, 255);
+    right: 40px;
+    bottom: 0px;
+    border-radius: 2px;
+}
+
+    #help_button:hover {
+        background-color: #4d55ee;
+    }
+
+.help_link_div {
+    width: 610px;
+    height: 45px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.help_smaller_head {
+    width: 100%;
+    height: 20px;
+    font-family: 'Lato', sans-serif;
+    font-size: 22px;
+    text-decoration: none;
+    color: black;
+}
+
+.help_text_div {
+    width: 610px;
+    height: 45px;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: 'Lato', sans-serif;
+}
+
+/*-------------- administration --------------*/
+
+#edit_ann_div {
+    position: relative;
+    width: 650px;
+    height: 100%;
+    background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 2px;
+    margin-bottom: 50px;
+}
+
+#edit_ann_container {
+    position: relative;
+    width: 610px;
+    height: 208px;
+    margin-left: 20px;
+    background-color: grey;
+    margin-top: 20px;
+}
+
+.edit_ann_bar {
+    background-color: white;
+    width: 303px;
+    height: 38px;
+    border-radius: 2px;
+    border: 1px solid lightgrey;
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    padding-top: 12px;
+    float: left;
+}
+
+    .edit_ann_bar:hover {
+        background-color: rgb(250,250,250);
+    }
+
+.edit_ann_text {
+    font-family: 'Lato', sans-serif;
+    text-decoration: none;
+    color: black;
+}
+
+#edit_ann_type_cont {
+    position: relative;
+    width: 610px;
+    height: 100%;
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.edit_ann_bar_type {
+    background-color: white;
+    width: 201px;
+    height: 38px;
+    border-radius: 2px;
+    border: 1px solid lightgrey;
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    padding-top: 12px;
+    float: left;
+}
+
+    .edit_ann_bar_type:hover {
+        background-color: rgb(250,250,250);
+    }
+
+#save_button_ann {
+    background-color: rgb(94, 102, 255);
+    width: 100px;
+    height: 40px;
+    border-radius: 2px;
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    padding-top: 10px;
+    float: right;
+    margin-top: 10px;
+}
+
+    #save_button_ann:hover {
+        background-color: #4d55ee;
+    }
+
+.edit_button_ann_text {
+    font-family: 'Lato', sans-serif;
+    text-decoration: none;
+    color: white;
+    font-size: 24px;
+}
+
+.edit_ann_bar_con {
+    background-color: white;
+    width: 610px;
+    height: 38px;
+    border-radius: 2px;
+    border: 1px solid lightgrey;
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    padding-top: 12px;
+}
+
+    .edit_ann_bar_con:hover {
+        background-color: rgb(250,250,250);
+    }
