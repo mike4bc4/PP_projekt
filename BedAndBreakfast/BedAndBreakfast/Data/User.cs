@@ -28,6 +28,7 @@ namespace BedAndBreakfast.Models
         public List<Review> Reviews { get; set; }
         public List<Message> Messages { get; set; }
         public List<UserToConversation> UserToConversations { get; set; }
+        public List<HiddenConversationToUser> HiddenConversationToUsers { get; set; }
 
     }
 }

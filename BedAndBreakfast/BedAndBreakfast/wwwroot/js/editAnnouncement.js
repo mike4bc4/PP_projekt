@@ -548,7 +548,7 @@ function retrieveTimetableOptions() {
                 itemIndex++;
             }
             itemIndex = 0;
-            for(itemIndex; itemIndex < model.scheduleItems.length; itemIndex++){
+            for (itemIndex; itemIndex < model.scheduleItems.length; itemIndex++) {
                 validateScheduleItem(itemIndex);
             }
             break;
@@ -595,14 +595,18 @@ function addTimetableScheduleItem(scheduleItemsContainerID) {
     itemContainer.append(html);
     itemContainer = $('#scheduleItem' + itemIndex);
     html = '<label>From</label>';
-    html += '<button onmousedown="toggleFunction(true,' + itemIndex + ',\'from\', decrement);" onmouseup="toggleFunction(false);">-</button>';
+    html += '<button onmousedown="toggleFunction(true,' + itemIndex + ',\'from\', decrement);"\
+     onmouseup="toggleFunction(false);">-</button>';
     html += '<input id="from' + itemIndex + '" type="text" size="5" readonly  />';
-    html += '<button onmousedown="toggleFunction(true,' + itemIndex + ',\'from\', increment);" onmouseup="toggleFunction(false);">+</button>';
+    html += '<button onmousedown="toggleFunction(true,' + itemIndex + ',\'from\', increment);"\
+     onmouseup="toggleFunction(false);">+</button>';
     itemContainer.append(html);
     html = '<label>To</label>';
-    html += '<button onmousedown="toggleFunction(true,' + itemIndex + ',\'to\', decrement);" onmouseup="toggleFunction(false);">-</button>';
+    html += '<button onmousedown="toggleFunction(true,' + itemIndex + ',\'to\', decrement);"\
+     onmouseup="toggleFunction(false);">-</button>';
     html += '<input id="to' + itemIndex + '" type="text"  size="5" readonly  />';
-    html += '<button onmousedown="toggleFunction(true,' + itemIndex + ',\'to\', increment);" onmouseup="toggleFunction(false);">+</button>';
+    html += '<button onmousedown="toggleFunction(true,' + itemIndex + ',\'to\', increment);"\
+     onmouseup="toggleFunction(false);">+</button>';
     itemContainer.append(html);
     html = '<label>Reservations</label>';
     html += '<input onchange="saveScheduleItem(' + itemIndex + ');" id="maxReservations' + itemIndex + '" type="text" size="5" maxlength="5" />';
