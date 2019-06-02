@@ -6,51 +6,63 @@
 
 }
 
-<h2>TimePlaceSelectionForm</h2>
+<div id="edit_ann_type_cont">
+    <div id="edit_head_text" style="margin-top: 20px; margin-bottom: 20px">Choose time and date</div>
 
-<div>
-	<div>
-		<label>Country</label>
-		<input type="text" id="country" value="@Model.Country"/>
-	</div>
-	<div>
-		<label>Region</label>
-		<input type="text" id="region" value="@Model.Region"/>
-	</div>
-	<div>
-		<label>City</label>
-		<input type="text" id="city" value="@Model.City"/>
-	</div>
-	<div>
-		<label>Street</label>
-		<input type="text" id="street" value="@Model.Street"/>
-	</div>
-	<div>
-		<label>Street number</label>
-		<input type="text" id="streetNumber" value="@Model.StreetNumber"/>
-	</div>
-	<div>
-		<label>From</label>
-		<input type="date" id="from" value="@Model.From.ToString("yyyy-MM-dd")"/>
-	</div>
-	<div>
-		<label>To</label>
-		<input type="date" id="to" value="@Model.To.ToString("yyyy-MM-dd")"/>
-	</div>
     <div>
-        <label>Timetable</label>
-        <select id="timetableOptionSelect"
-                onchange="handleTimetableOptionChange(this.id, 'announcementScheduleContainer');">
-            @foreach (int timetableOption in timetableOptions) {
-                @:<option value="@timetableOption">
-                    @Enum.GetName(typeof(EnumeratedDbValues.AnnouncementTimetableOptions), timetableOption);
-                @:</option>
-            }
-        </select>
-        <div id="announcementScheduleContainer"></div>
+        <div class="form-group">
+            <label class="create_text">Country</label>
+            <input type="text" id="country" class="create_bar_con" value="@Model.Country" />
+            <div style="clear:both;"></div>
+        </div>
+        <div class="form-group">
+            <label class="create_text">Region</label>
+            <input type="text" id="region" class="create_bar_con" value="@Model.Region" />
+            <div style="clear:both;"></div>
+        </div>
+        <div>
+            <label class="create_text">City</label>
+            <input type="text" id="city" class="create_bar_con" value="@Model.City" />
+            <div style="clear:both;"></div>
+        </div>
+        <div>
+            <label class="create_text">Street</label>
+            <input type="text" id="street" class="create_bar_con" value="@Model.Street" />
+            <div style="clear:both;"></div>
+        </div>
+        <div>
+            <label class="create_text">Street number</label>
+            <input type="text" id="streetNumber" class="create_bar_con" value="@Model.StreetNumber" />
+            <div style="clear:both;"></div>
+        </div>
+        <div>
+            <label class="create_text">From</label>
+            <input type="date" id="from" class="create_bar_con" value="@Model.From.ToString("yyyy-MM-dd")" />
+            <div style="clear:both;"></div>
+        </div>
+        <div>
+            <label class="create_text">To</label>
+            <input type="date" id="to" class="create_bar_con" value="@Model.To.ToString("yyyy-MM-dd")" />
+            <div style="clear:both;"></div>
+        </div>
+        <div>
+            <label class="create_text">Timetable</label>
+            <select id="timetableOptionSelect" class="create_bar_con"
+                    onchange="handleTimetableOptionChange(this.id, 'announcementScheduleContainer');">
+                @foreach (int timetableOption in timetableOptions)
+                {
+                    @:<option value="@timetableOption">
+                        @Enum.GetName(typeof(EnumeratedDbValues.AnnouncementTimetableOptions), timetableOption);
+                    @:</option>
+                }
+            </select>
+            <div id="announcementScheduleContainer"></div>
+            <div style="clear:both;"></div>
+        </div>
     </div>
-</div>
-<div>
-	<a href="#" onclick="setTimePlace();">Save</a>
+    <div id="save_button_ann">
+        <a href="#" class="edit_button_ann_text" onclick="setTimePlace();">Save</a>
+    </div>
+    <div style="clear:both;"></div>
 </div>
 

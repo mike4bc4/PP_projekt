@@ -14,87 +14,92 @@
 
 </script>
 
-<h2>SubtypeSelectionForm</h2>
 
 <div id="subtypes"></div>
 
 <div id="errorMessage"></div>
 
-<div>
-    @switch (Model.Type)
-    {
-        case 0:
-            <label>House type</label>
-            <select id="houseSubtype">
-                @foreach (int enumValue in houseSubtypes)
-                {
-                    @if (Model.Subtype == enumValue)
+<div id="edit_ann_type_cont">
+    <div>
+        <div id="edit_head_text" style="margin-top: 20px; margin-bottom: 20px">Select subtype</div>
+        @switch (Model.Type)
+        {
+            case 0:
+                <label>House type</label>
+                <select id="houseSubtype">
+                    @foreach (int enumValue in houseSubtypes)
                     {
-                        @:<option value="@enumValue" selected>@Enum.GetName(typeof(EnumeratedDbValues.HouseSubtype), enumValue)</option>
+                        @if (Model.Subtype == enumValue)
+                        {
+                            @:<option value="@enumValue" selected>@Enum.GetName(typeof(EnumeratedDbValues.HouseSubtype), enumValue)</option>
+                        }
+                        else
+                        {
+                            @:<option value="@enumValue">@Enum.GetName(typeof(EnumeratedDbValues.HouseSubtype), enumValue)</option>
+                        }
                     }
-                    else
+                </select>
+                <label>House shared part</label>
+                <select id="houseSharedPart">
+                    @foreach (int enumValue in houseSharedParts)
                     {
-                        @:<option value="@enumValue">@Enum.GetName(typeof(EnumeratedDbValues.HouseSubtype), enumValue)</option>
+                        @if (Model.SharedPart == enumValue)
+                        {
+                            @:<option value="@enumValue" selected>@Enum.GetName(typeof(EnumeratedDbValues.HouseSharedPart), enumValue)</option>
+                        }
+                        else
+                        {
+                            @:<option value="@enumValue">@Enum.GetName(typeof(EnumeratedDbValues.HouseSharedPart), enumValue)</option>
+                        }
                     }
-                }
-            </select>
-            <label>House shared part</label>
-            <select id="houseSharedPart">
-                @foreach (int enumValue in houseSharedParts)
-                {
-                    @if (Model.SharedPart == enumValue)
+                </select>
+                break;
+            case 1:
+                <label>Entertainment type</label>
+                <select id="entertainmentType">
+                    @foreach (int enumValue in entertinementTypes)
                     {
-                        @:<option value="@enumValue" selected>@Enum.GetName(typeof(EnumeratedDbValues.HouseSharedPart), enumValue)</option>
+                        @if (Model.Subtype == enumValue)
+                        {
+                            @:<option value="@enumValue" selected>@Enum.GetName(typeof(EnumeratedDbValues.EntertainmentSubtype), enumValue)</option>
+                        }
+                        else
+                        {
+                            @:<option value="@enumValue">@Enum.GetName(typeof(EnumeratedDbValues.EntertainmentSubtype), enumValue)</option>
+                        }
                     }
-                    else
+                </select>
+                break;
+            case 2:
+                <label>Food type</label>
+                <select id="foodType">
+                    @foreach (int enumValue in foodTypes)
                     {
-                        @:<option value="@enumValue">@Enum.GetName(typeof(EnumeratedDbValues.HouseSharedPart), enumValue)</option>
+                        @if (Model.Subtype == enumValue)
+                        {
+                            @:<option value="@enumValue" selected>@Enum.GetName(typeof(EnumeratedDbValues.FoodSubtype), enumValue)</option>
+                        }
+                        else
+                        {
+                            @:<option value="@enumValue">@Enum.GetName(typeof(EnumeratedDbValues.FoodSubtype), enumValue)</option>
+                        }
                     }
-                }
-            </select>
-            break;
-        case 1:
-            <label>Entertainment type</label>
-            <select id="entertainmentType">
-                @foreach (int enumValue in entertinementTypes)
-                {
-                    @if (Model.Subtype == enumValue)
-                    {
-                        @:<option value="@enumValue" selected>@Enum.GetName(typeof(EnumeratedDbValues.EntertainmentSubtype), enumValue)</option>
-                    }
-                    else
-                    {
-                        @:<option value="@enumValue">@Enum.GetName(typeof(EnumeratedDbValues.EntertainmentSubtype), enumValue)</option>
-                    }
-                }
-            </select>
-            break;
-        case 2:
-            <label>Food type</label>
-            <select id="foodType">
-                @foreach (int enumValue in foodTypes)
-                {
-                    @if (Model.Subtype == enumValue)
-                    {
-                        @:<option value="@enumValue" selected>@Enum.GetName(typeof(EnumeratedDbValues.FoodSubtype), enumValue)</option>
-                    }
-                    else
-                    {
-                        @:<option value="@enumValue">@Enum.GetName(typeof(EnumeratedDbValues.FoodSubtype), enumValue)</option>
-                    }
-                }
-            </select>
-            break;
-        default:
-            <div>Please select type first.</div>
-            break;
-    }
-</div>
-<div>
-    @if (Model.Type != null)
-    {
-        <a href="#" onclick="setSubtype();">Save</a>
-    }
+                </select>
+                break;
+            default:
+                <div>Please select type first.</div>
+                break;
+        }
+    </div>
+    <div>
+        @if (Model.Type != null)
+        {
+            <div id="save_button_ann">
+                <a href="#" class="edit_button_ann_text" onclick="setSubtype();">Save</a>
+            </div>
+        }
+    </div>
+    <div style="clear:both;"></div>
 </div>
 
 
