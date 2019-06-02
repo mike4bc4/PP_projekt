@@ -19,6 +19,10 @@ function handleReceiverClicked(receiverItemID) {
 
 }
 
+function handleSearchClicked(){
+    
+}
+
 function drawReceiver(user) {
     var container = $('#receivers-list-container');
     container.append('<div id="receiver-' + user.userName + '" onclick="handleReceiverClicked(this.id);">' +

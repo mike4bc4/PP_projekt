@@ -248,5 +248,15 @@ namespace BedAndBreakfast.Controllers
             return Json(topUsers);
         }
 
+
+        public async Task<IActionResult> FindUserByQuery(string query) {
+            // If there is no query return default amount of users from top of database.
+            if (query == null) {
+                return await GetTopUsers();
+            }
+            return Json(null);
+        }
+
+
     }
 }
