@@ -404,14 +404,35 @@ body {
     margin-right: 20px;
 }
 
+#conv_button {
+    position: relative;
+    width: 250px;
+    height: 30px;
+    background-color: rgb(94, 102, 255);
+    border-radius: 2px;
+    float: left;
+    margin-right: 20px;
+}
 .my_button {
     color: white;
     font-family: 'Lato', sans-serif;
-    font-size: 30px;
+    font-size: 20px;
     text-decoration: none;
     float: left;
     width: 130px;
     height: 45px;
+    margin-left: 20px;
+    text-align: center;
+}
+
+.my_button_c {
+    color: white;
+    font-family: 'Lato', sans-serif;
+    font-size: 20px;
+    text-decoration: none;
+    float: left;
+    width: 250px;
+    height: 30px;
     margin-left: 20px;
     text-align: center;
 }
