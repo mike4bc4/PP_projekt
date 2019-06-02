@@ -23,5 +23,6 @@ namespace BedAndBreakfast.Settings
         public int MaxReviewNameLength { get; set; }
         public int MaxConversationTitleLength { get; set; }
         public int MaxConversationMessageLength { get; set; }
+        public int ManageConversationsDefaultListedUsers { get; set; }
     }
 }
