@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BedAndBreakfast.Data;
 using BedAndBreakfast.Models;
 using BedAndBreakfast.Models.ServicesLogic;
+using BedAndBreakfast.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -216,6 +217,45 @@ namespace BedAndBreakfast.Controllers
             }
         }
 
+        /// <summary>
+        /// Redirects to manage conversations view.
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult ManageConversations() {
+            return View();
+        }
+
+        /// <summary>
+        /// Allows to get default amount (check settings) of users from top of database.
+        /// If users db is empty 0 is returned. Note that method returns JSON objects.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> GetTopUsers() {
+            List<User> users = await context.Users.Include(u=>u.Profile).Take(IoCContainer.DbSettings.Value.ManageConversationsDefaultListedUsers).ToListAsync();
+            if (users.Count() == 0) {
+                return Json(0);
+            }
+            List<FindUserViewModel> topUsers = new List<FindUserViewModel>();
+            foreach (User user in users) {
+                topUsers.Add(new FindUserViewModel()
+                {
+                    FristName = user.Profile?.FirstName,
+                    LastName = user.Profile?.LastName,
+                    UserName = user.UserName,
+                    IsLocked = user.IsLocked,
+                });
+            }
+            return Json(topUsers);
+        }
+
+
+        public async Task<IActionResult> FindUserByQuery(string query) {
+            // If there is no query return default amount of users from top of database.
+            if (query == null) {
+                return await GetTopUsers();
+            }
+            return Json(null);
+        }
 
 
     }

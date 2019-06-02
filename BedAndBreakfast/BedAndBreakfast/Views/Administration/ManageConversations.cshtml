@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewData["Title"] = "ManageConversations";
+}
+
+<h2>ManageConversations</h2>
+
+
+<table>
+    <tr>
+        <td style="width: 300px;">
+            <div id="receivers-list-container" style="height: 300px; border: 1px solid black; overflow-x: hidden; overflow-y: auto; margin-top: 42px;"></div>
+        </td>
+        <td style="width: 300px;">
+            <input id="search-query-input-field" type="text" />
+            <br />
+            <button>Search</button>
+            <div id="users-list-container" style="height: 300px; border: 1px solid black; overflow-x: hidden; overflow-y: auto;"></div>
+        </td>
+    </tr>
+    <tr>
+        <td id="message-creator-container" colspan="2">
+            <textarea id="message-textarea" style="resize: none;" rows="6" cols="100" data-valid="false"></textarea>
+            <br />
+            <label>Message read only</label>
+            <input id="readonly-checkbox" type="checkbox" checked>
+            <br />
+            <button>Send</button>
+        </td>
+    </tr>
+</table>

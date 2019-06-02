@@ -153,9 +153,14 @@ function drawReviewEditor(announcementID) {
         return;
     }
     container.empty();
-    container.append('Announcement rating*: <input id="rating-in-fld" data-valid="true" onchange="validateReviewRating();" type="text" maxLength="2" size="2" /> / 10 <span id="rating-in-fld-msg-container"></span> <br />');
-    container.append('Your name: <input id="name-in-fld" type="text" maxLength="50" size="50" /><span id="name-in-fld-msg-container"></span><br />');
-    container.append('Review*: <textarea oninput="updateReviewCharacterCounter();" data-valid="true" id="review-textarea" style="resize: none;" rows="6" cols="100"></textarea><span id="review-textarea-msg-container"></span><br />');
+    container.append('Announcement rating*: <input id="rating-in-fld" data-valid="true"\
+     onchange="validateReviewRating();" type="text" maxLength="2" size="2" />\
+      / 10 <span id="rating-in-fld-msg-container"></span> <br />');
+    container.append('Your name: <input id="name-in-fld" type="text" maxLength="50"\
+     size="50" /><span id="name-in-fld-msg-container"></span><br />');
+    container.append('Review*: <textarea oninput="updateReviewCharacterCounter();"\
+     data-valid="true" id="review-textarea" style="resize: none;" rows="6" cols="100">\
+     </textarea><span id="review-textarea-msg-container"></span><br />');
     container.append('<p id="review-char-counter-container"></p>');
     container.append('<button onClick="postReview(' + announcementID + ');">Post review</button>');
 }
@@ -262,6 +267,36 @@ function getReservations(announcementID, date) {
     });
 }
 
+function handleAskAboutAnnouncementButton(announcementID) {
+    var context = {};
+    context.announcementID = announcementID;
+    context.title = 'Question about announcement';
+    context.userNames = [];
+    context.dateStarted = new Date();
+    context.scheduleItemsIDs = null;
+    context.readOnly = false;
+    context.dateSend = new Date();
+    context.content = MessageContentCreator.CreateAskAboutAnnouncementContent(announcementID);
+
+    var requestSynchronizer = new RequestSynchronizer();
+    requestSynchronizer.requestQueue = [
+        function () { getCurrentUserName(context, requestSynchronizer) },
+        function () { getAnnouncementOwnerUserName(context, requestSynchronizer) },
+        function () { createConversation(context, requestSynchronizer) },
+        function () { addMessage(context, requestSynchronizer) },
+        function () {
+            if (context.messageResponse != null) {
+                // Sending message successful.
+                drawQuestionAskedResponse();
+            }
+            else {
+                setMessage(7);
+            }
+        }
+    ];
+    requestSynchronizer.run();
+}
+
 function drawTimetable(reservations, announcement, scheduleItems, date) {
     // Draw timetable.
     var middleDate = new Date(date);
@@ -274,6 +309,11 @@ function drawTimetable(reservations, announcement, scheduleItems, date) {
     to.setHours(0, 0, 0, 0);
 
     switch (announcement.timetable) {
+        case 0: // No timetable
+            var container = document.getElementById('ann-timetable-container');
+            container.innerHTML = '<button onclick="handleAskAboutAnnouncementButton(' + announcement.id + ');">Ask about announcement</button>';
+
+            break;
         case 1:	// Per day timetable
             var d1 = middleDate.getTime() - 1000 * 60 * 60 * 24 * 7;
             var d2 = middleDate.getTime() + 1000 * 60 * 60 * 24 * 7;
@@ -309,11 +349,11 @@ function drawTimetable(reservations, announcement, scheduleItems, date) {
 
             document.getElementById('ann-timetable-container').innerHTML = '<table border="1" id="day-timetable-table"></table>';
             document.getElementById('day-timetable-table').innerHTML = '<tr id="day-timetable-header"></tr>';
-            $('#day-timetable-header').append('<td rowspan="' + (scheduleItems.length + 1) + '">' +
-                '<button onclick="getReservations(' + announcement.id + ',\'' + previousDayMiddleDate.toLocaleDateString('en-US') + '\');" >left arrow</button></td>' +
-                '<td>' + middleDate.toLocaleDateString('en-US') + '</td>' +
-                '<td rowspan="' + (scheduleItems.length + 1) + '">' +
-                '<button onclick="getReservations(' + announcement.id + ',\'' + nextDayMiddleDate.toLocaleDateString('en-US') + '\');" >right arrow</button></td>');
+            $('#day-timetable-header').append('<td rowspan="' + (scheduleItems.length + 1) + '">\
+                <button onclick="getReservations(' + announcement.id + ',\'' + previousDayMiddleDate.toLocaleDateString('en-US') + '\');" >left arrow</button></td>\
+                <td>' + middleDate.toLocaleDateString('en-US') + '</td>\
+                <td rowspan="' + (scheduleItems.length + 1) + '">\
+                <button onclick="getReservations(' + announcement.id + ',\'' + nextDayMiddleDate.toLocaleDateString('en-US') + '\');" >right arrow</button></td>');
 
             var index = 0;
             for (var item of scheduleItems) {
@@ -451,7 +491,7 @@ function makeReservations() {
                     dateSend: new Date(),
                     readOnly: false,
                     conversationID: null,
-                    content: MessageContentCreator.createNewReservationContent(simplifiedReservations),
+                    content: MessageContentCreator.CreateNewReservationContent(simplifiedReservations),
                     scheduleItemsIDs: response.scheduleItemsIDs,
                 };
                 requestSynchronizer.requestQueue = [
@@ -475,7 +515,26 @@ function drawMakeReservationsResponse(numberOfReservations) {
     $('#final-msg-container').append('<p>You just made ' + numberOfReservations + ' reservation(s).' +
         'Announcement owner has just received message about your request, give him a moment to answer.</p>');
     $('#final-msg-container').append('<button onclick="goBackButtonFunction();">Go back to announcement browser</button>');
+}
 
+var myConversationRedirectTimeout;
+function handleMyConversationsButton() {
+    if (myConversationRedirectTimeout != null) {
+        clearTimeout(myConversationRedirectTimeout);
+    }
+}
+
+function drawQuestionAskedResponse() {
+    document.getElementById(mainViewContainerId).innerHTML = '<div id="final-msg-container"></div>';
+    $('#final-msg-container').append('<p>You have just asked a question about this announcement. \
+    Soon you will be redirected to your conversations... or just click button below.</p>');
+    $('#final-msg-container').append('<form method="post" action="/Message/ShowConversations"> \
+        <input id="conversation-redirect-button" onclick="handleMyConversationsButton();" \
+        type="submit" value="My conversations" /> \
+        </form>');
+    myConversationRedirectTimeout = setTimeout(function () {
+        document.getElementById('conversation-redirect-button').click();
+    }, 5000);
 }
 
 function goBackButtonFunction() {
@@ -495,7 +554,8 @@ function validateReservation(reservationIndex, currentReservations, maxReservati
         reservations[reservationIndex].isValid = true;
     }
     else {
-        document.getElementById('reservation-msg-' + reservationIndex).innerText = 'Value exceeds maximum number of reservations for this event.';
+        document.getElementById('reservation-msg-' + reservationIndex).innerText = 'Value exceeds maximum \
+        number of reservations for this event.';
         reservations[reservationIndex].isValid = false;
     }
     setSessionReservations(reservations);
@@ -527,7 +587,8 @@ function addReservationToSession(reservation) {
 function addMakeReservationButton() {
     var button = document.getElementById(makeReservationButtonContainerId).innerHTML;
     if (button == '') {
-        document.getElementById(makeReservationButtonContainerId).innerHTML = '<button onclick="makeReservations();">Make reservation</button>';
+        document.getElementById(makeReservationButtonContainerId).innerHTML = '<button onclick="makeReservations();">\
+        Make reservation</button>';
     }
 }
 
@@ -599,6 +660,9 @@ function setMessage(messageCode) {
             break;
         case 6:
             messageTag.innerText = 'Your review has been posted. Soon it will be visible under this announcement.';
+            break;
+        case 7:
+            messageTag.innerText = 'An error occurred while sending message.';
             break;
         default:
             messageTag.innerText = '';

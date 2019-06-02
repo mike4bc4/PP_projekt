@@ -51,7 +51,7 @@
         <form asp-controller="Announcement" asp-action="Browse">
             <label>Find announcement:</label>
             <input id="ann-browser-qry-in-fld" type="text" name="annBrowserQuery" />
-            <input id ="ann-browser-qry-button" type="submit" value="Find announcement"/>
+            <input id="ann-browser-qry-button" type="submit" value="Find announcement" />
         </form>
     </div>
     <hr />
@@ -90,6 +90,7 @@
         {
             <a asp-area="" asp-controller="Account" asp-action="Logout">Log Out</a>
             <a asp-area="" asp-controller="Administration" asp-action="FindUser">Find User</a>
+            <a asp-controller="Administration" asp-action="ManageConversations">Manage conversations</a>
         }
     </div>
     <hr />
