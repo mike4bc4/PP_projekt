@@ -13,13 +13,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BnB - Your dream vacation!</title>
-
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
-
+    <title>@ViewData["Title"] - BedAndBreakfast</title>
     @*Javascript files*@
     <script src="~/js/site.js"></script>
     @*Remote jQuery validation scripts.*@
@@ -32,7 +26,6 @@
         }
     </script>
 </head>
-
 <body>
     @*User identity*@
     @{
@@ -53,66 +46,56 @@
             <hr />
         }
     }
-
-    <!-------------------------------------------------------------------------------------------->
+    @*Announcement browser*@
+    <div>
+        <form asp-controller="Announcement" asp-action="Browse">
+            <label>Find announcement:</label>
+            <input id="ann-browser-qry-in-fld" type="text" name="annBrowserQuery" />
+            <input id="ann-browser-qry-button" type="submit" value="Find announcement" />
+        </form>
+    </div>
+    <hr />
     @*Navigation header*@
-    <div id="header">
-        <div id="nav">
-            @*Visible for everyone.*@
-            <a href="../">
-                <img src="../images/logo.png" id="logo" />
-            </a>
-            <a asp-area="" asp-controller="Help" class="tilelink" asp-action="Browse">Help</a>
-
-            @*If user is not an administrator.*@
-            @if (!User.IsInRole(Role.Admin))
+    <div>
+        @*Visible for everyone.*@
+        <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+        <a asp-area="" asp-controller="Help" asp-action="Browse">Help</a>
+        @*If user is not an administrator.*@
+        @if (!User.IsInRole(Role.Admin))
+        {
+            @if (currentUser == null || !currentUser.IsHost)
             {
-                @if (currentUser == null || !currentUser.IsHost)
-                {
-                    <a id="becomeHostTag" asp-area="" asp-controller="Announcement" class="tilelink" asp-action="EditAnnouncement">Become a Host</a>
-                }
-                else
-                {
-                    <a asp-area="" asp-controller="Announcement" class="tilelink" asp-action="ListUserAnnouncements">Manage my announcements</a>
-                }
-                @if (!User.Identity.IsAuthenticated)
-                {
-                    <a asp-area="" asp-controller="Account" class="tilelink" asp-action="Login">Log In</a>
-                    <a asp-area="" asp-controller="Account" class="tilelink" asp-action="Create">Create Account</a>
-                }
-                else
-                {
-                    <a asp-controller="Announcement" class="tilelink" asp-action="ShowReservations">My reservations</a>
-                    <a asp-controller="Message" class="tilelink" asp-action="ShowConversations">My conversations</a>
-                    <a asp-area="" asp-controller="Account" class="tilelink" asp-action="Logout">Log Out</a>
-                    <a asp-area="" asp-controller="Profile" class="tilelink" asp-action="Edit">Profile</a>
-                    <a asp-area="" asp-controller="Account" class="tilelink" asp-action="Edit">Account</a>
-                }
+                <a id="becomeHostTag" asp-area="" asp-controller="Announcement" asp-action="EditAnnouncement">Become a Host</a>
             }
-
-            @*If user is an administrator.*@
             else
             {
-                <a asp-area="" asp-controller="Account" class="tilelink" asp-action="Logout">Log Out</a>
-                <a asp-area="" asp-controller="Administration" class="tilelink" asp-action="FindUser">Find User</a>
+                <a asp-area="" asp-controller="Announcement" asp-action="ListUserAnnouncements">Manage my announcements</a>
             }
-
-        </div>
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <a asp-area="" asp-controller="Account" asp-action="Login">Log In</a>
+                <a asp-area="" asp-controller="Account" asp-action="Create">Create Account</a>
+            }
+            else
+            {
+                <a asp-controller="Announcement" asp-action="ShowReservations">My reservations</a>
+                <a asp-controller="Message" asp-action="ShowConversations">My conversations</a>
+                <a asp-area="" asp-controller="Account" asp-action="Logout">Log Out</a>
+                <a asp-area="" asp-controller="Profile" asp-action="Edit">Profile</a>
+                <a asp-area="" asp-controller="Account" asp-action="Edit">Account</a>
+            }
+        }
+        @*If user is an administrator.*@
+        else
+        {
+            <a asp-area="" asp-controller="Account" asp-action="Logout">Log Out</a>
+            <a asp-area="" asp-controller="Administration" asp-action="FindUser">Find User</a>
+            <a asp-controller="Administration" asp-action="ManageConversations">Manage conversations</a>
+        }
     </div>
+    <hr />
 
     @RenderBody()
 
 </body>
 </html>
-
-<!--
-
-    @*Announcement browser*@
-<div>
-    <form asp-controller="Announcement" asp-action="Browse">
-        <label>Find announcement:</label>
-        <input id="ann-browser-qry-in-fld" type="text" name="annBrowserQuery" />
-        <input id="ann-browser-qry-button" type="submit" value="Find announcement" />
-    </form>
-</div>
-    -->

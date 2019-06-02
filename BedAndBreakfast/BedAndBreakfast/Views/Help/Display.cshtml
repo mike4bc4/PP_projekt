@@ -4,29 +4,23 @@
     HelpPage helpPage = (HelpPage)ViewData["helpPage"];
 }
 
+<h2>Display</h2>
 
-<div id="browse_div">
-    <div id="edit_head_text">Display help</div>
+@*
+    This line of code is responsible for injecting HTML code of different file.
+*@
 
-    @*
-        This line of code is responsible for injecting HTML code of different file.
-    *@
-
-    <partial name="SearchPartial" />
+<partial name="SearchPartial" />
 
 
-    @*
-        Here is displayed help page specified by user.
-    *@
-
-    <div class="help_div">
-        <div class="help_link_div">
-            <div class="help_smaller_head">
-                @helpPage.Title
-            </div>
-        </div>
-        <div class="help_text_div">
-            @helpPage.Content
-        </div>
-    </div>
+@*
+    Here is displayed help page specified by user.
+*@
+<div>
+    <p>@helpPage.Title</p>
 </div>
+<div>
+    @helpPage.Content
+</div>
+
+

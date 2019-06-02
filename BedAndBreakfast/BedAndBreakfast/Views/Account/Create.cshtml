@@ -4,45 +4,46 @@
     ViewData["Title"] = "Create";
 }
 
-<div id="create_div">
-    <form asp-action="Create">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div id="create_acc_text">Create account</div>
-        <div class="form-group">
-            <label asp-for="EmailAddress" class="create_text"></label>
-            <input asp-for="EmailAddress" class="create_bar" />
-            <span asp-validation-for="EmailAddress" class="create_text_danger"></span>
-            <div style="clear:both;"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="FirstName" class="create_text"></label>
-            <input asp-for="FirstName" class="create_bar" />
-            <span asp-validation-for="FirstName" class="create_text_danger"></span>
-            <div style="clear:both;"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="LastName" class="create_text"></label>
-            <input asp-for="LastName" class="create_bar" />
-            <span asp-validation-for="LastName" class="create_text_danger"></span>
-            <div style="clear:both;"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Password" class="create_text"></label>
-            <input asp-for="Password" class="create_bar" />
-            <span asp-validation-for="Password" class="create_text_danger"></span>
-            <div style="clear:both;"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="BirthDate" class="create_text"></label>
-            <input asp-for="BirthDate" class="create_bar" />
-            <span asp-validation-for="BirthDate" class="create_text_danger"></span>
-            <div style="clear:both;"></div>
-        </div>
-        <div class="form-group">
-            <input type="submit" value="Create" class="my_button" id="save_button" />
-            <div style="clear:both;"></div>
-        </div>
-        <h4>@ViewBag.Message</h4>
-    </form>
+<h2>Create</h2>
+
+<h4>@ViewBag.Message</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="EmailAddress" class="control-label"></label>
+                <input asp-for="EmailAddress" class="form-control" />
+                <span asp-validation-for="EmailAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BirthDate" class="control-label"></label>
+                <input asp-for="BirthDate" class="form-control" />
+                <span asp-validation-for="BirthDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
 </div>
+
+
+
 
