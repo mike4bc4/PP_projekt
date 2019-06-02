@@ -10,7 +10,7 @@ namespace BedAndBreakfast.Models
     {
         [Display(Name = "First name")]
         [MaxLength(250, ErrorMessage = "TooLong")]
-        public string FristName { get; set; }
+        public string FirstName { get; set; }
 
         [Display(Name = "Last name")]
         [MaxLength(250, ErrorMessage = "TooLong")]
