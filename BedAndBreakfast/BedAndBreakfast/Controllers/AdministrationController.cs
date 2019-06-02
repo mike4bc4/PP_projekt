@@ -27,8 +27,7 @@ namespace BedAndBreakfast.Controllers
         private AppDbContext context;
         private UserManager<User> userManager;
 
-        public AdministrationController(AppDbContext context, UserManager<User> userManager)
-        {
+        public AdministrationController(AppDbContext context, UserManager<User> userManager) {
             this.context = context;
             this.userManager = userManager;
         }
@@ -37,8 +36,7 @@ namespace BedAndBreakfast.Controllers
         /// Returns view with default set of users.
         /// </summary>
         /// <returns></returns>
-        public IActionResult FindUser()
-        {
+        public IActionResult FindUser() {
             ViewData["users"] = AdministrationServiceLogic
                 .MapUsersToViewModel(SearchEngine.FindTopUsers(context));
             return View();
@@ -50,10 +48,8 @@ namespace BedAndBreakfast.Controllers
         /// <param name="viewModel"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult FindUser(FindUserViewModel viewModel)
-        {
-            if (SharedServiceLogic.IsFindUserViewModelEmpty(viewModel))
-            {
+        public IActionResult FindUser(FindUserViewModel viewModel) {
+            if (SharedServiceLogic.IsFindUserViewModelEmpty(viewModel)) {
                 return RedirectToAction("FindUser");
             }
             ViewData["users"] = ViewData["users"] = AdministrationServiceLogic
@@ -75,7 +71,7 @@ namespace BedAndBreakfast.Controllers
 
             User currentUser = context.Users
                     .Include(u => u.Profile)
-                    .Include(u => u.Profile.Address)
+					.Include(u => u.Profile.Address)
                     .Where(u => u.UserName == user)
                     .Single();
 
@@ -91,11 +87,9 @@ namespace BedAndBreakfast.Controllers
         /// <returns></returns>
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public async Task<IActionResult> EditUsername(EditUserViewModel viewModel)
-        {
+        public async Task<IActionResult> EditUsername(EditUserViewModel viewModel) {
             // Check just single key of model state.
-            if (ModelState.GetValidationState("UserName") != ModelValidationState.Valid)
-            {
+            if (ModelState.GetValidationState("UserName") != ModelValidationState.Valid) {
                 return RedirectToAction("EditUser", new { user = viewModel.UserName, option = "Username" });
             }
             try
@@ -105,14 +99,12 @@ namespace BedAndBreakfast.Controllers
                     TempData["message"] = "User name change successful.";
                     return RedirectToAction("EditUser", new { user = viewModel.NewUserName, option = "Username" });
                 }
-                else
-                {
+                else {
                     TempData["message"] = "New user name is not unique.";
                     return RedirectToAction("EditUser", new { user = viewModel.UserName, option = "Username" });
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 TempData["message"] = e.Message;
                 return RedirectToAction("EditUser", new { user = viewModel.UserName, option = "Username" });
             }
@@ -125,8 +117,7 @@ namespace BedAndBreakfast.Controllers
         /// <param name="viewModel"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> EditStatus(EditUserViewModel viewModel)
-        {
+        public async Task<IActionResult> EditStatus(EditUserViewModel viewModel) {
             try
             {
                 bool updateResult;
@@ -134,16 +125,14 @@ namespace BedAndBreakfast.Controllers
                 {
                     updateResult = await AdministrationServiceLogic.LockUser(viewModel.UserName, context);
                 }
-                else
-                {
+                else {
                     updateResult = await AdministrationServiceLogic.UnlockUser(viewModel.UserName, context);
                 }
                 if (updateResult == true)
                 {
                     TempData["message"] = "User status change successful.";
                 }
-                else
-                {
+                else {
                     TempData["message"] = "User status not changed.";
                 }
             }
@@ -160,8 +149,7 @@ namespace BedAndBreakfast.Controllers
         /// </summary>
         /// <param name="viewModel"></param>
         /// <returns></returns>
-        public async Task<IActionResult> EditSecurity(EditUserViewModel viewModel)
-        {
+        public async Task<IActionResult> EditSecurity(EditUserViewModel viewModel) {
             // Do not perform any changes if model for passwords is not valid.
             if (ModelState.GetValidationState("NewPassword") != ModelValidationState.Valid
                 || ModelState.GetValidationState("RepeatNewPassword") != ModelValidationState.Valid)
@@ -177,8 +165,7 @@ namespace BedAndBreakfast.Controllers
             {
                 TempData["message"] = "Password changed.";
             }
-            else
-            {
+            else {
                 TempData["message"] = "Password change error.";
             }
 
@@ -190,12 +177,10 @@ namespace BedAndBreakfast.Controllers
         /// </summary>
         /// <param name="hPage"></param>
         /// <returns></returns>
-        public async Task<IActionResult> EditHelpPage(int hPage, EditHelpPageViewModel viewModel)
-        {
+        public async Task<IActionResult> EditHelpPage(int hPage, EditHelpPageViewModel viewModel) {
 
             //Update page before refresh.
-            if (viewModel.WasEdited && ModelState.IsValid)
-            {
+            if (viewModel.WasEdited && ModelState.IsValid) {
                 await AdministrationServiceLogic.UpdateHelpPage(hPage, viewModel, context);
                 ViewBag.Message = "Help page saved.";
             }
@@ -204,8 +189,7 @@ namespace BedAndBreakfast.Controllers
             List<HelpTag> helpTags = SearchEngine.FindTagsForHelpPage(hPage, context);
 
             string helpTagsString = string.Empty;
-            foreach (HelpTag tag in helpTags)
-            {
+            foreach (HelpTag tag in helpTags) {
                 helpTagsString += (tag.Value + " ");
             }
 
@@ -214,8 +198,7 @@ namespace BedAndBreakfast.Controllers
             return View();
         }
 
-        public async Task<IActionResult> AddHelpPage()
-        {
+        public async Task<IActionResult> AddHelpPage() {
             HelpPage helpPage = new HelpPage
             {
                 Content = "New Page",
@@ -227,10 +210,9 @@ namespace BedAndBreakfast.Controllers
             int addResult = await context.SaveChangesAsync();
             if (addResult != 0)
             {
-                return RedirectToAction("EditHelpPage", new { hPage = helpPage.ID });
+                return RedirectToAction("EditHelpPage", new { hPage =  helpPage.ID});
             }
-            else
-            {
+            else {
                 return RedirectToPage("../Help/Browse", new { message = "Fail" });
             }
         }
@@ -239,8 +221,7 @@ namespace BedAndBreakfast.Controllers
         /// Redirects to manage conversations view.
         /// </summary>
         /// <returns></returns>
-        public IActionResult ManageConversations()
-        {
+        public IActionResult ManageConversations() {
             return View();
         }
 
@@ -249,19 +230,16 @@ namespace BedAndBreakfast.Controllers
         /// If users db is empty 0 is returned. Note that method returns JSON objects.
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> GetTopUsers()
-        {
-            List<User> users = await context.Users.Include(u => u.Profile).Take(IoCContainer.DbSettings.Value.ManageConversationsDefaultListedUsers).ToListAsync();
-            if (users.Count() == 0)
-            {
+        public async Task<IActionResult> GetTopUsers() {
+            List<User> users = await context.Users.Include(u=>u.Profile).Take(IoCContainer.DbSettings.Value.ManageConversationsDefaultListedUsers).ToListAsync();
+            if (users.Count() == 0) {
                 return Json(0);
             }
             List<FindUserViewModel> topUsers = new List<FindUserViewModel>();
-            foreach (User user in users)
-            {
+            foreach (User user in users) {
                 topUsers.Add(new FindUserViewModel()
                 {
-                    FirstName = user.Profile?.FirstName,
+                    FristName = user.Profile?.FirstName,
                     LastName = user.Profile?.LastName,
                     UserName = user.UserName,
                     IsLocked = user.IsLocked,
@@ -271,45 +249,12 @@ namespace BedAndBreakfast.Controllers
         }
 
 
-        public async Task<IActionResult> FindUsersByQuery(string query)
-        {
+        public async Task<IActionResult> FindUserByQuery(string query) {
             // If there is no query return default amount of users from top of database.
-            if (query == null)
-            {
+            if (query == null) {
                 return await GetTopUsers();
             }
-            // Convert query to upper case array of key words.
-            List<string> normalizedQuery = query.ToUpper().Trim().Split(null).ToList();
-            List<User> users = new List<User>();
-
-            foreach (string key in normalizedQuery)
-            {
-                List<User> usersTmp = await context.Users.Include(u => u.Profile)
-                    .Where(u => u.Profile != null)
-                    .Where(u => u.UserName.ToUpper().Contains(key) ||
-                    u.Profile.FirstName.ToUpper().Contains(key) ||
-                    u.Profile.LastName.ToUpper().Contains(key))
-                    .ToListAsync();
-                users.AddRange(usersTmp);
-                usersTmp = await context.Users.Include(u => u.Profile)
-                    .Where(u => u.Profile == null)
-                    .Where(u => u.UserName.ToUpper().Contains(key))
-                    .ToListAsync();
-                users.AddRange(usersTmp);
-            }
-            users = users.Distinct().ToList();
-            List<FindUserViewModel> usersFound = new List<FindUserViewModel>();
-            foreach (User user in users)
-            {
-                usersFound.Add(new FindUserViewModel()
-                {
-                    FirstName = user.Profile?.FirstName,
-                    LastName = user.Profile?.LastName,
-                    IsLocked = user.IsLocked,
-                    UserName = user.UserName,
-                });
-            }
-            return Json(usersFound);
+            return Json(null);
         }
 
 

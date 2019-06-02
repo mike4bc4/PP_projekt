@@ -27,7 +27,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 {
                     viewModelUser = new FindUserViewModel
                     {
-                        FirstName = user.Profile.FirstName,
+                        FristName = user.Profile.FirstName,
                         LastName = user.Profile.LastName,
                         UserName = user.UserName,
                         IsLocked = user.IsLocked
