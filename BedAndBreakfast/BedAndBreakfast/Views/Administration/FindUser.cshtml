@@ -12,9 +12,9 @@
     <form asp-action="FindUser">
         <div asp-validation-summary="ModelOnly"></div>
         <div>
-            <label asp-for="FristName"></label>
-            <input asp-for="FristName" />
-            <span asp-validation-for="FristName"></span>
+            <label asp-for="FirstName"></label>
+            <input asp-for="FirstName" />
+            <span asp-validation-for="FirstName"></span>
         </div>
         <div>
             <label asp-for="LastName"></label>
@@ -42,7 +42,7 @@
     <table border="1">
         <tr>
             <th><label asp-for="UserName"></label></th>
-            <th><label asp-for="FristName"></label></th>
+            <th><label asp-for="FirstName"></label></th>
             <th><label asp-for="LastName"></label></th>
             <th><label asp-for="IsLocked"></label></th>
             <th></th>
@@ -51,7 +51,7 @@
         {
         <tr>
             <td>@user.UserName</td>
-            <td>@user.FristName</td>
+            <td>@user.FirstName</td>
             <td>@user.LastName</td>
             <td>@user.IsLocked</td>
             <td><a asp-action="EditUser" asp-route-user="@user.UserName">Edit</a></td>
