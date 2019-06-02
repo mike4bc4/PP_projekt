@@ -5,25 +5,31 @@
     Array types = Enum.GetValues(typeof(EnumeratedDbValues.AnnouncementType));
 }
 
-<h2>TypeSelectionForm</h2>
 
 
-<div>
-	@foreach (int enumValue in types)
-	{
-		if (Model.Type == enumValue)
-		{
-			// Selected should be somehow highlighted.
-			<div style="background-color:yellow;" >
-				<a href="#" onclick="setType(@enumValue);">@Enum.GetName(typeof(EnumeratedDbValues.AnnouncementType),enumValue)</a>
-			</div>
-		}
-		else
-		{
-			<div>
-                <a href="#" onclick="setType(@enumValue);">@Enum.GetName(typeof(EnumeratedDbValues.AnnouncementType),enumValue)</a>
-			</div>
-		}
-	}
+<div id="edit_ann_type_cont">
+    <div id="edit_head_text" style="margin-top: 20px; margin-bottom: 20px">Select type</div>
+    <div style="margin-bottom: 5px">
+        @foreach (int enumValue in types)
+        {
+            if (Model.Type == enumValue)
+            {
+                // Selected should be somehow highlighted.
+                <div class="edit_ann_bar_type" style="background-color:yellow;">
+                    <a href="#" class="edit_ann_text" onclick="setType(@enumValue);">@Enum.GetName(typeof(EnumeratedDbValues.AnnouncementType), enumValue)</a>
+                </div>
+            }
+            else
+            {
+                <div class="edit_ann_bar_type">
+                    <a href="#" class="edit_ann_text" onclick="setType(@enumValue);">@Enum.GetName(typeof(EnumeratedDbValues.AnnouncementType), enumValue)</a>
+                </div>
+            }
+        }
+    </div>
+
 </div>
+<div style="clear:both;"></div>
+
+<div class="space_30"></div>
 

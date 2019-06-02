@@ -3,19 +3,21 @@
     ViewData["Title"] = "ShowConversations";
 }
 
-<h2>ShowConversations</h2>
-
-<script type="text/javascript" src="~/js/showConversations.js"></script>
-<script type="text/javascript" src="~/js/messageSystem.js"></script>
-<script type="text/javascript">
-    window.onload = function () {
-        handleCurrentHiddenConversationButton(false);
-    }
-</script>
-<div id="navigation-bar">
-    <button onclick="handleCurrentHiddenConversationButton(false);">Current conversations</button>
-    <button onclick="handleCurrentHiddenConversationButton(true);">Hidden conversations</button>
+<div id="edit_ann_div">
+    <div id="edit_head_text">Your conversations</div>
+    <script type="text/javascript" src="~/js/showConversations.js"></script>
+    <script type="text/javascript" src="~/js/messageSystem.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            handleCurrentHiddenConversationButton(false);
+        }
+    </script>
+    <div id="navigation-bar">
+        <button  class="my_button_c" id="conv_button" onclick="handleCurrentHiddenConversationButton(false);">Current conversations</button>
+        <button  class="my_button_c" id="conv_button" onclick="handleCurrentHiddenConversationButton(true);">Hidden conversations</button>
+    </div>
+    <div id="message-container"></div>
+    <div id="show-conversations-view-container" style="height: 500px; margin-bottom: 10px; margin-top: 10px; overflow-x:hidden; overflow-y:visible;"></div>
+    <div id="message-creator-container"></div>
+    <div class="space_30"></div>
 </div>
-<div id="message-container"></div>
-<div id="show-conversations-view-container" style="height: 500px; margin-bottom: 10px; margin-top: 10px; overflow-x:hidden; overflow-y:visible;"></div>
-<div id="message-creator-container"></div>

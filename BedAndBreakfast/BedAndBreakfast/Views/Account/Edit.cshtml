@@ -7,28 +7,34 @@
     string option = (string)ViewData["option"];
 }
 
-<h2>Edit</h2>
 
-<h4>@ViewBag.Message</h4>
+<div id="edit_div">
+    <div id="edit_head_text">Edit your settings</div>
+    <div id="edit_prop_div">
+        <div class="edit_options">
+            <a asp-action="Edit" asp-route-option="Notifications">Notifications</a>
+        </div>
+        <div class="edit_options">
+            <a asp-action="Edit" asp-route-option="Privacy">Privacy</a>
+        </div>
+        <div class="edit_options">
+            <a asp-action="Edit" asp-route-option="Security">Security</a>
+        </div>
+    </div>
+    <div style="clear:both;"></div>
 
-@*
-Navigation bar    
-*@
 
-<div>
-    <a asp-action="Edit" asp-route-option="Notifications">Notifications</a>
-    <a asp-action="Edit" asp-route-option="Privacy">Privacy</a>
-    <a asp-action="Edit" asp-route-option="Security">Security</a>
+
+    @if (option != null)
+    {
+        <partial name="EditOptions/@option" view-data="ViewData" />
+    }
+    else
+    {
+        <partial name="EditOptions/Notifications" view-data="ViewData" />
+    }
+    <h4>@ViewBag.Message</h4>
+
 </div>
-
-
-@if (option != null)
-{
-    <partial name="EditOptions/@option" view-data="ViewData"/>
-}
-else {
-    <partial name="EditOptions/Notifications" view-data="ViewData"/>
-}
-
 
 

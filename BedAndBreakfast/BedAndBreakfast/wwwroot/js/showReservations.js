@@ -39,7 +39,7 @@ function drawMakeReservationsResponse(reservations) {
         '<td style="' + tempCellStyle + '">Amount of reservations</td>' +
         '<td style="">&nbsp</td>' +
         '</tr>')
-
+    var index = 0;
     for (var reservation of reservations) {
         var reservationDate = new Date(reservation.date);
         var todayDate = new Date();
@@ -84,55 +84,14 @@ function drawMakeReservationsResponse(reservations) {
                 '\',' + reservation.scheduleItemID + ');">Request removal</button></td></tr>';
         }
         $('#user-reservation-table').append(html);
+        index++;
     }
 }
 
 function requestRemoval(announcementID, date, scheduleItemID) {
-    var context = {};
-    context.announcementID = announcementID;
-    context.dateStarted = new Date();
-    context.userNames = [];
-    context.title = 'Reservation removal request';
-    context.readOnly = false;
-    context.scheduleItemsIDs = [scheduleItemID];
-    context.scheduleItemID = scheduleItemID;
-    context.dateSend = new Date();
 
-    var requestSynchronizer = new RequestSynchronizer();
-    requestSynchronizer.requestQueue = [
-        function () { getCurrentUserName(context, requestSynchronizer) },
-        function () { getAnnouncementOwnerUserName(context, requestSynchronizer) },
-        function () {
-            // If for specified reservation there is no schedule item
-            // just skip this request.
-            if (scheduleItemID != null) {
-                getScheduleItem(context, requestSynchronizer)
-            }
-            else {
-                context.scheduleItem = null;
-                requestSynchronizer.generator.next();
-            }
-        },
-        function () { createConversation(context, requestSynchronizer) },
-        function () {
-            var reservationDate = new Date(date);
-            context.content = MessageContentCreator.CreateRequestRemovalContent(context.announcementID, reservationDate, context.scheduleItem);
-            addMessage(context, requestSynchronizer);
-        },
-        function () {
-            if (context.messageResponse != null) {
-                // Message sending successful.
-                setMessage(1);
-            }
-            else {
-                setMessage(2);
-            }
-        },
-    ];
-    requestSynchronizer.run();
+    setMessage(1);
 }
-
-
 
 var messageTimeout;
 function setMessage(messageCode) {
@@ -142,10 +101,7 @@ function setMessage(messageCode) {
             messageTag.innerText = 'An error occurred while browsing reservations data.';
             break;
         case 1:
-            messageTag.innerText = 'Your request has been send to announcement owner. If you wish to add something to basic message check your conversation.';
-            break;
-        case 2:
-            messageTag.innerText = 'An error occurred while sending message.';
+            messageTag.innerText = 'Your request has been send to announcement owner.';
             break;
         default:
             messageTag.innerText = '';

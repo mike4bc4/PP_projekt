@@ -19,6 +19,7 @@ namespace BedAndBreakfast.Controllers
     /// This class should be used to handle all actions related to account management -
     /// which does not refer to profile management (except basic user sign up data like name and last name).
     /// 
+    /// 
     /// </summary>
     public class AccountController : Controller
     {
