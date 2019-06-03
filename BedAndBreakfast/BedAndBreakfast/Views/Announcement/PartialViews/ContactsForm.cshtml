@@ -3,15 +3,16 @@
     ViewData["Title"] = "ContactsForm";
 }
 
-<h2>ContactsForm</h2>
 
-<div>
-	<div>
-		<a href="#" onclick="addItem(contactItemIndex, 'contacts', getContactMethods(), null, '');" >Add item</a> 
-	</div>
-	<div id="contacts"></div>
-	<div>
-		<a href="#" onclick="saveContacts(contactItemIndex)">Save</a>
-	</div>
+<div id="edit_ann_type_cont">
+    <div id="edit_head_text" style="margin-top: 20px; margin-bottom: 20px">Contact methods</div>
+    <div class="edit_ann_bar_con">
+        <a href="#" class="edit_ann_text" onclick="addItem(contactItemIndex, 'contacts', getContactMethods(), null, '');">Add item</a>
+    </div>
+    <div id="contacts"></div>
+    <div id="save_button_ann">
+        <a href="#" class="edit_button_ann_text" onclick="saveContacts(contactItemIndex)">Save</a>
+    </div>
+    <div style="clear:both;"></div>
 </div>
 
