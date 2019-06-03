@@ -154,7 +154,7 @@ body {
     width: 240px;
     height: 50px;
     margin-right: 20px;
-    margin-top: 20px;
+    margin-top: 12px;
     float: right;
     border-radius: 2px;
     border: 1px solid lightgrey;
@@ -167,6 +167,14 @@ body {
     margin-right: 20px;
     margin-top: 12px;
     float: right;
+    border-radius: 2px;
+    border: 1px solid lightgrey;
+}
+
+.create_bar_con2 {
+    background-color: white;
+    width: 230px;
+    height: 40px;
     border-radius: 2px;
     border: 1px solid lightgrey;
 }
@@ -448,7 +456,7 @@ body {
 .help_div {
     margin-top: 20px;
     width: 610px;
-    height: 120px;
+    height: 100%;
     margin-left: auto;
     margin-right: auto;
     border: 1px solid lightgrey;
@@ -507,6 +515,17 @@ body {
 #edit_ann_div {
     position: relative;
     width: 650px;
+    height: 100%;
+    background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 2px;
+    margin-bottom: 50px;
+}
+
+#edit_ann_create {
+    position: relative;
+    width: 850px;
     height: 100%;
     background-color: white;
     margin-left: auto;

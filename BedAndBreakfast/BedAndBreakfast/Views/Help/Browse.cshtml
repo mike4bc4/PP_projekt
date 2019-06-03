@@ -12,7 +12,7 @@
     @if (User.IsInRole(Role.Admin))
     {
         <a asp-controller="Administration" asp-action="AddHelpPage">
-            Add new help page.
+            <div class="edit_expl"> Add new help page.</div>
         </a>
     }
 
@@ -56,7 +56,7 @@
                 {
                     <div class="help_text_div">
                         <a asp-controller="Administration" asp-action="EditHelpPage" asp-route-hPage="@helpPage.ID">
-                            Edit this help page.
+                            <div class="edit_expl">  Edit this help page.</div>
                         </a>
                     </div>
 
