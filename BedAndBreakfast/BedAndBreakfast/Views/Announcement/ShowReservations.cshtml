@@ -14,7 +14,6 @@
     <script type="text/javascript" src="~/js/showReservations.js"></script>
     <script type="text/javascript" src="~/js/messageSystem.js"></script>
     <script type="text/javascript">
-
     window.onload = function () {
         getReservations();
     }
@@ -33,7 +32,6 @@
     function getHouseSharedParts() {
         return @Html.Raw(Json.Serialize(houseSharedParts));
     }
-
     </script>
     <div id="edit_ann_div">
         <div id="edit_head_text">Your reservations</div>
@@ -43,6 +41,4 @@
     </div>
 
 
-<div id="message-container"></div>
-<div id="show-res-view-container"></div>
 

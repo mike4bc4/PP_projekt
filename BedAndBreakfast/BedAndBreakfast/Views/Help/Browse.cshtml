@@ -6,66 +6,76 @@
     List<HelpPage> helpPages = (List<HelpPage>)ViewData["helpPages"];
 }
 
-<h2>Browse</h2>
+<div id="browse_div">
+    <div id="edit_head_text">Browse help</div>
 
-<h4>@ViewBag.Message</h4>
+    @if (User.IsInRole(Role.Admin))
+    {
+        <a asp-controller="Administration" asp-action="AddHelpPage">
+            Add new help page.
+        </a>
+    }
 
-@if (User.IsInRole(Role.Admin))
-{
-    <a asp-controller="Administration" asp-action="AddHelpPage">
-        Add new help page.
-    </a>
-}
+    @*
+        This line of code is responsible for injecting HTML code of different file.
+    *@
 
-@*
-    This line of code is responsible for injecting HTML code of different file.
-*@
+    <partial name="SearchPartial" />
 
-<partial name="SearchPartial" />
+    @*
+        This from returns set of pages (previously searched or not) as buttons.
+        If help page is selected page ID is returned to action which will display
+        whole content of page.
+    *@
+    @if (helpPages != null && helpPages.Count() != 0)
+    {
+        foreach (HelpPage helpPage in helpPages)
+        {
+            <div class="help_div">
+                @if (helpPage.IsLocked)
+                {
+                    <div class="help_link_div">
+                        <div class="help_link_div" style="color: lightcoral;">@helpPage.Title</div>
+                    </div>
+                }
+                else
+                {
+                    <div class="help_link_div">
+                        <a asp-action="Display" asp-route-hPage="@helpPage.ID">
 
-@*
-    This from returns set of pages (previously searched or not) as buttons.
-    If help page is selected page ID is returned to action which will display
-    whole content of page.
-*@
-@if (helpPages != null && helpPages.Count() != 0)
-{
-    foreach (HelpPage helpPage in helpPages)
+                            <div class="help_smaller_head">@helpPage.Title</div>
+                        </a>
+                    </div>
+
+                }
+                <div class="help_text_div">
+                    <p>TODO: Get some short description form help page content.</p>
+                </div>
+                @*If administrator uses help browser he can edit pages.*@
+                @if (User.IsInRole(Role.Admin))
+                {
+                    <div class="help_text_div">
+                        <a asp-controller="Administration" asp-action="EditHelpPage" asp-route-hPage="@helpPage.ID">
+                            Edit this help page.
+                        </a>
+                    </div>
+
+                }
+            </div>
+        }
+    }
+    else
     {
         <div>
-            @if (helpPage.IsLocked)
-            {
-                <h4 style="color: lightcoral;">@helpPage.Title</h4>
-            }
-            else
-            {
-                <a asp-action="Display" asp-route-hPage="@helpPage.ID">
-
-                    <h4>@helpPage.Title</h4>
-
-                </a>
-            }
-            <p>TODO: Get some short description form help page content.</p>
-            @*If administrator uses help browser he can edit pages.*@
-            @if (User.IsInRole(Role.Admin))
-            {
-
-                <a asp-controller="Administration" asp-action="EditHelpPage" asp-route-hPage="@helpPage.ID">
-                    Edit this help page.
-                </a>
-
-            }
+            <p>
+                <div class="help_smaller_head">No help pages found :(</div>
+            </p>
         </div>
     }
-}
-else
-{
-    <div>
-        <p>
-            No help pages found :(
-        </p>
+    <div id="search_div">
+        <h4>@ViewBag.Message</h4>
     </div>
-}
+</div>
 
 
 

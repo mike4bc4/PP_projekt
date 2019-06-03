@@ -10,11 +10,10 @@
     bool newModel = Model.newModel;
 }
 
-<h2>EditAnnouncement</h2>
 
-<script src="~/js/editAnnouncement.js" type="text/javascript"></script>
-<script type="text/javascript">
 
+    <script src="~/js/editAnnouncement.js" type="text/javascript"></script>
+    <script type="text/javascript">
 
     var maxInputLength = @Html.Raw(Json.Serialize(IoCContainer.DbSettings.Value.MaxAddressInputLength));
     var contactItemIndex = { value: 0, name: 'contactItemIndex', items: [] };
@@ -56,34 +55,33 @@
             setPartialView(typePartialViewName);
         }
 	}
-</script>
+    </script>
 
-<style>
-    .editAnnouncementSavedHeader {
-        background-color:khaki;
-    }
-
-        .editAnnouncementSavedHeader:hover {
-            background-color:lightgoldenrodyellow;
+    <style>
+        .editAnnouncementSavedHeader {
+            background-color: khaki;
         }
 
-    .editAnnouncementInvalidHeader {
-        background-color:indianred;
-    }
+            .editAnnouncementSavedHeader:hover {
+                background-color: lightgoldenrodyellow;
+            }
 
-        .editAnnouncementInvalidHeader:hover {
-            background-color:lightcoral;
+        .editAnnouncementInvalidHeader {
+            background-color: indianred;
         }
 
-    .editAnnouncementValidHeader {
-        background-color: darkseagreen;
-    }
+            .editAnnouncementInvalidHeader:hover {
+                background-color: lightcoral;
+            }
 
-        .editAnnouncementValidHeader:hover {
-            background-color:lightgreen;
+        .editAnnouncementValidHeader {
+            background-color: darkseagreen;
         }
 
-</style>
+            .editAnnouncementValidHeader:hover {
+                background-color: lightgreen;
+            }
+    </style>
     <div id="edit_ann_div">
         <div id="edit_head_text">Edit Announcement</div>
         <div id="edit_ann_container">
@@ -133,5 +131,4 @@
 
         </div>
     </div>
-
 
