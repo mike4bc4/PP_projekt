@@ -71,3 +71,15 @@ function getScheduleItem(context, requestSynchronizer){
         }
     });
 }
+
+function isUserInAdminRole(context, requestSynchronizer){
+    $.ajax({
+        url: "/Validation/IsUserInAdminRole",
+        data: "json",
+        method: "post",
+        success: function(response){
+            context.isUserInAdminRole = response;
+            requestSynchronizer.generator.next(); 
+        }
+    });
+}

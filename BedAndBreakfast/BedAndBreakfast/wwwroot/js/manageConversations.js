@@ -24,8 +24,97 @@ function findUsersByQuery(context, requestSynchronizer) {
     });
 }
 
-function handleSendClicked(){
-    
+function getAllUsers(context, requestSynchronizer) {
+    $.ajax({
+        url: "/Administration/GetAllUsers",
+        dataType: "json",
+        method: "post",
+        success: function (response) {
+            context.usersFound = response;
+            requestSynchronizer.generator.next();
+        }
+    });
+}
+
+function handleSendClicked() {
+    var textarea = document.getElementById("message-textarea");
+    var titleInputField = document.getElementById("title-input-field");
+    var readOnlyCheckbox = document.getElementById("readonly-checkbox");
+    var text = textarea.value;
+    var title = titleInputField.value;
+    if (text.length == 0) {
+        setGlobalMessage(1);
+        return;
+    }
+    if (title.length == 0) {
+        setGlobalMessage(2);
+        return;
+    }
+
+    var context = {};
+    context.userNames = [];
+    context.title = title;
+    context.dateStarted = new Date();
+    context.announcementID = null;
+    context.scheduleItemsIDs = null;
+    context.readOnly = readOnlyCheckbox.checked;
+    context.content = text;
+    context.dateSend = new Date();
+
+    var requestSynchronizer = new RequestSynchronizer();
+    requestSynchronizer.requestQueue = [
+        function () { getCurrentUserName(context, requestSynchronizer) },
+        function () {
+            var receiversUserNames = getReceivers();
+            if (receiversUserNames.length == 0) {
+                getAllUsers(context, requestSynchronizer);
+            }
+            else {
+                context.userNames = context.userNames.concat(receiversUserNames);
+                // One does not simply skip generator function from generator function :)
+                setTimeout(function(){
+                    requestSynchronizer.generator.next();
+                },0);          
+            }
+        },
+        function () {
+            if (context.hasOwnProperty("usersFound") == true) {
+                // Receivers list was empty and all possible users were acquired.
+                for (var user of context.usersFound) {
+                    context.userNames.push(user.userName);
+                }
+            }
+            createConversation(context, requestSynchronizer);
+        },
+        function () { addMessage(context, requestSynchronizer); },
+        function () {
+            if (context.messageResponse == null) {
+                setGlobalMessage(3);
+                return;
+            }
+            setGlobalMessage(4);
+            // Reset message creator
+            titleInputField.value = '';
+            readOnlyCheckbox.checked = true;
+            textarea.value = '';
+
+        },
+    ];
+    requestSynchronizer.run();
+}
+
+function getReceivers() {
+    var container = document.getElementById("receivers-list-container");
+    var receivers = container.childNodes;
+    var receiversUserNames = [];
+    if (receivers.length == 0) {
+        return receiversUserNames;
+    }
+    for (var item of receivers) {
+        // Add user name to receiver user names array (skip "receiver-" part).
+        receiversUserNames.push(item.id.substring(9));
+    }
+    return receiversUserNames;
 }
 
 function handleUserClicked(user) {
@@ -111,6 +200,18 @@ function setGlobalMessage(messageIndex) {
     switch (messageIndex) {
         case 0:
             container.innerText = 'There are no users matching query.';
+            break;
+        case 1:
+            container.innerText = "Message cannot be empty.";
+            break;
+        case 2:
+            container.innerText = "Title cannot be empty.";
+            break;
+        case 3:
+            container.innerText = "An error occurred while sending message."
+            break;
+        case 4:
+            container.innerText = "Message created successfully."
             break;
         default:
             break;

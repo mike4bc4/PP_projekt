@@ -24,13 +24,14 @@ function handleShowMessagesButton(conversationID, conversationReadOnly) {
     requestSynchronizer.requestQueue = [
         function () { getCurrentUserName(context, requestSynchronizer) },
         function () { getMessages(context, requestSynchronizer) },
+        function () { isUserInAdminRole(context, requestSynchronizer)},
         function () {
             if (context.messages == null) {
                 setMessage(3);
                 return;
             }
             drawMessagesList(context.messages, context.userNames[0]);
-            if (conversationReadOnly == false) {
+            if (conversationReadOnly == false || context.isUserInAdminRole == true) {
                 // Message creator may only be drawn while conversation is not read only.
                 drawMessageCreator(conversationID, context.userNames[0])
             }
@@ -110,6 +111,10 @@ function handleSendMessageButton(conversationID, senderUserName) {
                 // Message has been send correctly.
                 // Redraw interface to show updated conversations and display message.
                 handleShowMessagesButton(conversationID);
+                // Reset message creator textarea.
+                textarea.value = '';
+                // Perform validation to reset character counter.
+                handleMessageTextarea();
                 setMessage(4);
             }
             else {
@@ -118,7 +123,6 @@ function handleSendMessageButton(conversationID, senderUserName) {
         }
     ];
     requestSynchronizer.run();
-
 }
 
 function handleMessageTextarea() {

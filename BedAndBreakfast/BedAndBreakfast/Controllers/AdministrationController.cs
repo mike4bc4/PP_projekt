@@ -270,6 +270,20 @@ namespace BedAndBreakfast.Controllers
             return Json(topUsers);
         }
 
+        public async Task<IActionResult> GetAllUsers() {
+            List<User> users = await context.Users.Include(u => u.Profile).ToListAsync();
+            List<FindUserViewModel> usersFound = new List<FindUserViewModel>();
+            foreach (User user in users) {
+                usersFound.Add(new FindUserViewModel()
+                {
+                    FirstName = user.Profile?.FirstName,
+                    LastName = user.Profile?.LastName,
+                    IsLocked = user.IsLocked,
+                    UserName = user.UserName,
+                });
+            }
+            return Json(usersFound);
+        }
 
         public async Task<IActionResult> FindUsersByQuery(string query)
         {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BedAndBreakfast.Data;
 using BedAndBreakfast.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
@@ -99,7 +100,10 @@ namespace BedAndBreakfast.Controllers
         }
 
 
-
+        public IActionResult IsUserInAdminRole()
+        {
+            return Json(HttpContext.User.IsInRole(Role.Admin));
+        }
 
 
     }
