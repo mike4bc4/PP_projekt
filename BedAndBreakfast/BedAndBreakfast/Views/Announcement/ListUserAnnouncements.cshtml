@@ -50,146 +50,119 @@
 </script>
 
 <style>
-    .main-table {
+    .main-table{
+        border-collapse: collapse;
+    }
+    .main-table-cell{
         border-collapse: collapse;
     }
 
-    .main-table-cell {
+    .sub-table{
         border-collapse: collapse;
     }
-
-    .sub-table {
-        border-collapse: collapse;
-    }
-
-    .sub-table-header-cell {
+    .sub-table-header-cell{
         border: 1px solid black;
     }
+    .sub-table-row{
 
-    .sub-table-row {
     }
-
-        .sub-table-row:hover {
-            background-color: lightgoldenrodyellow;
-        }
-
-    .sub-table-row-selected {
+    .sub-table-row:hover{
+        background-color: lightgoldenrodyellow;
+    }
+    .sub-table-row-selected{
         background-color: seagreen;
     }
-
-        .sub-table-row-selected:hover {
-            background-color: lightgreen;
-        }
-
-    .week-timetable-table {
-        border-collapse: collapse;
-    }
-
-    .week-timetable-cell {
-        border: 1px solid black;
-    }
-
-        .week-timetable-cell:hover {
-            background-color: lightgoldenrodyellow;
-        }
-
-    .week-timetable-cell-highlight {
-        border: 1px solid black;
-        background-color: darkseagreen;
-    }
-
-    .week-timetable-cell-higlight:hover {
+    .sub-table-row-selected:hover{
         background-color: lightgreen;
     }
-
-    .week-timetable-cell-disabled {
-        border: 1px solid black;
-        background-color: gray;
-    }
-
-        .week-timetable-cell-disabled:hover {
-            background-color: lightgray;
-        }
-
-    .week-timetable-header-cell {
-        border: 1px solid black;
-    }
-
-    .nav-button {
-        height: auto;
-    }
-
-    .day-timetable-table {
+    .week-timetable-table{
         border-collapse: collapse;
     }
-
-    .day-timetable-cell {
+    .week-timetable-cell{
         border: 1px solid black;
     }
-
-        .day-timetable-cell:hover {
-            background-color: lightgoldenrodyellow;
-        }
-
-    .day-timetable-header-cell {
-        border: 1px solid black;
+    .week-timetable-cell:hover{
+        background-color: lightgoldenrodyellow;
     }
-
-    .day-timetable-cell-disabled {
-        border: 1px solid black;
-        background-color: gray;
-    }
-
-        .day-timetable-cell-disabled:hover {
-            background-color: lightgray;
-        }
-
-    .day-timetable-header-cell-highlight {
+    .week-timetable-cell-highlight{
         border: 1px solid black;
         background-color: darkseagreen;
     }
+    .week-timetable-cell-higlight:hover{
+        background-color: lightgreen;
+    }
+    .week-timetable-cell-disabled{
+        border: 1px solid black;
+        background-color: gray;
+    }
+    .week-timetable-cell-disabled:hover{
+        background-color: lightgray;
+    }
+    .week-timetable-header-cell{
+        border: 1px solid black;
+    }
+    .nav-button{
+        height: auto;
+    }
+    .day-timetable-table{
+        border-collapse: collapse;
+    }
+    .day-timetable-cell{
+        border: 1px solid black;
+    }
+    .day-timetable-cell:hover{
+        background-color: lightgoldenrodyellow;
+    }
+    .day-timetable-header-cell{
+        border: 1px solid black;
+    }
+    .day-timetable-cell-disabled{
+        border: 1px solid black;
+        background-color: gray;
+    }
+    .day-timetable-cell-disabled:hover{
+        background-color: lightgray;
+    }
+    .day-timetable-header-cell-highlight{
+        border: 1px solid black;
+        background-color: darkseagreen;
+    }
+
 </style>
 
 
-
-<div id="edit_ann_list">
-    <div id="edit_head_text">List of your announcements</div>
+<h2>ListUserAnnouncements</h2>
 
 
-
-    <div id="list-ann-search-bar">
-        <label>Browser and sort options:</label>
-        <input type="text" id="userAnnouncementSearchField" />
-        <a href="#" onclick="">Search</a>
-        <select id="userAnnouncementSortField">
-            @foreach (string option in Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementSortOptions)))
-            {
-                <option>@option</option>
-            }
-        </select>
-        <a href="#" onclick="">Sort</a>
-        <hr />
-    </div>
-
-
-
-    @*Here JS script puts messages*@
-    <div id="announcementManagementMessage"></div>
-
+<div id="list-ann-search-bar">
+    <label>Browser and sort options:</label>
+    <input type="text" id="userAnnouncementSearchField" />
+    <a href="#" onclick="">Search</a>
+    <select id="userAnnouncementSortField">
+        @foreach (string option in Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementSortOptions)))
+        {
+            <option>@option</option>
+        }
+    </select>
+    <a href="#" onclick="">Sort</a>
     <hr />
-
-    <div id="list-ann-nav-bar">
-        <a asp-controller="Announcement" asp-action="EditAnnouncement">Create announcement</a>
-        <a href="#" onclick="activateSelectedAnnouncements(); redraw();">Activate selected</a>
-        <a href="#" onclick="deactivateSelectedAnnouncements(); redraw();">Deactivate selected</a>
-        <a href="#" onclick="removeSelectedAnnouncements(); redraw();">Remove selected</a>
-        <hr />
-    </div>
-
-
-    @*By default display all items received from controller.*@
-    <div id="list-ann-main-container"></div>
-    <div style="clear:both;"></div>
-
-    <div class="space_30"></div>
 </div>
+
+
+
+@*Here JS script puts messages*@
+<div id="announcementManagementMessage"></div>
+
+<hr />
+
+<div id="list-ann-nav-bar">
+    <a asp-controller="Announcement" asp-action="EditAnnouncement">Create announcement</a>
+    <a href="#" onclick="activateSelectedAnnouncements(); redraw();">Activate selected</a>
+    <a href="#" onclick="deactivateSelectedAnnouncements(); redraw();">Deactivate selected</a>
+    <a href="#" onclick="removeSelectedAnnouncements(); redraw();">Remove selected</a>
+    <hr />
+</div>
+
+
+@*By default display all items received from controller.*@
+<div id="list-ann-main-container"></div>

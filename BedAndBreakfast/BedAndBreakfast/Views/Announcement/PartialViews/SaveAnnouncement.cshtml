@@ -5,23 +5,17 @@
     ViewData["Title"] = "SaveAnnouncement";
 }
 
-<div>
-    <div id="edit_head_text" style="margin-top: 20px; margin-bottom: 20px">Save Announcement</div>
+<h2>SaveAnnouncement</h2>
 
+<div>
     @if (Model.IsCorrect)
     {
-    <div class="edit_expl">
-        Your announcement has been saved and soon will be visible in out browser!
-    </div>
-
-     }
-     else
+        @:Your announcement has been saved and soon will be visible in out browser!
+    }
+    else
     {
-    <div class="edit_expl">
-       There are errors in your announcement. Would you like to fix it?
-    </div>
-                <a href="#" onclick="return setPartialView(summaryPartialViewName);">Go back</a>
-     }
-           
- </div>
+        @:There are errors in your announcement. Would you like to fix it?
+        <a href="#" onclick="return setPartialView(summaryPartialViewName);">Go back</a>
+    }
+</div>
 

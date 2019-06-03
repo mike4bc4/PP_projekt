@@ -10,7 +10,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
     {
         public static bool IsFindUserViewModelEmpty(FindUserViewModel viewModel)
         {
-            if (viewModel.FristName == null &&
+            if (viewModel.FirstName == null &&
                 viewModel.LastName == null &&
                 viewModel.UserName == null &&
                 !viewModel.IsLocked)

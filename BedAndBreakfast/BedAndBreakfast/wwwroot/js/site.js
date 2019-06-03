@@ -27,3 +27,59 @@ class RequestSynchronizer {
         this.generator.next();
     }
 }
+
+function getCurrentUserName(context, requestSynchronizer) {
+    $.ajax({
+        url: '/Account/GetCurrentUserName',
+        dataType: 'json',
+        method: 'post',
+        success: function (response) {
+            if (context.userNames == null) {
+                context.userNames = [];
+            }
+            context.userNames.push(response);
+            requestSynchronizer.generator.next();
+        }
+    });
+}
+
+function getAnnouncementOwnerUserName(context, requestSynchronizer) {
+    $.ajax({
+        url: '/Announcement/GetAnnouncementOwnerUserName',
+        data: { announcementID: context.announcementID },
+        dataType: 'json',
+        method: 'post',
+        success: function (response) {
+            if (context.userNames == null) {
+                context.userNames = [];
+            }
+            context.userNames.push(response);
+            requestSynchronizer.generator.next();
+        }
+    });
+}
+
+function getScheduleItem(context, requestSynchronizer){
+    $.ajax({
+        url: '/Announcement/GetScheduleItem',
+        dataType: 'json',
+        method: 'post',
+        data: {scheduleItemID: context.scheduleItemID},
+        success: function(response){
+            context.scheduleItem = response; 
+            requestSynchronizer.generator.next();
+        }
+    });
+}
+
+function isUserInAdminRole(context, requestSynchronizer){
+    $.ajax({
+        url: "/Validation/IsUserInAdminRole",
+        data: "json",
+        method: "post",
+        success: function(response){
+            context.isUserInAdminRole = response;
+            requestSynchronizer.generator.next(); 
+        }
+    });
+}

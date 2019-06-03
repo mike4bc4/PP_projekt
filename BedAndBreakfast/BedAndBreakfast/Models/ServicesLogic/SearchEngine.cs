@@ -140,18 +140,18 @@ namespace BedAndBreakfast.Models
                          select u);
             }
             // Search by first name.
-            if (viewModel.FristName != null)
+            if (viewModel.FirstName != null)
             {
                 if (users != null)
                 {
                     users = (from u in users
-                             where u.Profile.FirstName.ToUpper().Contains(viewModel.FristName.ToUpper())
+                             where u.Profile.FirstName.ToUpper().Contains(viewModel.FirstName.ToUpper())
                              select u);
                 }
                 else
                 {
                     users = (from u in context.Users.Include(u => u.Profile)
-                             where u.Profile.FirstName.ToUpper().Contains(viewModel.FristName.ToUpper())
+                             where u.Profile.FirstName.ToUpper().Contains(viewModel.FirstName.ToUpper())
                              select u);
                 }
             }

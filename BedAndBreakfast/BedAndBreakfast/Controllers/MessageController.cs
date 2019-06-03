@@ -155,7 +155,8 @@ namespace BedAndBreakfast.Controllers
                 return Json(null);
             }
             // Signalize with different output if message cannot be send.
-            if (conversation.ReadOnly == true) {
+            // Only administrator may send message through read only lock.
+            if (conversation.ReadOnly == true && !HttpContext.User.IsInRole(Role.Admin)) {
                 return Json(0);
             }
 
