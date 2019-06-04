@@ -6,20 +6,58 @@
     PrivacySetting privacySettings = (PrivacySetting)ViewData["privacySettings"];
 }
 
-<div class="edit_small_head">Privacy</div>
+<style>
+    .edit-privacy-button {
+        float: right;
+        margin: 10px;
+        margin-right: 20px;
+        height: 40px;
+        width: 100px;
+        font-family: 'Lato', sans-serif;
+        background-color: transparent;
+        font-size: 22px;
+        color: rgba(26, 94, 178, 1);
+        border: none;
+        border-bottom: 1px solid rgba(26, 94, 178, 1);
+    }
+
+        .edit-privacy-button:hover {
+            cursor: pointer;
+            background-color: rgba(26, 94, 178, 0.5);
+        }
+
+    .edit-privacy-header {
+        font-family: 'Lato', sans-serif;
+        font-size: 16px;
+        color: rgba(26, 94, 178, 1);
+        margin: 20px;
+        background-color: rgba(26, 94, 178, 0.5);
+        height: 30px;
+        text-align: center;
+        padding-top: 12px;
+    }
+</style>
+
+<div class="edit-privacy-header">Privacy</div>
 
 <form asp-action="EditPrivacy">
     <div class="edit_box">
-        <div>
-            <label asp-for="ShowProfileToFriends" class="edit_box_bar"></label>
-            <input asp-for="ShowProfileToFriends" value="true" checked="@privacySettings.ShowProfileToFriends" />
-        </div>
-        <div>
-            <label asp-for="ShowProfileToWorld" class="edit_box_bar"></label>
-            <input asp-for="ShowProfileToWorld" value="true" checked="@privacySettings.ShowProfileToWorld" />
-        </div>
+        <table>
+            <tr>
+                <td>
+                    <label asp-for="ShowProfileToFriends" class="no-style-label-box"></label>
+                    <input asp-for="ShowProfileToFriends" value="true" checked="@privacySettings.ShowProfileToFriends" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label asp-for="ShowProfileToWorld" class="no-style-label-box"></label>
+                    <input asp-for="ShowProfileToWorld" value="true" checked="@privacySettings.ShowProfileToWorld" />
+                </td>
+            </tr>
+        </table>
     </div>
         <div class="edit_box_pr">
-            <input type="submit" value="Save" class="my_button" id="save_button" />
+            <input type="submit" value="Save" class="edit-privacy-button" />
         </div>
 </form>

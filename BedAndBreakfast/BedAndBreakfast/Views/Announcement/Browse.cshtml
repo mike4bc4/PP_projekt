@@ -63,12 +63,15 @@
 
 <style>
     .ann-row {
-        margin: 2px;
-        border: 1px solid black;
+        font-family: 'Lato', sans-serif;
+        color: rgba(26, 94, 178, 1);
+        padding: 10px;
+        border-bottom: 1px solid rgba(26, 94, 178, 1);
     }
 
         .ann-row:hover {
-            background-color: slategray;
+            background-color: rgba(26, 94, 178, 0.5);
+            
             cursor: pointer;
         }
 
@@ -92,11 +95,26 @@
         cursor: pointer;
         background-color: slategray;
     }
+
+    .browse-announcements-header {
+        font-family: 'Lato', sans-serif;
+        font-size: 22px;
+        color: rgba(26, 94, 178, 1);
+        margin: 20px;
+        padding: 10px;
+        padding-top: 20px;
+        border-bottom: 1px solid rgba(26, 94, 178, 1);
+    }
+
+    .browse-announcement-container {
+        margin: 20px;
+    }
+
 </style>
-<div id="edit_ann_list">
-    <div id="edit_head_text" style="margin-top: 20px; margin-bottom: 20px">Browse</div>
+<div id="edit_ann_list" style="overflow-x:hidden; overflow-y:auto; height: 700px; width:1000px;">
+    <div class="browse-announcements-header">Browse</div>
     <div id="message-container"></div>
-    <div id="browse-ann-view-container"></div>
+    <div class="browse-announcement-container" id="browse-ann-view-container"></div>
     <div class="space_30"></div>
 
     </div>

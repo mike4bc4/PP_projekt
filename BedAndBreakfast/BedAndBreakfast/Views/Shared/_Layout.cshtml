@@ -34,25 +34,23 @@
 </head>
 
 <body>
-    @*User identity*@
-    
+    @*User identity*@  
     @{
-/* if (User.Identity.IsAuthenticated)
- {
-     <div id="hi_ann_div">
-         <div class="edit_expl">
-             @if (userProfile != null)
-             {
-                 @:Hello @userProfile.FirstName
-             }
-             else
-             {
-                 @:Hello there!
-             }
+     if (User.Identity.IsAuthenticated)
+     {
+         <div class="welcome-bar-container">
+             <div class="welcome-bar">
+                 @if (userProfile != null)
+                 {
+                     @:Hello @userProfile.FirstName, how are you today?
+                 }
+                 else
+                 {
+                     @:Hello @currentUser?.UserName, how are you today?
+                 }
+             </div>
          </div>
-     </div>
- }
- */
+     }
     }
 
     <!-------------------------------------------------------------------------------------------->
@@ -85,9 +83,9 @@
                 {
                     <a asp-controller="Announcement" class="tilelink" asp-action="ShowReservations">My reservations</a>
                     <a asp-controller="Message" class="tilelink" asp-action="ShowConversations">My conversations</a>
-                    <a asp-area="" asp-controller="Account" class="tilelink" asp-action="Logout">Log Out</a>
-                    <a asp-area="" asp-controller="Profile" class="tilelink" asp-action="Edit">Profile <b>@userProfile.FirstName</b></a>
+                    <a asp-area="" asp-controller="Profile" class="tilelink" asp-action="Edit">Profile</a>
                     <a asp-area="" asp-controller="Account" class="tilelink" asp-action="Edit">Account</a>
+                    <a asp-area="" asp-controller="Account" class="tilelink" asp-action="Logout">Log Out</a>
                 }
             }
 

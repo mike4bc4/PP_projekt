@@ -3,26 +3,87 @@
 @{
     ViewData["Title"] = "Login";
 }
+<style>
+    .login-button {
+        float: right;
+        margin: 10px;
+        margin-right: 20px;
+        height: 40px;
+        width: 100px;
+        font-family: 'Lato', sans-serif;
+        background-color: transparent;
+        font-size: 22px;
+        color: rgba(26, 94, 178, 1);
+        border: none;
+        border-bottom: 1px solid rgba(26, 94, 178, 1);
+    }
+
+        .login-button:hover {
+            cursor: pointer;
+            background-color: rgba(26, 94, 178, 0.5);
+        }
+
+
+    .login-header {
+        font-family: 'Lato', sans-serif;
+        font-size: 22px;
+        color: rgba(26, 94, 178, 1);
+        margin: 20px;
+        padding: 10px;
+        padding-top: 20px;
+        border-bottom: 1px solid rgba(26, 94, 178, 1);
+    }
+
+    .login-label-box {
+        border-radius: 2px;
+        border: 1px solid rgba(0,0,0,0.33);
+        font-family: 'Lato', sans-serif;
+        font-size: 16px;
+        padding: 10px;
+        margin: 5px;
+        height: 20px;
+    }
+
+    .login-input-box {
+        font-family: 'Lato', sans-serif;
+        font-size: 16px;
+        border: none;
+        height: 20px;
+        padding: 10px;
+        margin: -10px;
+    }
+
+    .login-error-box {
+        padding: 10px;
+        color: rgb(200, 55, 55);
+        font-family: 'Lato', sans-serif;
+        font-size: 16px;
+    }
+
+    .login-table {
+        margin: 15px;
+    }
+
+</style>
+
 <div id="login_div">
     <form asp-action="Login">
-        <div style="clear:both;"></div>
-        <div class="edit_small_head">Login</div>
+        <div class="login-header">Login</div>
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <table class="login-table">
+            <tr>
+                <td><div class="login-label-box"><label asp-for="Login"></label></div></td>
+                <td><div class="login-label-box"><input asp-for="Login" class="login-input-box" /></div></td>
+                <td><div class="login-error-box"><span asp-validation-for="Login"></span></div></td>
+            </tr>
+            <tr>
+                <td><div class="login-label-box"><label asp-for="Password"></label></div></td>
+                <td><div class="login-label-box"><input asp-for="Password" class="login-input-box" /></div></td>
+                <td><div class="login-error-box"><span asp-validation-for="Password"></span></div></td>
+            </tr>
+        </table>
         <div class="form-group">
-            <label asp-for="Login" class="edit_box_bar1"></label>
-            <input asp-for="Login" class="edit_box_bar2" />
-            <span asp-validation-for="Login" class="create_text_danger"></span>
-            <div style="clear:both;"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Password" class="edit_box_bar1"></label>
-            <input asp-for="Password" class="edit_box_bar2" />
-            <span asp-validation-for="Password" class="create_text_danger"></span>
-            <div style="clear:both;"></div>
-        </div>
-        <div class="form-group">
-            <input type="submit" value="Login" class="my_button" id="save_button" />
-            <div style="clear:both;"></div>
+            <input type="submit" value="Login" class="login-button" />
         </div>
     </form>
     <div class="create_text_danger"><b>@ViewBag.Message</b></div>

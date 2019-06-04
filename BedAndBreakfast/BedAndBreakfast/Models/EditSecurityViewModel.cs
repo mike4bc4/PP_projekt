@@ -14,19 +14,19 @@ namespace BedAndBreakfast.Models
         [Display(Name = "Current password")]
         [DataType(DataType.Password)]
         [Required(ErrorMessage = "Required")]
-        [Remote(controller: "Validation", action: "ValidPasswordLenght")]
+        [Remote(controller: "Validation", action: "ValidCurrentPasswordLenght")]
         public string CurrentPassword { get; set; }
 
         [Display(Name = "New password")]
         [DataType(DataType.Password)]
         [Required(ErrorMessage = "Required")]
-        [Remote(controller: "Validation", action: "ValidPasswordLenght")]
+        [Remote(controller: "Validation", action: "ValidNewPasswordLength")]
         public string NewPassword { get; set; }
 
         [Display(Name = "Repeat password")]
         [DataType(DataType.Password)]
         [Compare("NewPassword", ErrorMessage = "NotMatch")]
-        [Remote(controller: "Validation", action: "ValidPasswordLenght")]
-        public string PrepeatNewPassword { get; set; }
+        [Remote(controller: "Validation", action: "ValidRepeatNewPasswordLength")]
+        public string RepeatNewPassword { get; set; }
     }
 }

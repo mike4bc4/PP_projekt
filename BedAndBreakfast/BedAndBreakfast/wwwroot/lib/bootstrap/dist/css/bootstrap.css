@@ -1,7 +1,7 @@
 body {
     margin: 0px;
     background-image: url('../../../../images/back.jpg');
-    /*background-color: grey;*/
+    /* background-color: grey; */
     background-repeat: no-repeat;
 }
 
@@ -33,6 +33,7 @@ body {
     float: right;
     margin: 20px;
     padding: 8px;
+    text-shadow: 0px 0px 10px black;
     /*border: 1px solid white;
 		border-radius: 3px;
 		padding: 10px;*/
@@ -86,11 +87,13 @@ body {
 
 #ann-browser-qry-in-fld {
     position: absolute;
-    width: 630px;
-    height: 48px;
+    width: 610px;
+    height: 40px;
     background-color: white;
     border-radius: 2px;
     border: 0px;
+    padding: 10px;
+    font-size: 20px;
 }
 
 #where_text {
@@ -102,22 +105,25 @@ body {
 
 #ann-browser-qry-button {
     position: absolute;
+    top: 82px;
     width: 130px;
     height: 50px;
+    padding-bottom: 5px;
     color: white;
     font-family: 'Lato', sans-serif;
     font-size: 22px;
-    background-color: rgb(94, 102, 255);
+    border: 1px solid rgba(255,255,255,1);
+    background-color: transparent;
     float: right;
     border-radius: 2px;
-    bottom: 0px;
     right: 0px;
-    border: 0px;
+    text-shadow: 0px 0px 10px black;
 }
 
 #ann-browser-qry-button:hover
 {
-    background-color: #4d55ee;
+    background-color: rgba(255,255,255,0.5);
+    cursor: pointer;
 }
 
 #font_icon {
@@ -681,4 +687,28 @@ body {
     height: 30px;
     margin-left: 20px;
     text-align: center;
+}
+
+.welcome-bar-container {
+    margin: 10px;
+    border-radius: 10px;
+    height: auto;
+    background-color: rgba(0,0,0,0.33);
+}
+
+.welcome-bar {
+    display: inline-block;
+    margin: 20px;
+    padding: 10px 10px 0px 10px;
+    height: 30px;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    text-align: center;
+    color: white;
+    text-shadow: 0px 0px 10px black;
+
+}
+
+.no-style-label-box {
+    font-family: 'Lato', sans-serif;
 }

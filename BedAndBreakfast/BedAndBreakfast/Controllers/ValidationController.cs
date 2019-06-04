@@ -62,11 +62,39 @@ namespace BedAndBreakfast.Controllers
 			}
 		}
 
-        public JsonResult ValidPasswordLenght(string password) {
-            if (password.Length > IoCContainer.DbSettings.Value.PasswordMaxLength) {
+        public JsonResult ValidCurrentPasswordLenght(string currentPassword) {
+            if (currentPassword.Length > IoCContainer.DbSettings.Value.PasswordMaxLength) {
                 return Json(sharedResources["TooLongPass"].ToString());
             }
-            if (password.Length < IoCContainer.DbSettings.Value.PasswordMinLength) {
+            if (currentPassword.Length < IoCContainer.DbSettings.Value.PasswordMinLength) {
+                var asd = sharedResources["TooShort"];
+                return Json(sharedResources["TooShortPass"].ToString());
+            }
+            return Json(true);
+        }
+
+        public JsonResult ValidNewPasswordLength(string newPassword)
+        {
+            if (newPassword.Length > IoCContainer.DbSettings.Value.PasswordMaxLength)
+            {
+                return Json(sharedResources["TooLongPass"].ToString());
+            }
+            if (newPassword.Length < IoCContainer.DbSettings.Value.PasswordMinLength)
+            {
+                var asd = sharedResources["TooShort"];
+                return Json(sharedResources["TooShortPass"].ToString());
+            }
+            return Json(true);
+        }
+
+        public JsonResult ValidRepeatNewPasswordLength(string repeatNewPassword)
+        {
+            if (repeatNewPassword.Length > IoCContainer.DbSettings.Value.PasswordMaxLength)
+            {
+                return Json(sharedResources["TooLongPass"].ToString());
+            }
+            if (repeatNewPassword.Length < IoCContainer.DbSettings.Value.PasswordMinLength)
+            {
                 var asd = sharedResources["TooShort"];
                 return Json(sharedResources["TooShortPass"].ToString());
             }
@@ -77,8 +105,8 @@ namespace BedAndBreakfast.Controllers
             return Json(!(tagValue.Length > IoCContainer.DbSettings.Value.MaxTagLength));
         }
 
-        public JsonResult ValidHelpPageSize(string helpPageContent) {
-            if (helpPageContent.Length > IoCContainer.DbSettings.Value.MaxHelpPageSize) {
+        public JsonResult ValidHelpPageSize(string content) {
+            if (content.Length > IoCContainer.DbSettings.Value.MaxHelpPageSize) {
                 return Json(sharedResources["TooLong"].ToString());
             }
             return Json(true);

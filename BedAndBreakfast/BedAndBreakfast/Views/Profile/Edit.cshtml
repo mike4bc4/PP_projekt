@@ -21,106 +21,161 @@
     Address profileAddress = (profile.Address != null) ? profile.Address : new Address();
 }
 
-<div id="edit_ann_div">
-    <div id="edit_head_text" style="margin-top: 20px; margin-bottom: 20px">Edit profile</div>
-    <div class="row">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="FirstName" class="edit_box_bar_ed"></label>
-                <input asp-for="FirstName" class="create_bar_con" value="@profile.FirstName" />
-                <span asp-validation-for="FirstName" class="create_text_danger"></span>
-                <div style="clear:both;"></div>
-            </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="edit_box_bar_ed"></label>
-                <input asp-for="LastName" class="create_bar_con" value="@profile.LastName" />
-                <span asp-validation-for="LastName" class="create_text_danger"></span>
-                <div style="clear:both;"></div>
-            </div>
-            <div class="form-group">
-                <label asp-for="Gender" class="edit_box_bar_ed"></label>
-                <div class="create_bar_con"> @Html.DropDownListFor(model => model.Gender, genders, Localizer["Unset"].Value)</div>
-                <span asp-validation-for="Gender" class="create_text_danger"></span>
-                <div style="clear:both;"></div>
-            </div>
-            <div class="form-group">
-                <label asp-for="BirthDate" class="edit_box_bar_ed"></label>
-                <input asp-for="BirthDate" class="create_bar_con" value="@profile.BirthDate.ToString("yyyy-MM-dd")" />
-                <span asp-validation-for="BirthDate" class="create_text_danger"></span>
-                <div style="clear:both;"></div>
-            </div>
-            <div class="form-group">
-                <label asp-for="PrefLanguage" class="edit_box_bar_ed"></label>
-                <div class="create_bar_con"> @Html.DropDownListFor(model => model.PrefLanguage, languages, Localizer["Unset"].Value) </div>
-                <span asp-validation-for="PrefLanguage" class="create_text_danger"></span>
-                <div style="clear:both;"></div>
-            </div>
-            <div class="form-group">
-                <label asp-for="PrefCurrency" class="edit_box_bar_ed"></label>
-                <div class="create_bar_con">@Html.DropDownListFor(model => model.PrefCurrency, currencies, Localizer["Unset"].Value) </div>
-                <span asp-validation-for="PrefCurrency" class="create_text_danger"></span>
-                <div style="clear:both;"></div>
-            </div>
-            <div class="form-group">
-                <label asp-for="Country" class="edit_box_bar_ed"></label>
-                <input asp-for="Country" class="create_bar_con" value="@profileAddress.Country" />
-                <span asp-validation-for="Country" class="create_text_danger"></span>
-                <div style="clear:both;"></div>
-            </div>
-            <div class="form-group">
-                <label asp-for="Region" class="edit_box_bar_ed"></label>
-                <input asp-for="Region" class="create_bar_con" value="@profileAddress.Region" />
-                <span asp-validation-for="Region" class="create_text_danger"></span>
-                <div style="clear:both;"></div>
-            </div>
-            <div class="form-group">
-                <label asp-for="City" class="edit_box_bar_ed"></label>
-                <input asp-for="City" class="create_bar_con" value="@profileAddress.City" />
-                <span asp-validation-for="City" class="create_text_danger"></span>
-                <div style="clear:both;"></div>
-            </div>
-            <div class="form-group">
-                <label asp-for="Street" class="edit_box_bar_ed"></label>
-                <input asp-for="Street" class="create_bar_con" value="@profileAddress.Street" />
-                <span asp-validation-for="Street" class="create_text_danger"></span>
-                <div style="clear:both;"></div>
-            </div>
-            <div class="form-group">
-                <label asp-for="StreetNumber" class="edit_box_bar_ed"></label>
-                <input asp-for="StreetNumber" class="create_bar_con" value="@profileAddress.StreetNumber" />
-                <span asp-validation-for="StreetNumber" class="create_text_danger"></span>
-                <div style="clear:both;"></div>
-            </div>
-            <div class="form-group">
-                <label asp-for="PresonalDescription" class="edit_box_bar_ed"></label>
-                <input asp-for="PresonalDescription" class="create_bar_con" value="@profile.PresonalDescription" />
-                <span asp-validation-for="PresonalDescription" class="create_text_danger"></span>
-                <div style="clear:both;"></div>
-            </div>
-            <div class="form-group">
-                <label asp-for="School" class="edit_box_bar_ed"></label>
-                <input asp-for="School" class="create_bar_con" value="@profile.School" />
-                <span asp-validation-for="School" class="create_text_danger"></span>
-                <div style="clear:both;"></div>
-            </div>
-            <div class="form-group">
-                <label asp-for="Work" class="edit_box_bar_ed"></label>
-                <input asp-for="Work" class="create_bar_con" value="@profile.Work" />
-                <span asp-validation-for="Work" class="create_text_danger"></span>
-                <div style="clear:both;"></div>
-            </div>
-            <div class="form-group">
-                <label asp-for="BackupEmailAddress" class="edit_box_bar_ed"></label>
-                <input asp-for="BackupEmailAddress" class="create_bar_con" value="@profile.BackupEmailAddress" />
-                <span asp-validation-for="BackupEmailAddress" class="create_text_danger"></span>
-                <div style="clear:both;"></div>
-            </div>
-            <div>
-                <input type="submit" value="Save" class="my_button" id="save_button" />
-            </div>
-            <div style="clear:both;"></div>
-        </form>
-    </div>
+<style>
+    .edit-profile-button {
+        float: right;
+        margin: 10px;
+        margin-right: 20px;
+        height: 40px;
+        width: 100px;
+        font-family: 'Lato', sans-serif;
+        background-color: transparent;
+        font-size: 22px;
+        color: rgba(26, 94, 178, 1);
+        border: none;
+        border-bottom: 1px solid rgba(26, 94, 178, 1);
+    }
 
+        .edit-profile-button:hover {
+            cursor: pointer;
+            background-color: rgba(26, 94, 178, 0.5);
+        }
+
+    .edit-profile-buttons-container {
+        margin: 20px;
+        margin-left: 14px;
+    }
+
+    .edit-profile-header {
+        font-family: 'Lato', sans-serif;
+        font-size: 22px;
+        color: rgba(26, 94, 178, 1);
+        margin: 20px;
+        padding: 10px;
+        padding-top: 20px;
+        border-bottom: 1px solid rgba(26, 94, 178, 1);
+    }
+
+    .edit-profile-box {
+        border-radius: 2px;
+        border: 1px solid rgba(0,0,0,0.33);
+        font-family: 'Lato', sans-serif;
+        font-size: 16px;
+        padding: 10px;
+        margin: 5px;
+        height: 20px;
+    }
+
+    .edit-profile-input-box {
+        font-family: 'Lato', sans-serif;
+        font-size: 16px;
+        border: none;
+    }
+
+    .edit-profile-error-box {
+        padding: 10px;
+        color: rgb(200, 55, 55);
+        font-family: 'Lato', sans-serif;
+        font-size: 16px;
+    }
+
+    .edit-profile-table {
+        margin: 15px;
+    }
+    select {
+        width: calc(100% - 10px);
+        margin-left: 5px;
+        border: none;
+        height: 40px;
+        border-radius: 2px;
+        border: 1px solid rgba(0,0,0,0.33);
+    }
+</style>
+
+<div id="edit_ann_div"  style="overflow-x:hidden; overflow-y:auto; height: 700px; width:700px;">
+    <div class="edit-profile-header">Edit profile</div>
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <table class="edit-profile-table">
+            <tr>
+                <td><div class="edit-profile-box"><label asp-for="FirstName"></label></div></td>
+                <td><div class="edit-profile-box"><input asp-for="FirstName" class="edit-profile-input-box"  value="@profile.FirstName" /></div></td>
+                <td><div class="edit-profile-error-box"><span asp-validation-for="FirstName" ></span></div></td>
+            </tr>
+            <tr>
+                <td><div class="edit-profile-box"><label asp-for="LastName" ></label></div></td>
+                <td><div class="edit-profile-box"><input asp-for="LastName" class="edit-profile-input-box" value="@profile.LastName" /></div></td>
+                <td><div class="edit-profile-error-box"><span asp-validation-for="LastName" ></span></div></td>
+            </tr>
+
+            <tr>
+                <td><div class="edit-profile-box"><label asp-for="Gender" ></label></div></td>
+                <td><div>@Html.DropDownListFor(model => model.Gender, genders, Localizer["Unset"].Value)</div></td>
+                <td><div class="edit-profile-error-box"><span asp-validation-for="Gender" ></span></div></td>
+            </tr>
+            <tr>
+                <td><div class="edit-profile-box"><label asp-for="BirthDate" ></label></div></td>
+                <td><div class="edit-profile-box"><input asp-for="BirthDate" class="edit-profile-input-box" value="@profile.BirthDate.ToString("yyyy-MM-dd")" /></div></td>
+                <td><div class="edit-profile-error-box"><span asp-validation-for="BirthDate" ></span></div></td>
+            </tr>
+            <tr>
+                <td><div class="edit-profile-box"><label asp-for="PrefLanguage" ></label></div></td>
+                <td><div> @Html.DropDownListFor(model => model.PrefLanguage, languages, Localizer["Unset"].Value) </div></td>
+                <td><div class="edit-profile-error-box"><span asp-validation-for="PrefLanguage" ></span></div></td>
+            </tr>
+            <tr>
+                <td><div class="edit-profile-box"><label asp-for="PrefCurrency" ></label></div></td>
+                <td><div>@Html.DropDownListFor(model => model.PrefCurrency, currencies, Localizer["Unset"].Value) </div></td>
+                <td><div class="edit-profile-error-box"><span asp-validation-for="PrefCurrency" ></span></div></td>
+            </tr>
+            <tr>
+                <td><div class="edit-profile-box"><label asp-for="Country" ></label></div></td>
+                <td><div class="edit-profile-box"><input asp-for="Country" class="edit-profile-input-box" value="@profileAddress.Country" /></div></td>
+                <td><div class="edit-profile-error-box"><span asp-validation-for="Country" ></span></div></td>
+            </tr>
+            <tr>
+                <td><div class="edit-profile-box"><label asp-for="Region" ></label></div></td>
+                <td><div class="edit-profile-box"><input asp-for="Region" class="edit-profile-input-box" value="@profileAddress.Region" /></div></td>
+                <td><div class="edit-profile-error-box"><span asp-validation-for="Region" ></span></div></td>
+            </tr>
+            <tr>
+                <td><div class="edit-profile-box"><label asp-for="City" ></label></div></td>
+                <td><div class="edit-profile-box"><input asp-for="City" class="edit-profile-input-box" value="@profileAddress.City" /></div></td>
+                <td><div class="edit-profile-error-box"><span asp-validation-for="City" ></span></div></td>
+            </tr>
+            <tr>
+                <td><div class="edit-profile-box"><label asp-for="Street" ></label></div></td>
+                <td><div class="edit-profile-box"><input asp-for="Street" class="edit-profile-input-box" value="@profileAddress.Street" /></div></td>
+                <td><div class="edit-profile-error-box"><span asp-validation-for="Street" ></span></div></td>
+            </tr>
+            <tr>
+                <td><div class="edit-profile-box"><label asp-for="StreetNumber" ></label></div></td>
+                <td><div class="edit-profile-box"><input asp-for="StreetNumber"  class="edit-profile-input-box" value="@profileAddress.StreetNumber" /></div></td>
+                <td><div class="edit-profile-error-box"><span asp-validation-for="StreetNumber" ></span></div></td>
+            </tr>
+            <tr>
+                <td><div class="edit-profile-box"><label asp-for="PresonalDescription" ></label></div></td>
+                <td><div class="edit-profile-box"><input asp-for="PresonalDescription" class="edit-profile-input-box" value="@profile.PresonalDescription" /></div></td>
+                <td><div class="edit-profile-error-box"><span asp-validation-for="PresonalDescription" ></span></div></td>
+            </tr>
+            <tr>
+                <td><div class="edit-profile-box"><label asp-for="School" ></label></div></td>
+                <td><div class="edit-profile-box"><input asp-for="School" class="edit-profile-input-box" value="@profile.School" /></div></td>
+                <td><div class="edit-profile-error-box"><span asp-validation-for="School" ></span></div></td>
+            </tr>
+            <tr>
+                <td><div class="edit-profile-box"><label asp-for="Work" ></label></div></td>
+                <td><div class="edit-profile-box"><input asp-for="Work" class="edit-profile-input-box" value="@profile.Work" /></div></td>
+                <td><div class="edit-profile-error-box"><span asp-validation-for="Work" ></span></div></td>
+            </tr>
+            <tr>
+                <td><div class="edit-profile-box"><label asp-for="BackupEmailAddress" ></label></div></td>
+                <td><div class="edit-profile-box"><input asp-for="BackupEmailAddress" class="edit-profile-input-box" value="@profile.BackupEmailAddress" /></div></td>
+                <td><div class="edit-profile-error-box"><span asp-validation-for="BackupEmailAddress" ></span></div></td>
+            </tr>
+        </table>
+        <div>
+            <input type="submit" value="Save" class="edit-profile-button" />
+        </div>
+    </form>
 </div>

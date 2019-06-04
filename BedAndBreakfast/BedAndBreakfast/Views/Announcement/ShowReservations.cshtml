@@ -10,10 +10,42 @@
 
 }
 
+<style>
+    .my-reservations-button {
+        float: left;
+        text-decoration: none;
+        width: auto;
+        text-align: center;
+        padding: 10px;
+        padding-left: 20px;
+        padding-right: 20px;
+        font-family: 'Lato', sans-serif;
+        font-size: 22px;
+        color: rgba(26, 94, 178, 1);
+        border: none;
+        border-bottom: 1px solid rgba(26, 94, 178, 1);
+        margin: 4px;
+        background-color: transparent;
+    }
 
-    <script type="text/javascript" src="~/js/showReservations.js"></script>
-    <script type="text/javascript" src="~/js/messageSystem.js"></script>
-    <script type="text/javascript">
+        .my-reservations-button:hover {
+            background-color: rgba(26, 94, 178, 0.5);
+        }
+
+    .my-reservations-header {
+        font-family: 'Lato', sans-serif;
+        font-size: 22px;
+        color: rgba(26, 94, 178, 1);
+        margin: 20px;
+        padding: 10px;
+        padding-top: 20px;
+        border-bottom: 1px solid rgba(26, 94, 178, 1);
+    }
+</style>
+
+<script type="text/javascript" src="~/js/showReservations.js"></script>
+<script type="text/javascript" src="~/js/messageSystem.js"></script>
+<script type="text/javascript">
     window.onload = function () {
         getReservations();
     }
@@ -32,13 +64,13 @@
     function getHouseSharedParts() {
         return @Html.Raw(Json.Serialize(houseSharedParts));
     }
-    </script>
-    <div id="edit_ann_list">
-        <div id="edit_head_text">My reservations</div>
-        <div id="message-container"></div>
-        <div id="show-res-view-container" style="margin-left:20px;"></div>
-        <div class="space_30"></div>
-    </div>
+</script>
+<div id="edit_ann_list" style="overflow-x:hidden; overflow-y:auto; height: 700px; width:1000px;">
+    <div class="my-reservations-header">My reservations</div>
+    <div id="message-container"></div>
+    <div id="show-res-view-container" style="margin-left:20px;"></div>
+    <div class="space_30"></div>
+</div>
 
 
 
