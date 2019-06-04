@@ -5,54 +5,59 @@
 <script type="text/javascript" src="~/js/messageSystem.js"></script>
 <script type="text/javascript" src="~/js/manageConversations.js"></script>
 <script type="text/javascript">
-    window.onload = function(){
+    window.onload = function () {
         handleSearchClicked();
     }
 </script>
 <style>
-    .user-select-box{
+    .user-select-box {
         border: 1px solid black;
-        margin: 3px; 
+        margin: 3px;
         padding: 3px;
     }
-    .user-select-box:hover{
-        background-color: lightgray;
-        cursor: pointer;
-    }
+
+        .user-select-box:hover {
+            background-color: lightgray;
+            cursor: pointer;
+        }
 </style>
 
 
-<h2>ManageConversations</h2>
 
-<div id="global-message-container"></div>
-<table>
-    <tr>
-        <td style="width: 300px;">
-            <div style="margin-top: 42px;">Receivers</div>
-            <div id="receivers-list-container" style="height: 300px; border: 1px solid black; overflow-x: hidden; overflow-y: auto;"></div>
-        </td>
-        <td style="width: 300px;">           
-            <input id="search-query-input-field" type="text" />
-            <br />
-            <button onclick="handleSearchClicked();">Search</button>
-            <div>Receivers browser</div>
-            <div id="users-list-container" style="height: 300px; border: 1px solid black; overflow-x: hidden; overflow-y: auto;"></div>
-        </td>
-    </tr>
-    <tr>
-        <td id="message-creator-container" colspan="2">
-            <label>Conversation title</label>
-            <br />
-            <input id="title-input-field" type="text" size="50" />
-            <br />
-            <label>Message contnet</label>
-            <br />
-            <textarea id="message-textarea" style="resize: none;" rows="6" cols="100" data-valid="false"></textarea>
-            <br />
-            <label>Message read only</label>
-            <input id="readonly-checkbox" type="checkbox" checked>
-            <br />
-            <button onclick="handleSendClicked();">Send</button>
-        </td>
-    </tr>
-</table>
+<div id="edit_ann_create">
+    <div id="edit_head_text" style="margin-top: 20px; margin-bottom: 20px">Create Conversation</div>
+
+    <div id="global-message-container"  class="edit_expl"></div>
+    <table>
+        <tr>
+            <td style="width: 300px;">
+                <div style="margin-top: 42px;" class="edit_expl">Receivers</div>
+                <div id="receivers-list-container" style="height: 300px; border: 1px solid black; overflow-x: hidden; overflow-y: auto;"></div>
+            </td>
+            <td style="width: 300px;">
+                <input id="search-query-input-field" class="create_bar_con2" type="text" />
+                <button class="my_button" id="save_button" onclick="handleSearchClicked();">Search</button>
+                <div style="clear:both;"></div>
+
+                <div class="edit_expl">Receivers browser</div>
+                <div id="users-list-container" style="height: 300px; border: 1px solid black; overflow-x: hidden; overflow-y: auto;"></div>
+            </td>
+        </tr>
+        <tr>
+            <td id="message-creator-container" colspan="2">
+                <label class="edit_expl">Conversation title</label>
+                <br />
+                <input id="title-input-field" type="text" size="50" />
+                <br />
+                <label class="edit_expl">Message contnet</label>
+                <br />
+                <textarea id="message-textarea" style="resize: none;" rows="6" cols="100" data-valid="false"></textarea>
+                <br />
+                <label class="edit_expl">Message read only</label>
+                <input id="readonly-checkbox" type="checkbox" checked>
+                <br />
+                <button class="my_button" id="save_button" onclick="handleSendClicked();">Send</button>
+            </td>
+        </tr>
+    </table>
+</div>

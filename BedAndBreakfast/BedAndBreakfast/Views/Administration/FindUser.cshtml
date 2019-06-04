@@ -5,64 +5,73 @@
     List<FindUserViewModel> users = (List<FindUserViewModel>)ViewData["users"];
 }
 
-<h2>FindUser</h2>
+<div id="edit_ann_div">
+    <div id="edit_head_text" style="margin-top: 20px; margin-bottom: 20px">Find User</div>
 
-<hr />
-<div>
-    <form asp-action="FindUser">
-        <div asp-validation-summary="ModelOnly"></div>
-        <div>
-            <label asp-for="FirstName"></label>
-            <input asp-for="FirstName" />
-            <span asp-validation-for="FirstName"></span>
-        </div>
-        <div>
-            <label asp-for="LastName"></label>
-            <input asp-for="LastName" />
-            <span asp-validation-for="LastName"></span>
-        </div>
-        <div>
-            <label asp-for="UserName"></label>
-            <input asp-for="UserName" />
-            <span asp-validation-for="UserName"></span>
-        </div>
-        <div>
-            <label asp-for="IsLocked"></label>
-            <input asp-for="IsLocked" value="true" />
-        </div>
-        <div>
-            <input type="submit" value="Search" />
-        </div>
-    </form>
-</div>
+    <div>
+        <form asp-action="FindUser">
+            <div asp-validation-summary="ModelOnly"></div>
+            <div>
+                <label asp-for="FirstName" class="edit_box_bar_ed"> </label>
+                <input asp-for="FirstName" class="create_bar_con" />
+                <span asp-validation-for="FirstName" class="create_text_danger"></span>
+                <div style="clear:both;"></div>
+            </div>
+            <div>
+                <label asp-for="LastName" class="edit_box_bar_ed"></label>
+                <input asp-for="LastName" class="create_bar_con" />
+                <span asp-validation-for="LastName" class="create_text_danger"></span>
+                <div style="clear:both;"></div>
+            </div>
+            <div>
+                <label asp-for="UserName" class="edit_box_bar_ed"></label>
+                <input asp-for="UserName" class="create_bar_con" />
+                <span asp-validation-for="UserName" class="create_text_danger"></span>
+                <div style="clear:both;"></div>
+            </div>
+            <div>
+                <div>
+                    
+                    <label asp-for="IsLocked" class="edit_box_bar_ed"></label>
+                </div>
+                    <input asp-for="IsLocked" style=" margin-top: 30px;  margin-left: 12px;" value="true" />
+                    <div style="clear:both;"></div>
+                </div>
+            <div>
+                <input type="submit" value="Search" class="my_button" id="save_button" />
+                <div style="clear:both;"></div>
+            </div>
+        </form>
+    </div>
 
-<div>
-    @if (users.Count() != 0)
-    {
-    <table border="1">
-        <tr>
-            <th><label asp-for="UserName"></label></th>
-            <th><label asp-for="FirstName"></label></th>
-            <th><label asp-for="LastName"></label></th>
-            <th><label asp-for="IsLocked"></label></th>
-            <th></th>
-        </tr>
-        @foreach (FindUserViewModel user in users)
+    <div style="margin-left:20px">
+        @if (users.Count() != 0)
         {
-        <tr>
-            <td>@user.UserName</td>
-            <td>@user.FirstName</td>
-            <td>@user.LastName</td>
-            <td>@user.IsLocked</td>
-            <td><a asp-action="EditUser" asp-route-user="@user.UserName">Edit</a></td>
-        </tr>
+            <table border="1">
+                <tr>
+                    <th><label asp-for="UserName"></label></th>
+                    <th><label asp-for="FirstName"></label></th>
+                    <th><label asp-for="LastName"></label></th>
+                    <th><label asp-for="IsLocked"></label></th>
+                    <th></th>
+                </tr>
+                @foreach (FindUserViewModel user in users)
+                {
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>@user.FirstName</td>
+                        <td>@user.LastName</td>
+                        <td>@user.IsLocked</td>
+                        <td><a asp-action="EditUser" asp-route-user="@user.UserName">Edit</a></td>
+                    </tr>
 
+                }
+            </table>
         }
-    </table>
-    }
-    else
-    {
-        <p>No results</p>
-    }
+        else
+        {
+            <p>No results</p>
+        }
+    </div>
+    <div class="space_30"></div>
 </div>
-
