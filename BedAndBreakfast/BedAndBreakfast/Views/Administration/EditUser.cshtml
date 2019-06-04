@@ -6,49 +6,58 @@
     ViewData["currentUser"] = Model.UserName;
 }
 
-<h2>EditUser</h2>
 
 <h4>@ViewBag.Message</h4>
 
-<div>
-    <div>
-        <label asp-for="UserName"></label>
-        <input asp-for="UserName" readonly />
+<div id="edit_ann_div">
+    <div id="edit_head_text" style="margin-top: 20px; margin-bottom: 20px">Edit user</div>
+    <div class="row">
+
+        <label asp-for="UserName" class="edit_box_bar_ed"></label>
+        <input asp-for="UserName" class="create_bar_con" readonly />
+        <div style="clear:both;"></div>
     </div>
     <div>
-        <label asp-for="FirstName"></label>
-        <input asp-for="FirstName" readonly />
+        <label asp-for="FirstName" class="edit_box_bar_ed"></label>
+        <input asp-for="FirstName" class="create_bar_con" readonly />
+        <div style="clear:both;"></div>
     </div>
     <div>
-        <label asp-for="LastName"></label>
-        <input asp-for="LastName" readonly />
+        <label asp-for="LastName" class="edit_box_bar_ed"></label>
+        <input asp-for="LastName" class="create_bar_con" readonly />
+        <div style="clear:both;"></div>
     </div>
     <div>
-        <label asp-for="Gender"></label>
-        <input asp-for="Gender" readonly />
+        <label asp-for="Gender" class="edit_box_bar_ed"></label>
+        <input asp-for="Gender" class="create_bar_con" readonly />
+        <div style="clear:both;"></div>
     </div>
     <div>
-        <label asp-for="BirthDate"></label>
-        <input asp-for="BirthDate" readonly />
+        <label asp-for="BirthDate" class="edit_box_bar_ed"></label>
+        <input asp-for="BirthDate" class="create_bar_con" readonly />
+        <div style="clear:both;"></div>
     </div>
     <div>
-        <label asp-for="FullAddress"></label>
-        <input asp-for="FullAddress" readonly />
+        <label asp-for="FullAddress" class="edit_box_bar_ed"></label>
+        <input asp-for="FullAddress" class="create_bar_con" readonly />
+        <div style="clear:both;"></div>
     </div>
     <div>
-        <label asp-for="BackupEmail"></label>
-        <input asp-for="BackupEmail" readonly />
+        <label asp-for="BackupEmail" class="edit_box_bar_ed"></label>
+        <input asp-for="BackupEmail" class="create_bar_con" readonly />
+        <div style="clear:both;"></div>
     </div>
     <div>
-        <label asp-for="IsLocked"></label>
-        <input asp-for="IsLocked" disabled />
+        <label asp-for="IsLocked" class="edit_box_bar_ed"></label>
+        <input asp-for="IsLocked" style="margin-top: 30px; margin-left: 12px;" disabled />
+        <div style="clear:both;"></div>
     </div>
-</div>
 
 
-<a asp-action="EditUser" asp-route-user="@Model.UserName" asp-route-option="Username">Change Username</a>
-<a asp-action="EditUser" asp-route-user="@Model.UserName" asp-route-option="Security">Change Password</a>
-<a asp-action="EditUser" asp-route-user="@Model.UserName" asp-route-option="Status">Change Status</a>
+
+<a asp-action="EditUser" class="edit_expl" asp-route-user="@Model.UserName" asp-route-option="Username">Change Username</a>
+<a asp-action="EditUser" class="edit_expl" asp-route-user="@Model.UserName" asp-route-option="Security">Change Password</a>
+<a asp-action="EditUser" class="edit_expl" asp-route-user="@Model.UserName" asp-route-option="Status">Change Status</a>
 
 @if (option == null)
 {
@@ -59,3 +68,4 @@ else
     <partial name="EditOptions/@option" model="new BedAndBreakfast.Models.EditUserViewModel();" view-data="ViewData" />
 }
 
+</div>

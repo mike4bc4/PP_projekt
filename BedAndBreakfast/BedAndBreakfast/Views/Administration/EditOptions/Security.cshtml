@@ -4,21 +4,21 @@
     ViewData["Title"] = "Security";
 }
 
-<h2>Security</h2>
-
 <form asp-action="EditSecurity">
     <input asp-for="UserName" value="@ViewData["currentUser"]" type="hidden" />
     <div>
-        <label asp-for="NewPassword"></label>
-        <input asp-for="NewPassword" />
-        <span asp-validation-for="NewPassword"></span>
+        <label asp-for="NewPassword" class="edit_box_bar_ed"></label>
+        <input asp-for="NewPassword" class="create_bar_con" />
+        <span asp-validation-for="NewPassword" class="create_text_danger"></span>
+        <div style="clear:both;"></div>
     </div>
     <div>
-        <label asp-for="RepeatNewPassword"></label>
-        <input asp-for="RepeatNewPassword" />
-        <span asp-validation-for="RepeatNewPassword"></span>
+        <label asp-for="RepeatNewPassword" class="edit_box_bar_ed"></label>
+        <input asp-for="RepeatNewPassword" class="create_bar_con" />
+        <span asp-validation-for="RepeatNewPassword" class="create_text_danger"></span>
+        <div style="clear:both;"></div>
     </div>
-    <div>
-        <input type="submit" value="Change" />
+    <div class="edit_box_pr">
+        <input type="submit" value="Change" class="my_button" id="save_button" />
     </div>
 </form>

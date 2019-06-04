@@ -3,20 +3,20 @@
 
 @{
     ViewData["Title"] = "Username";
-    
-}
 
-<h2>Username</h2>
+}
 
 <form asp-action="EditUsername">
 
     <input asp-for="UserName" value="@ViewData["currentUser"]" type="hidden" />
 
-    <label asp-for="NewUserName"></label>
-    <input asp-for="NewUserName" />
-    <span asp-validation-for="NewUserName"></span>
+    <label asp-for="NewUserName" class="edit_box_bar_ed"></label>
+    <input asp-for="NewUserName" class="create_bar_con" />
+    <span asp-validation-for="NewUserName" class="create_text_danger"></span>
+    <div style="clear:both;"></div>
 
-    <input type="submit" value="Change"/>
-
+    <div class="edit_box_pr">
+        <input type="submit" value="Change" class="my_button" id="save_button" />
+    </div>
 </form>
 
