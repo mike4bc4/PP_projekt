@@ -62,7 +62,21 @@ namespace BedAndBreakfast.Controllers
 			}
 		}
 
-        public JsonResult ValidCurrentPasswordLenght(string currentPassword) {
+		public JsonResult ValidPasswordLenght(string password)
+		{
+			if (password.Length > IoCContainer.DbSettings.Value.PasswordMaxLength)
+			{
+				return Json(sharedResources["TooLongPass"].ToString());
+			}
+			if (password.Length < IoCContainer.DbSettings.Value.PasswordMinLength)
+			{
+				var asd = sharedResources["TooShort"];
+				return Json(sharedResources["TooShortPass"].ToString());
+			}
+			return Json(true);
+		}
+
+		public JsonResult ValidCurrentPasswordLenght(string currentPassword) {
             if (currentPassword.Length > IoCContainer.DbSettings.Value.PasswordMaxLength) {
                 return Json(sharedResources["TooLongPass"].ToString());
             }
