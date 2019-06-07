@@ -1,0 +1,105 @@
+﻿
+@{
+    //ViewData["Title"] = "EditAnnouncementPartialView";
+}
+
+<div>
+    Select announcement type.
+</div>
+
+<div>
+    <select onchange="handleTypeSelectChange();" id="type-drop-down-list"></select>
+</div>
+<div>
+    <select id="subtype-drop-down-list"></select>
+</div>
+<div id="shared-part-drop-down-list-container">
+    <select id="shared-part-drop-down-list"></select>
+</div>
+
+<div>
+    Select announcement place and activity time range.
+</div>
+
+<div>
+    <table>
+        <tr>
+            <td>Country</td>
+            <td>Region</td>
+            <td>City</td>
+            <td>Street</td>
+            <td>Street number</td>
+        </tr>
+        <tr>
+            <td><input onblur="handleRequiredFieldValidation(this.id);" id="country-input-field" type="text"></td>
+            <td><input onblur="handleRequiredFieldValidation(this.id);" id="region-input-field" type="text"></td>
+            <td><input onblur="handleRequiredFieldValidation(this.id);" id="city-input-field" type="text"></td>
+            <td><input onblur="handleRequiredFieldValidation(this.id);" id="street-input-field" type="text"></td>
+            <td><input onblur="handleRequiredFieldValidation(this.id);" id="street-number-input-field" type="text"></td>
+        </tr>
+        <tr>
+            <td><span id="country-input-field-error" data-valid="false"></span></td>
+            <td><span id="region-input-field-error" data-valid="false"></span></td>
+            <td><span id="city-input-field-error" data-valid="false"></span></td>
+            <td><span id="street-input-field-error" data-valid="false"></span></td>
+            <td><span id="street-number-input-field-error" data-valid="false"></span></td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td>From</td>
+            <td>To</td>
+        </tr>
+        <tr>
+            <td><input onblur="handleDateValidation();" type="date" id="from-date-input-field"></td>
+            <td><input onblur="handleDateValidation();" type="date" id="to-date-input-field"></td>
+        </tr>
+        <tr>
+            <td colspan="2"><span id="date-range-error" data-valid="false"></span></td>
+        </tr>
+    </table>
+
+    <div>
+        Create announcement description and insert images.
+    </div>
+    <div>
+        <button onclick="handleAddImageButton();">Add image slot</button>
+        <div id="image-input-field-container"></div>
+        <span id="image-input-error"></span>
+    </div>
+    <div>
+        <textarea oninput="handleTextAreaValidation(this.id);" rows="10" cols="100" id="description-text-area"></textarea>
+        <span id="description-text-area-counter"></span>
+        <span id="description-text-area-error" data-valid="false"></span>
+    </div>
+</div>
+
+<div>
+    Provide some additional contact info.
+</div>
+
+<div>
+    <button onclick="handleAddContactButton();">Add contact</button>
+    <div id="contact-info-container"></div>
+    <span id="contact-info-error"></span>
+</div>
+
+<div>
+    Provide some additional payment info.
+</div>
+
+<div>
+    <button onclick="handleAddPaymentButton();">Add payment</button>
+    <div id="payment-info-container"></div>
+    <span id="payment-info-error"></span>
+</div>
+
+<div>
+    <button onmouseover="handleSubmitButtonMouseover();" onclick="handleSubmitButtonClick();" id="submit-announcement-button">Create</button>
+    <span id="submit-announcement-button-counter"></span>
+    <span id="submit-announcement-info"></span>
+</div>
+
+
+

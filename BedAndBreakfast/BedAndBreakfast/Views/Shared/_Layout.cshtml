@@ -66,14 +66,14 @@
             @*If user is not an administrator.*@
             @if (!User.IsInRole(Role.Admin))
             {
-                @if (currentUser == null || !currentUser.IsHost)
+                @*@if (currentUser == null || !currentUser.IsHost)
                 {
                     <a id="becomeHostTag" asp-area="" asp-controller="Announcement" class="tilelink" asp-action="EditAnnouncement">Become a Host</a>
                 }
                 else
                 {
                     <a asp-area="" asp-controller="Announcement" class="tilelink" asp-action="ListUserAnnouncements">Manage my announcements</a>
-                }
+                }*@
                 @if (!User.Identity.IsAuthenticated)
                 {
                     <a asp-area="" asp-controller="Account" class="tilelink" asp-action="Login">Log In</a>
@@ -81,6 +81,7 @@
                 }
                 else
                 {
+                    <a asp-controller="Announcement" asp-action="ManageAnnouncements">My announcements</a>
                     <a asp-controller="Announcement" class="tilelink" asp-action="ShowReservations">My reservations</a>
                     <a asp-controller="Message" class="tilelink" asp-action="ShowConversations">My conversations</a>
                     <a asp-area="" asp-controller="Profile" class="tilelink" asp-action="Edit">Profile</a>

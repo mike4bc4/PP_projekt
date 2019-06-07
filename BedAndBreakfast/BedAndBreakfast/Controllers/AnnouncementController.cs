@@ -42,16 +42,16 @@ namespace BedAndBreakfast.Controllers
         /// Checks if caller is able to create announcement and redirects to announcement page.
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = Role.User)]
-        public IActionResult EditAnnouncement(bool newModel = true)
-        {
-            dynamic model = new ExpandoObject();
-            model.newModel = newModel;
-            TempData["newModel"] = newModel;
-            //return View("UnderConstruction");
+        //[Authorize(Roles = Role.User)]
+        //public IActionResult EditAnnouncement(bool newModel = true)
+        //{
+        //    dynamic model = new ExpandoObject();
+        //    model.newModel = newModel;
+        //    TempData["newModel"] = newModel;
+        //    //return View("UnderConstruction");
 
-            return View(model);
-        }
+        //    return View(model);
+        //}
 
 
         /// <summary>
@@ -60,10 +60,10 @@ namespace BedAndBreakfast.Controllers
         /// <param name="partialViewName"></param>
         /// <param name="viewModel"></param>
         /// <returns></returns>
-		public IActionResult GetPartialViewWithData(string partialViewName, EditAnnouncementViewModel viewModel)
-        {
-            return PartialView("PartialViews/" + partialViewName, viewModel);
-        }
+        //public IActionResult GetPartialViewWithData(string partialViewName, EditAnnouncementViewModel viewModel)
+        //      {
+        //          return PartialView("PartialViews/" + partialViewName, viewModel);
+        //      }
 
 
         /// <summary>
@@ -75,98 +75,98 @@ namespace BedAndBreakfast.Controllers
         /// </summary>
         /// <param name="viewModel"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.User)]
-        public async Task<IActionResult> SaveAnnouncement(EditAnnouncementViewModel viewModel)
-        {
-            User currentUser = await userManager.GetUserAsync(HttpContext.User);
-            bool announcementCorrect = AnnouncementServiceLogic.IsAnnouncementViewModelValid(viewModel);
-            if (announcementCorrect)
-            {
-                viewModel.IsCorrect = true;
-                bool newModel = (bool)TempData["newModel"];
-                await AnnouncementServiceLogic.SaveAnnouncementToDatabase(viewModel, context, currentUser, newModel);
-                // Change user role to host if it's his first announcement.
-                if (!currentUser.IsHost)
-                {
-                    await AnnouncementServiceLogic.MakeUserHost(currentUser, context);
-                }
-            }
+        //[Authorize(Roles = Role.User)]
+        //public async Task<IActionResult> SaveAnnouncement(EditAnnouncementViewModel viewModel)
+        //{
+        //    User currentUser = await userManager.GetUserAsync(HttpContext.User);
+        //    bool announcementCorrect = AnnouncementServiceLogic.IsAnnouncementViewModelValid(viewModel);
+        //    if (announcementCorrect)
+        //    {
+        //        viewModel.IsCorrect = true;
+        //        bool newModel = (bool)TempData["newModel"];
+        //        await AnnouncementServiceLogic.SaveAnnouncementToDatabase(viewModel, context, currentUser, newModel);
+        //        // Change user role to host if it's his first announcement.
+        //        if (!currentUser.IsHost)
+        //        {
+        //            await AnnouncementServiceLogic.MakeUserHost(currentUser, context);
+        //        }
+        //    }
 
-            return Json(new { page = ControllerExtensions.ParseViewToStringAsync(this, viewModel, "PartialViews/SaveAnnouncement", true).Result, announcementCorrect });
-        }
-
-
-        [Authorize(Roles = Role.User)]
-        public async Task<IActionResult> ListUserAnnouncements(string sortingMethod, string queryString)
-        {
-
-            User currentUser = await userManager.GetUserAsync(HttpContext.User);
-            // Get only these announcements which were not removed by user.
-            List<Announcement> usersAnnouncements = context.Announcements
-                .Include(a => a.Address)
-                .Where(a => a.User == currentUser)
-                .Where(a => a.Removed == false)
-                .ToList();
-
-            List<EditAnnouncementViewModel> viewModel = AnnouncementServiceLogic.ParseAnnouncementsToViewModelList(usersAnnouncements, context);
-
-            dynamic model = new ExpandoObject();
-            model.announcements = viewModel;
-
-            return View(model);
-        }
-
-        public IActionResult GetAnnouncementOwnerInfo(int announcementID)
-        {
-            Announcement announcement = context.Announcements.Include(a => a.User).Include(a => a.User.Profile).Where(a => a.ID == announcementID).SingleOrDefault();
-            if (announcement == null)
-            {
-                return Json(null);
-            }
-            var userData = new
-            {
-                userName = announcement.User.UserName,
-                firstName = announcement.User.Profile.FirstName,
-                lastName = announcement.User.Profile.LastName
-            };
-            return Json(userData);
-        }
+        //    return Json(new { page = ControllerExtensions.ParseViewToStringAsync(this, viewModel, "PartialViews/SaveAnnouncement", true).Result, announcementCorrect });
+        //}
 
 
-        [Authorize(Roles = Role.User)]
-        public async Task<IActionResult> ChangeAnnouncementsStatus(List<int> announcementsIDs, bool? areActive)
-        {
-            List<Announcement> announcements = (from a in context.Announcements
-                                                where announcementsIDs.Contains(a.ID)
-                                                select a).ToList();
-            foreach (Announcement announcement in announcements)
-            {
-                if (areActive != null)
-                    announcement.IsActive = (bool)areActive;
-                else
-                    announcement.Removed = true;
-            }
-            await context.SaveChangesAsync();
-            return Json(true);
-        }
+        //[Authorize(Roles = Role.User)]
+        //public async Task<IActionResult> ListUserAnnouncements(string sortingMethod, string queryString)
+        //{
 
-        public IActionResult Browse(string annBrowserQuery)
-        {
-            dynamic model = new ExpandoObject();
-            // Find only these announcements which fit in active time range,
-            // were not deactivated or removed by owner and parse them to view model.
-            List<EditAnnouncementViewModel> viewModel = AnnouncementServiceLogic
-                .ParseAnnouncementsToViewModelList(SearchEngine.FindAnnoucements(annBrowserQuery, context), context)
-                .Where(vm => (DateTime.Compare(vm.From, DateTime.Today) <= 0))
-                .Where(vm => (DateTime.Compare(vm.To, DateTime.Today) >= 0))
-                .Where(vm => vm.IsActive == true)
-                .Where(vm => vm.Removed == false).ToList();
+        //    User currentUser = await userManager.GetUserAsync(HttpContext.User);
+        //    // Get only these announcements which were not removed by user.
+        //    List<Announcement> usersAnnouncements = context.Announcements
+        //        .Include(a => a.Address)
+        //        .Where(a => a.User == currentUser)
+        //        .Where(a => a.Removed == false)
+        //        .ToList();
 
-            model.announcements = viewModel;
-            model.query = annBrowserQuery;
+        //    List<EditAnnouncementViewModel> viewModel = AnnouncementServiceLogic.ParseAnnouncementsToViewModelList(usersAnnouncements, context);
 
-            return View(model);
-        }
+        //    dynamic model = new ExpandoObject();
+        //    model.announcements = viewModel;
+
+        //    return View(model);
+        //}
+
+        //public IActionResult GetAnnouncementOwnerInfo(int announcementID)
+        //{
+        //    Announcement announcement = context.Announcements.Include(a => a.User).Include(a => a.User.Profile).Where(a => a.ID == announcementID).SingleOrDefault();
+        //    if (announcement == null)
+        //    {
+        //        return Json(null);
+        //    }
+        //    var userData = new
+        //    {
+        //        userName = announcement.User.UserName,
+        //        firstName = announcement.User.Profile.FirstName,
+        //        lastName = announcement.User.Profile.LastName
+        //    };
+        //    return Json(userData);
+        //}
+
+
+        //[Authorize(Roles = Role.User)]
+        //public async Task<IActionResult> ChangeAnnouncementsStatus(List<int> announcementsIDs, bool? areActive)
+        //{
+        //    List<Announcement> announcements = (from a in context.Announcements
+        //                                        where announcementsIDs.Contains(a.ID)
+        //                                        select a).ToList();
+        //    foreach (Announcement announcement in announcements)
+        //    {
+        //        if (areActive != null)
+        //            announcement.IsActive = (bool)areActive;
+        //        else
+        //            announcement.Removed = true;
+        //    }
+        //    await context.SaveChangesAsync();
+        //    return Json(true);
+        //}
+
+        //public IActionResult Browse(string annBrowserQuery)
+        //{
+        //    dynamic model = new ExpandoObject();
+        //    // Find only these announcements which fit in active time range,
+        //    // were not deactivated or removed by owner and parse them to view model.
+        //    List<EditAnnouncementViewModel> viewModel = AnnouncementServiceLogic
+        //        .ParseAnnouncementsToViewModelList(SearchEngine.FindAnnoucements(annBrowserQuery, context), context)
+        //        .Where(vm => (DateTime.Compare(vm.From, DateTime.Today) <= 0))
+        //        .Where(vm => (DateTime.Compare(vm.To, DateTime.Today) >= 0))
+        //        .Where(vm => vm.IsActive == true)
+        //        .Where(vm => vm.Removed == false).ToList();
+
+        //    model.announcements = viewModel;
+        //    model.query = annBrowserQuery;
+
+        //    return View(model);
+        //}
 
         /// <summary>
         /// Allows to retrieve list of numbers that represent amount of reservations per day or per schedule item.
@@ -403,7 +403,8 @@ namespace BedAndBreakfast.Controllers
             {
                 scheduleItemsIDs = null;
             }
-            else {
+            else
+            {
                 scheduleItemsIDs = scheduleItemsIDs.Distinct().ToList();
             }
             await context.AddRangeAsync(reservationsToAdd);
@@ -553,9 +554,11 @@ namespace BedAndBreakfast.Controllers
         /// <param name="announcementID"></param>
         /// <returns></returns>
         [Authorize(Roles = Role.User + "," + Role.Admin)]
-        public async Task<IActionResult> GetAnnouncementOwnerUserName(int announcementID) {
-            User announcementOwner = await context.Announcements.Where(a => a.ID == announcementID).Select(a=>a.User).SingleOrDefaultAsync();
-            if (announcementOwner == null) {
+        public async Task<IActionResult> GetAnnouncementOwnerUserName(int announcementID)
+        {
+            User announcementOwner = await context.Announcements.Where(a => a.ID == announcementID).Select(a => a.User).SingleOrDefaultAsync();
+            if (announcementOwner == null)
+            {
                 return Json(null);
             }
             return Json(announcementOwner.UserName);
@@ -569,14 +572,17 @@ namespace BedAndBreakfast.Controllers
         /// <param name="scheduleItemID"></param>
         /// <returns></returns>
         [Authorize(Roles = Role.User + "," + Role.Admin)]
-        public async Task<IActionResult> GetScheduleItem(int? scheduleItemID) {
-            if (scheduleItemID == null) {
+        public async Task<IActionResult> GetScheduleItem(int? scheduleItemID)
+        {
+            if (scheduleItemID == null)
+            {
                 return Json(null);
             }
             ScheduleItem scheduleItem = await context.ScheduleItems
                 .Where(si => si.ScheduleItemID == scheduleItemID)
                 .SingleOrDefaultAsync();
-            if (scheduleItem == null) {
+            if (scheduleItem == null)
+            {
                 return Json(null);
             }
             ScheduleItemViewModel scheduleItemViewModel = new ScheduleItemViewModel()
@@ -588,5 +594,104 @@ namespace BedAndBreakfast.Controllers
             return Json(scheduleItemViewModel);
         }
 
+        /// <summary>
+        /// Redirects to announcement manager view.
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = Role.User)]
+        public IActionResult ManageAnnouncements()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = Role.User)]
+        public async Task<IActionResult> GetCurrentUserAnnouncements()
+        {
+            User currentUser = await userManager.GetUserAsync(HttpContext.User);
+            if (currentUser == null)
+            {
+                return Json(null);
+            }
+            List<Announcement> usersAnnouncements = await context.Announcements
+                .Include(a => a.Address)
+                .Where(a => a.Removed == false)
+                .Where(a => a.User == currentUser).ToListAsync();
+            if (usersAnnouncements.Count() == 0)
+            {
+                return Json(0);
+            }
+            List<AnnouncementViewModel> announcementViewModels = new List<AnnouncementViewModel>();
+            foreach (Announcement announcement in usersAnnouncements)
+            {
+                if (announcement.From.Date > DateTime.Today.Date || announcement.To.Date < DateTime.Today.Date)
+                {
+                    announcement.IsActive = false;
+                }
+                announcementViewModels.Add(new AnnouncementViewModel()
+                {
+                    AnnouncementID = announcement.ID,
+                    City = announcement.Address.City,
+                    Country = announcement.Address.Country,
+                    From = announcement.From,
+                    IsActive = announcement.IsActive,
+                    IsRemoved = announcement.Removed,
+                    Region = announcement.Address.Region,
+                    SharedPart = announcement.SharedPart,
+                    Street = announcement.Address.Street,
+                    StreetNumber = announcement.Address.StreetNumber,
+                    Subtype = announcement.Subtype,
+                    To = announcement.To,
+                    Type = announcement.Type,
+                });
+            }
+            await context.SaveChangesAsync();
+            return Json(announcementViewModels);
+        }
+
+        [Authorize(Roles = Role.User)]
+        public async Task<IActionResult> RemoveAnnouncements(List<int> announcementIDs)
+        {
+            if (announcementIDs.Count() == 0)
+            {
+                return Json(0);
+            }
+            List<Announcement> announcements = await context.Announcements.Where(a => announcementIDs.Contains(a.ID)).ToListAsync();
+            foreach (Announcement announcement in announcements)
+            {
+                announcement.Removed = true;
+                announcement.IsActive = false;
+            }
+            int result = await context.SaveChangesAsync();
+            return Json(result);
+        }
+
+        [Authorize(Roles = Role.User)]
+        public async Task<IActionResult> ChangeAnnouncementsStatus(List<int> announcementIDs)
+        {
+            bool error = false;
+            if (announcementIDs.Count() == 0)
+            {
+                return Json(new { result = 0 });
+            }
+            List<Announcement> announcements = await context.Announcements.Where(a => announcementIDs.Contains(a.ID)).ToListAsync();
+            foreach (Announcement announcement in announcements)
+            {
+                // Activate only these announcements that may be activated.
+                if (announcement.IsActive == true || (announcement.From.Date < DateTime.Today.Date && announcement.To.Date > DateTime.Today.Date))
+                {
+                    announcement.IsActive = !announcement.IsActive;
+                }
+                else {
+                    error = true;
+                }
+            }
+            int result = await context.SaveChangesAsync();
+            return Json(new { result, error });
+        }
+
+        [Authorize(Roles = Role.User)]
+        public IActionResult EditAnnouncement() {
+            return PartialView("EditAnnouncementPartialView");
+        }
     }
 }

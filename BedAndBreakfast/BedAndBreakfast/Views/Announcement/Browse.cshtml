@@ -2,7 +2,7 @@
 @using BedAndBreakfast.Data;
 @{
     ViewData["Title"] = "BrowseAnnouncements";
-    List<EditAnnouncementViewModel> announcements = Model.announcements;
+    //List<EditAnnouncementViewModel> announcements = Model.announcements;
     string query = Model.query;
 
     List<string> announcementTypes = Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementType)).ToList();
@@ -51,7 +51,7 @@
         return @Html.Raw(Json.Serialize(timetableOptions));
     }
     function getAnnouncements() {
-        return @Html.Raw(Json.Serialize(announcements));
+
     }
     function getQuery() {
         return @Html.Raw(Json.Serialize(query));

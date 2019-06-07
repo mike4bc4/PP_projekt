@@ -3,7 +3,7 @@
 
 @{
     ViewData["Title"] = "ListUserAnnouncements";
-    List<EditAnnouncementViewModel> usersAnnouncements = Model.announcements;
+    //List<EditAnnouncementViewModel> usersAnnouncements = Model.announcements;
     List<string> types = Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementType)).ToList();
     List<string> houseSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.HouseSubtype)).ToList();
     List<string> houseSharedParts = Enum.GetNames(typeof(EnumeratedDbValues.HouseSharedPart)).ToList();
@@ -17,7 +17,7 @@
 
     window.onload = function () {
         setAnnouncementSearchField();
-        sessionStorage.setItem('userAnnouncements', JSON.stringify(@Html.Raw(Json.Serialize(usersAnnouncements))));
+        @*sessionStorage.setItem('userAnnouncements', JSON.stringify(@Html.Raw(Json.Serialize(usersAnnouncements))));*@
         redraw();
     };
 

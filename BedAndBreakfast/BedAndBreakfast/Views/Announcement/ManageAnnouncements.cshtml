@@ -1,0 +1,51 @@
+﻿
+@using BedAndBreakfast.Data;
+@{
+    ViewData["Title"] = "ManageAnnouncements";
+    List<string> announcementTypes = Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementType)).ToList();
+    List<string> houseSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.HouseSubtype)).ToList();
+    List<string> entertainmentSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.EntertainmentSubtype)).ToList();
+    List<string> foodSubtype = Enum.GetNames(typeof(EnumeratedDbValues.FoodSubtype)).ToList();
+    List<string> sharedParts = Enum.GetNames(typeof(EnumeratedDbValues.HouseSharedPart)).ToList();
+    List<string> contactMethods = Enum.GetNames(typeof(EnumeratedDbValues.ContactType)).ToList();
+    List<string> paymentMethods = Enum.GetNames(typeof(EnumeratedDbValues.PaymentMethod)).ToList();
+}
+
+<h2>ManageAnnouncements</h2>
+
+<script type="text/javascript" src="~/js/manageAnnouncements.js"></script>
+<script type="text/javascript" src="~/js/editAnnouncementPartialView.js"></script>
+<script type="text/javascript">
+    window.onload = function () {
+        handleMyAnnouncementsButton();
+    }
+    function getAnnouncementTypes() {
+        return @Html.Raw(Json.Serialize(announcementTypes));
+    }
+    function getHouseSubtypes() {
+        return @Html.Raw(Json.Serialize(houseSubtypes));
+    }
+    function getEntertainmentSubtypes() {
+        return @Html.Raw(Json.Serialize(entertainmentSubtypes));
+    }
+    function getFoodSubtypes() {
+        return @Html.Raw(Json.Serialize(foodSubtype));
+    }
+    function getSharedParts() {
+        return @Html.Raw(Json.Serialize(sharedParts));
+    }
+    function getContactMethods() {
+        return @Html.Raw(Json.Serialize(contactMethods));
+    }
+    function getPaymentMethods() {
+        return @Html.Raw(Json.Serialize(paymentMethods));
+    }
+</script>
+
+<div id="option-header">
+    <button onclick="handleMyAnnouncementsButton();">My announcements</button>
+    <button onclick="handleCreateAnnouncementButton();">Create announcement</button>
+    <span id="additional-options"></span>
+</div>
+<div id="message-container"></div>
+<div id="manage-announcements-view-container"></div>
