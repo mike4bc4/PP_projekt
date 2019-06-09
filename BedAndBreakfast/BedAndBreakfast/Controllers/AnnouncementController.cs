@@ -642,6 +642,7 @@ namespace BedAndBreakfast.Controllers
                     Subtype = announcement.Subtype,
                     To = announcement.To,
                     Type = announcement.Type,
+                    Timetable = announcement.Timetable,
                 });
             }
             await context.SaveChangesAsync();
@@ -704,6 +705,24 @@ namespace BedAndBreakfast.Controllers
                 .DeserializeObject<SaveAnnouncementViewModel>(announcement);
 
             return Json(null);
+        }
+
+        /// <summary>
+        /// Allows to load proper partial view into announcement manager.
+        /// Loaded view depends on timetable option.
+        /// </summary>
+        /// <param name="timetableOption"></param>
+        /// <returns></returns>
+        [Authorize(Roles = Role.User)]
+        public IActionResult LoadTimetable(int timetableOption) {
+            switch (timetableOption) {
+                case 1:
+                    return PartialView("DailyTimetablePartialView");
+                case 2:
+                    return PartialView("HourlyTimetablePartialView");
+                default:
+                    return Json(null);
+            }
         }
     }
 }

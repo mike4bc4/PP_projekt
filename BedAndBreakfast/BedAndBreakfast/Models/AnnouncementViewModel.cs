@@ -20,5 +20,6 @@ namespace BedAndBreakfast.Models
         public DateTime To { get; set; }
         public bool IsActive { get; set; }
         public bool IsRemoved { get; set; }
+        public int Timetable { get; set; }
     }
 }

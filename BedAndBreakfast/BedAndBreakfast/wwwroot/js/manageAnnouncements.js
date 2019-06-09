@@ -158,8 +158,58 @@ function handleSelectAnnouncementCheckbox() {
     }
 }
 
-function handleTimetableButton(announcementID) {
+/**
+ * Loads timetable partial view and starts its initialization.
+ */
+function handleTimetableButton(announcementID, timetableOption) {
 
+    /**
+     * Calls controller action request to acquire proper timetable partial view.
+     */
+    function loadTimetablePartialView(context, requestSynchronizer) {
+        $.ajax({
+            url: "/Announcement/LoadTimetable",
+            data: { timetableOption: context.timetableOption },
+            dataType: "html",
+            method: "post",
+            success: function (response) {
+                context.timetablePartialView = response;
+                requestSynchronizer.generator.next();
+            }
+        });
+    }
+
+    /**
+     * Starts proper partial view initialization, based on timetable option.
+     */
+    function startPartialViewInit() {
+        if (timetableOption == 1) {
+            dailyTimetableInit(announcementID);
+        }
+        else if (timetableOption == 2) {
+            hourlyTimetableInit(announcementID);
+        }
+    }
+
+    if (timetableOption == 0) {
+        // Timetable is off for this announcement, display simple message.
+        setGlobalMessage(5);
+        return;
+    }
+    else {
+        var partialViewContainer = document.getElementById("manage-announcements-view-container");
+        var context = {};
+        context.timetableOption = timetableOption;
+        requestSynchronizer = new RequestSynchronizer();
+        requestSynchronizer.requestQueue = [
+            function () { loadTimetablePartialView(context, requestSynchronizer) },
+            function () {
+                partialViewContainer.innerHTML = context.timetablePartialView;
+                startPartialViewInit();
+            },
+        ];
+        requestSynchronizer.run();
+    }
 }
 
 function hideAdditionalButtons() {
@@ -203,7 +253,7 @@ function drawUserAnnouncements(userAnnouncements) {
             "+ announcement.street + " " + announcement.streetNumber + "</td>\
         <td>"+ announcementActiveToString(announcement.isActive) + "</td>\
         <td><button onclick='handleAnnouncementEditButton("+ announcement.announcementID + ");'>Edit</button></td>\
-        <td><button onclick='handleTimetableButton("+ announcement.announcementID + ");'>Timetable</button></td>\
+        <td><button onclick='handleTimetableButton("+ announcement.announcementID + "," + announcement.timetable + ");'>Timetable</button></td>\
         </tr>";
     }
 }
@@ -266,6 +316,9 @@ function setGlobalMessage(messageCode) {
             break;
         case 4:
             container.innerHTML = "Announcement successfully created.";
+            break;
+        case 5:
+            container.innerHTML = "This announcement does not have timetable. Use edit button to add it.";
             break;
         default:
             break;
