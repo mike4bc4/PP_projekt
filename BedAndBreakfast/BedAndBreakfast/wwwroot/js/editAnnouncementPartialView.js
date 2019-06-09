@@ -1,316 +1,494 @@
 ﻿
 function handlePartialViewInitialLoad(initMode) {
-    drawTypeDropDownList();
-    drawSubtypeAndSharedPartDropDownList();
-    drawImageInput();
-    drawInput("contact");
-    drawInput("payment");
-    drawSubmitButtonValue(initMode);
+    handleTypeVisibility();
+    handleTimetableVisibility();
 }
 
-function handleTypeSelectChange() {
-    drawSubtypeAndSharedPartDropDownList();
-}
-
-function handleRequiredFieldValidation(itemID) {
-    var item = document.getElementById(itemID);
-    var errorField = document.getElementById(itemID + "-error");
-    if (item.value == "") {
-        errorField.innerText = "This field is required."
-        errorField.setAttribute("data-valid", "false");
-        return false;
+/**
+ * Handles timetable validation. While timetable option is equal 0
+ * then no validation is performed. While timetable option is equal 1 
+ * only reservations amount is validated (number larger than 0 smaller
+ * than 1001). While timetable option is equal to 2 every schedule item
+ * is validated (data presence, proper time range, proper reservations
+ * amount, non colliding time ranges). If validation fails, null is returned,
+ * otherwise object {timetable, perDayReservations, scheduleItems} is
+ * returned.
+ */
+function handleTimetableValidation() {
+    /**
+     * Returns false if from1-to1 time range collides with
+     * from2-to2 time range.
+     */
+    function timeRangeValidation(from1, to1, from2, to2) {
+        // No schedule item may start or end at the same time.
+        if (from1.getTime() == from2.getTime() || to1.getTime() == to2.getTime()) {
+            return false;
+        }
+        // No schedule item may start inside other schedule item time range.
+        if (from1.getTime() > from2.getTime() && from1.getTime() < to2.getTime()) {
+            return false;
+        }
+        // No schedule item may end inside other schedule item time range.
+        if (to1.getTime() < to2.getTime() && to1.getTime() > from2.getTime()) {
+            return false;
+        }
+        // Check opposite case.
+        // No schedule item may start inside other schedule item time range.
+        if (from2.getTime() > from1.getTime() && from2.getTime() < to1.getTime()) {
+            return false;
+        }
+        // No schedule item may end inside other schedule item time range.
+        if (to2.getTime() < to1.getTime() && to2.getTime() > from1.getTime()) {
+            return false;
+        }
+        return true;
     }
-    errorField.innerText = "";
-    errorField.setAttribute("data-valid", "true");
-    return true;
+
+    var timetableOptionsNode = document.getElementById("timetable-drop-down-list");
+    var perDayTimetableContainer = document.getElementById("per-day-timetable-container");
+    var perHourTimetableContainer = document.getElementById("per-hour-timetable-container");
+    var errorSpan = document.getElementById("timetable-error-span");
+    var timetable = {};
+
+    switch (parseInt(timetableOptionsNode.value)) {
+        case 0:     // Timetable off
+            timetable.timetable = 0;
+            timetable.perDayReservations = null;
+            timetable.scheduleItems = null;
+            errorSpan.setAttribute("data-valid", "true");
+            errorSpan.innerText = "";
+            return timetable;
+        case 1:     // Timetable per day
+            var inputs = perDayTimetableContainer.getElementsByTagName("input");
+            var perDayReservations = parseInt(inputs[0].value);
+            if (isNaN(perDayReservations) ||    // Amount of reservations cannot be text value.
+                perDayReservations < 1 ||       // Amount of reservations must be larger than 0.
+                perDayReservations > 1000) {    // Amount of reservations must be smaller than 1000.
+                errorSpan.setAttribute("data-valid", "false");
+                errorSpan.innerText = "Amount of reservations is invalid.";
+                return null;
+            }
+            errorSpan.setAttribute("data-valid", "true");
+            errorSpan.innerText = "";
+            timetable.timetable = 1;
+            timetable.perDayReservations = perDayReservations;
+            timetable.scheduleItems = null;
+            return timetable;
+        case 2:     // Timetable per hour.
+            var outputScheduleItems = [];
+            var scheduleItems = perHourTimetableContainer.children;
+            // There must be at least two schedule items (one of them is empty).
+            if (scheduleItems.length == 1) {
+                errorSpan.setAttribute("data-valid", "false");
+                errorSpan.innerText = "Please add at least one schedule item.";
+                return null;
+            }
+            // Validate reservations amount.
+            // Break loop if at least one reservations amount is invalid.
+            for (var i = 0; i < scheduleItems.length; i++) {
+                var inputs = scheduleItems[i].getElementsByTagName("input");
+                // Skip this item if its empty.
+                if (inputs[0].value == "" &&
+                    inputs[1].value == "" &&
+                    inputs[2].value.trim() == "") {
+                    continue;
+                }
+                var reservations = parseInt(inputs[2].value);
+                if (isNaN(reservations) ||          // Amount of reservations cannot be text value.
+                    reservations < 1 ||             // Amount of reservations must be larger than 0.
+                    reservations > 1000) {          // Amount of reservations must be smaller than 1000.
+                    errorSpan.setAttribute("data-valid", "false");
+                    errorSpan.innerText = "Schedule item number " + (i + 1) + " has invalid amount of reservations.";
+                    return null;
+                }
+                outputScheduleItems.push({ from: null, to: null, maxReservations: reservations });
+            }
+            // Validate time ranges empty.
+            // Break loop if at least one time range is empty.
+            for (var i = 0; i < scheduleItems.length; i++) {
+                var inputs = scheduleItems[i].getElementsByTagName("input");
+                // Skip this item if its empty.
+                if (inputs[0].value == "" &&
+                    inputs[1].value == "" &&
+                    inputs[2].value.trim() == "") {
+                    continue;
+                }
+                var from = inputs[0].value;
+                var to = inputs[1].value;
+                // Check time range only if reservations amount is not empty.
+                if (from == "" || to == "") {
+                    errorSpan.setAttribute("data-valid", "false");
+                    errorSpan.innerText = "Schedule item number " + (i + 1) + " has empty time range.";
+                    return null;
+                }
+            }
+            // Validate single time range
+            // Break loop if at least one time range is invalid.
+            for (var i = 0; i < scheduleItems.length; i++) {
+                var inputs = scheduleItems[i].getElementsByTagName("input");
+                // Skip this item if its empty.
+                if (inputs[0].value == "" &&
+                    inputs[1].value == "" &&
+                    inputs[2].value.trim() == "") {
+                    continue;
+                }
+                var from = new Date("January 01, 2000 " + inputs[0].value);
+                var to = new Date("January 01, 2000 " + inputs[1].value);
+                if (from.getTime() >= to.getTime()) {
+                    errorSpan.setAttribute("data-valid", "false");
+                    errorSpan.innerText = "Schedule item number " + (i + 1) + " have invalid time range.";
+                    return null;
+                }
+            }
+
+            // Validate time collisions.
+            // Break loop if at least one time collision occurs.
+            for (var i = 0; i < scheduleItems.length; i++) {
+                var inputs = scheduleItems[i].getElementsByTagName("input");
+                // Skip this item if its empty.
+                if (inputs[0].value == "" &&
+                    inputs[1].value == "" &&
+                    inputs[2].value.trim() == "") {
+                    continue;
+                }
+                var from1 = new Date("January 01, 2000 " + inputs[0].value);
+                var to1 = new Date("January 01, 2000 " + inputs[1].value);
+                for (var j = 0; j < scheduleItems.length; j++) {
+                    // Check collision for different schedule items.
+                    if (i != j) {
+                        var inputs2 = scheduleItems[j].getElementsByTagName("input");
+                        // Skip this item if its empty.
+                        if (inputs2[0].value == "" &&
+                            inputs2[1].value == "" &&
+                            inputs2[2].value.trim() == "") {
+                            continue;
+                        }
+                        var from2 = new Date("January 01, 2000 " + inputs2[0].value);
+                        var to2 = new Date("January 01, 2000 " + inputs2[1].value);
+                        if (timeRangeValidation(from1, to1, from2, to2) == false) {
+                            errorSpan.setAttribute("data-valid", "false");
+                            errorSpan.innerText = "Schedule item number " + (i + 1) + " and " + (j + 1) + " have colliding time range.";
+                            return null;
+                        }
+                    }
+                }
+                outputScheduleItems[i].from = from1.getHours();
+                outputScheduleItems[i].to = to1.getHours();
+                if (outputScheduleItems[i].to == 0) {
+                    outputScheduleItems[i].to = 24;
+                }
+            }
+            // Everything is correct.
+            errorSpan.setAttribute("data-valid", "true");
+            errorSpan.innerText = "";
+            timetable.timetable = 2;
+            timetable.perDayReservations = null;
+            timetable.scheduleItems = outputScheduleItems;
+            return timetable;
+    }
 }
 
-function handleDateValidation() {
+/**
+ * Handles payments validation. At least one field with value
+ * is required. If just single field is detected null is returned 
+ * and proper message is printed, otherwise array of objects {type,value}
+ * containing payments methods is returned.
+ */
+function handlePaymentInfoValidation() {
+    var container = document.getElementById("payments-container");
+    var errorSpan = document.getElementById("payments-error-span");
+    var inputFields = container.getElementsByTagName("input");
+    var selectFields = container.getElementsByTagName("select");
+    var paymentMethods = [];
+
+    // Single input field.
+    if (inputFields.length == 1) {
+        errorSpan.setAttribute("data-valid", "false");
+        errorSpan.innerText = "Please insert at least one payment method.";
+        return null;
+    }
+
+    // Collect data.
+    for (var i = 0; i < inputFields.length; i++) {
+        if (inputFields[i].value.trim() != "") {
+            paymentMethods.push({ type: parseInt(selectFields[i].value), value: inputFields[i].value });
+        }
+    }
+
+    errorSpan.setAttribute("data-valid", "true");
+    errorSpan.innerText = "";
+    return paymentMethods;
+}
+
+/**
+ * Handles contacts validation. At least one field with value
+ * is required. If just single field is detected null is returned 
+ * and proper message is printed, otherwise array of objects {type,value}
+ * containing contact methods is returned.
+ */
+function handleContactInfoValidation() {
+    var container = document.getElementById("contacts-container");
+    var errorSpan = document.getElementById("contacts-error-span");
+    var inputFields = container.getElementsByTagName("input");
+    var selectFields = container.getElementsByTagName("select");
+    var contactMethods = [];
+
+    // Single input field.
+    if (inputFields.length == 1) {
+        errorSpan.setAttribute("data-valid", "false");
+        errorSpan.innerText = "Please insert at least one contact.";
+        return null;
+    }
+
+    // Collect data.
+    for (var i = 0; i < inputFields.length; i++) {
+        if (inputFields[i].value.trim() != "") {
+            contactMethods.push({ type: parseInt(selectFields[i].value), value: inputFields[i].value });
+        }
+    }
+
+    errorSpan.setAttribute("data-valid", "true");
+    errorSpan.innerText = "";
+    return contactMethods;
+}
+
+/**
+ * Handles description validation, also updates character counter.
+ * If text length is too large or equal zero, null is returned and
+ * proper message printed, otherwise function returns textarea value.
+ */
+function handleTextareaValidation() {
+    var textarea = document.getElementById("description-text-area");
+    var textMaxLength = 8192;
+    var text = textarea.value.trim();
+    var errorSpan = document.getElementById("text-area-counter-span");
+    var counterSpan = document.getElementById("text-area-error-span");
+
+    // Update counter.
+    counterSpan.innerText = "Characters: " + text.length + "/" + textMaxLength;
+
+    // Validate.
+    if (text == "") {
+        errorSpan.innerText = "Description cannot be empty.";
+        errorSpan.setAttribute("data-valid", "false");
+        return null;
+    }
+    if (text.length > textMaxLength) {
+        errorSpan.innerText = "Description is too long.";
+        errorSpan.setAttribute("data-valid", "false");
+        return null;
+    }
+    errorSpan.innerText = "";
+    errorSpan.setAttribute("data-valid", "true");
+    return text;
+
+}
+
+/**
+ * Handles date range validation. If one of fields is empty or
+ * date range is invalid (to before from, to before or equal today,
+ * from before 01-01-2000) returns null and proper message. If
+ * everything is correct, returns array with two Date() objects (from and to).
+ */
+function handleDateRangeValidation() {
+    var container = document.getElementById("date-range-input-row");
+    var errorSpan = document.getElementById("date-error-span");
+    var dateRange = [];
+    var inputFields = container.getElementsByTagName("input");
+    var anyFieldEmpty = false;
+    for (var i = 0; i < inputFields.length; i++) {
+        if (inputFields[i].value.trim() == "") {
+            anyFieldEmpty = true;
+            break;
+        }
+        else {
+            dateRange.push(inputFields[i].value);
+        }
+    }
+    // Required field validation.
+    if (anyFieldEmpty) {
+        errorSpan.setAttribute("data-valid", "false");
+        errorSpan.innerText = "One of required fields is empty.";
+        return null;
+    }
+    // Proper data range validation.
+    var fromDate = new Date(dateRange[0]);
+    var toDate = new Date(dateRange[1]);
     var today = new Date();
+    fromDate.setHours(0, 0, 0, 0);
+    toDate.setHours(0, 0, 0, 0);
     today.setHours(0, 0, 0, 0);
-    var from = document.getElementById("from-date-input-field");
-    var to = document.getElementById("to-date-input-field");
-    var errorField = document.getElementById("date-range-error");
-    if (from < (new Date("01-01-1900")) || today > (new Date(to.value)) || (new Date(to.value)) < (new Date(from.value))) {
-        errorField.innerText = "Invalid date range.";
-        errorField.setAttribute("data-valid", "false");
-        return false;
+    if (fromDate.getTime() > toDate.getTime() ||                    // From cannot be after to.
+        toDate.getTime() <= today.getTime() ||                      // To cannot be today or before.
+        fromDate.getTime() < (new Date("01-01-2000")).getTime()     // From cannot be before 01-01-2000
+    ) {
+        errorSpan.setAttribute("data-valid", "false");
+        errorSpan.innerText = "Invalid date range.";
+        return null;
     }
-    errorField.innerText = "";
-    errorField.setAttribute("data-valid", "true");
-    return true;
+    errorSpan.setAttribute("data-valid", "false");
+    errorSpan.innerText = "";
+    return [fromDate, toDate];
 }
 
-function handleInputRemoval(inputID) {
-    var input = document.getElementById(inputID);
-    var divElement = input.parentNode;
-    divElement.parentNode.removeChild(divElement);
-}
-
-function handleAddImageButton() {
-    drawImageInput();
-}
-
-function handleAddContactButton() {
-    drawInput("contact");
-}
-
-function handleAddPaymentButton() {
-    drawInput("payment");
-}
-
-function handleTextAreaValidation(textareaID) {
-    var maxTextAreaSize = 8192;
-    var textarea = document.getElementById(textareaID);
-    var textareaError = document.getElementById(textareaID + "-error");
-    var textareaCounter = document.getElementById(textareaID + "-counter");
-    var textareaValid = true;
-    if (textarea.value.length > maxTextAreaSize) {
-        textareaError.innerText = "Description is too long.";
-        textareaValid = false;
-    }
-    else if (textarea.value.length == 0) {
-        textareaError.innerText = "Description cannot be empty.";
-        textareaValid = false;
-    }
-    else {
-        textareaError.innerText = "";
-        textareaValid = true;
-    }
-    textareaCounter.innerText = "Characters " + textarea.value.length + "/" + maxTextAreaSize + ".";
-    textareaError.setAttribute("data-valid", textareaValid.toString());
-    return textareaValid;
-}
-
-var submitButtonMouseoverFlag = false;
-var submitButtonMouseoverTimer;
-var submitButtonTimerValue;
-function handleSubmitButtonMouseover() {
-    if (submitButtonMouseoverFlag == true) {
-        return;
-    }
-    submitButtonMouseoverFlag = true;
-    var infoContainer = document.getElementById("submit-announcement-info");
-    var counterContainer = document.getElementById("submit-announcement-button-counter");
-    var button = document.getElementById("submit-announcement-button");
-    button.setAttribute("disabled", "disabled");
-    infoContainer.innerText = "Are you sure that all data related to your announcement is valid? Double-check recommended.";
-    counterContainer.innerText = "Button will be unlocked in 5 seconds";
-    submitButtonTimerValue = 5;
-    handleSubmitButtonMouseoverTimer();
-}
-
-function handleSubmitButtonMouseoverTimer() {
-    var infoContainer = document.getElementById("submit-announcement-info");
-    var counterContainer = document.getElementById("submit-announcement-button-counter");
-    var button = document.getElementById("submit-announcement-button");
-    submitButtonMouseoverTimer = setTimeout(function () {
-        submitButtonTimerValue -= 1;
-        if (submitButtonTimerValue > 0) {
-            counterContainer.innerText = "Button will be unlocked in " + submitButtonTimerValue + " seconds";
-            handleSubmitButtonMouseoverTimer();
-        }
-        else{
-            infoContainer.innerText = "";
-            button.removeAttribute("disabled");
-            counterContainer.innerText = "";
-        }
-    }, 1000);
-}
-
-function handleSubmitButtonClick(){
-    
-}
-
-function drawSubmitButtonValue(value){
-    var button = document.getElementById("submit-announcement-button");
-    button.innerText = value;
-}
-
-var paymentInputErrorTimeout;
-var contactInputErrorTimeout;
-function drawInput(type) {
-    var container = document.getElementById(type + "-info-container");
-    var errorContainer = document.getElementById(type + "-info-error");
-    var currentItems = container.children;
-
-    if (currentItems.length == 0) {
-        container.innerHTML = "<div>\
-            <select id='"+ type + "-input-type-0'>\
-            </select>\
-            <input onblur='handleRequiredFieldValidation(this.id);' id='"+ type + "-input-value-0' type='text' />\
-            <button onclick='handleInputRemoval(\""+ type + "-input-value-0\");'>Remove</button>\
-            <span id='"+ type + "-input-value-0-error' data-valid='false'></span>\
-        </div>";
-        var optionItems = [];
-        if (type == "contact") {
-            optionItems = getContactMethods();
+/**
+ * Performs address validation. If any field is empty, proper
+ * error message is displayed and null is returned. If address
+ * is correct this function returns array of strings that
+ * contain country, region, city, street, street number.
+ */
+function handleAddressValidation() {
+    var addressContainer = document.getElementById("address-input-row");
+    var errorSpan = document.getElementById("address-error-span");
+    var inputFields = addressContainer.getElementsByTagName("input");
+    var address = [];
+    var anyFieldEmpty = false;
+    for (var i = 0; i < inputFields.length; i++) {
+        if (inputFields[i].value.trim() == "") {
+            anyFieldEmpty = true;
+            break;
         }
         else {
-            optionItems = getPaymentMethods();
-        }
-        var dropDownList = document.getElementById(type + "-input-type-0");
-        for (var i = 0; i < optionItems.length; i++) {
-            dropDownList.innerHTML += "<option value='" + i + "'>" + optionItems[i] + "</option>";
+            address.push(inputFields[i].value);
         }
     }
-    else if (currentItems.length < 5) {
-        // Enumerate current items.
-        var selectItems = container.getElementsByTagName("select");
-        var inputItems = container.getElementsByTagName("input");
-        var buttonElements = container.getElementsByTagName("button");
-        var spanElements = container.getElementsByTagName("span");
-        for (var i = 0; i < currentItems.length; i++) {
-            selectItems[i].setAttribute("id", type + "-input-type-" + i);
-            inputItems[i].setAttribute("id", type + "-input-value-" + i);
-            buttonElements[i].setAttribute("onclick", "handleInputRemoval(\"" + type + "-input-value-" + i + "\");");
-            spanElements[i].setAttribute("id", type + "-input-value-" + i + "-error");
-        }
-        // Create new contact input.
-        container.innerHTML += "<div>\
-            <select id='"+ type + "-input-type-" + currentItems.length + "'>\
-            </select>\
-            <input onblur='handleRequiredFieldValidation(this.id);' id='"+ type + "-input-value-" + currentItems.length + "' type='text' />\
-            <button onclick='handleInputRemoval(\""+ type + "-input-value-" + currentItems.length + "\");'>Remove</button>\
-            <span id='"+ type + "-input-value-" + currentItems.length + "-error' data-valid='false'></span>\
-        </div>";
-        // Fill drop down list.
-        var optionItems = [];
-        if (type == "contact") {
-            optionItems = getContactMethods();
-        }
-        else {
-            optionItems = getPaymentMethods();
-        }
-        var dropDownList = document.getElementById(type + "-input-type-" + (currentItems.length - 1));
-        for (var i = 0; i < optionItems.length; i++) {
-            dropDownList.innerHTML += "<option value='" + i + "'>" + optionItems[i] + "</option>";
-        }
+    if (anyFieldEmpty) {
+        errorSpan.innerText = "One of required fields is empty.";
+        errorSpan.setAttribute("data-valid", "false");
+        return null;
     }
     else {
-        var timeout;
-        if (type == "contact") {
-            timeout = contactInputErrorTimeout;
-        }
-        else {
-            timeout = paymentInputErrorTimeout;
-        }
-        if (timeout != null) {
-            clearTimeout(timeout);
-        }
-        errorContainer.innerText = "You cannot add more than 5 " + type + " methods.";
-        timeout = setTimeout(function () {
-            errorContainer.innerText = "";
-        }, 5000);
+        errorSpan.innerText = "";
+        errorSpan.setAttribute("data-valid", "true");
+        return address;
     }
 }
 
-var imageInputErrorTimeout;
-function drawImageInput() {
-    var container = document.getElementById("image-input-field-container");
-    var errorContainer = document.getElementById("image-input-error");
-    var currentImageInputs = container.children;
-
-    if (currentImageInputs.length == 0) {
-        container.innerHTML = "<div>\
-            <input id='image-input-0' type='file' accept='image/png, image/jpeg'/>\
-            <button id='image-input-removal-button-0' onclick='handleInputRemoval(\"image-input-0\");'>Remove</button>\
-        </div>";
+function addTimeTableInput(item, maxInputCount) {
+    var container = item.parentNode.parentNode;
+    var items = container.children;
+    var itemClone = items[0].cloneNode(true);
+    var itemCloneInputs = itemClone.getElementsByTagName("input");
+    // Clear clone inputs.
+    for (var i = 0; i < itemCloneInputs.length; i++) {
+        itemCloneInputs[i].value = "";
     }
-    else if (currentImageInputs.length < 5) {
-        // Enumerate created image inputs.
-        for (var i = 0; i < currentImageInputs.length; i++) {
-            var currentImageInputID = currentImageInputs[i].children[0].getAttribute("id").split("-")[2];
-            currentImageInputs[i].children[0].setAttribute("id", "image-input-" + i);
-            document.getElementById("image-input-removal-button-" + currentImageInputID).setAttribute("id", "image-input-removal-button-" + i);
-            document.getElementById("image-input-removal-button-" + i).setAttribute("onclick", "handleInputRemoval(\"image-input-" + i + "\");");
+    var itemInnerHTML = itemClone.innerHTML;
+    // Mark all nodes that should be removed.
+    var nodesToRemove = [];
+    for (var i = 0; i < items.length; i++) {
+        var inputs = items[i].getElementsByTagName("input");
+        var allInputsEmpty = true;
+        for (var j = 0; j < inputs.length; j++) {
+            if (inputs[j].value.trim() != "") {
+                allInputsEmpty = false;
+                break;
+            }
         }
-        // Create new image input.
-        container.innerHTML += "<div>\
-            <input id='image-input-"+ currentImageInputs.length + "' type='file' accept='image/png, image/jpeg'/>\
-            <button id='image-input-removal-button-"+ currentImageInputs.length + "' \
-            onclick='handleInputRemoval(\"image-input-"+ currentImageInputs.length + "\");'>Remove</button>\
-        </div>";
-    }
-    else {
-        if (imageInputErrorTimeout != null) {
-            clearTimeout(imageInputErrorTimeout);
+        if (allInputsEmpty == true) {
+            nodesToRemove.push(items[i]);
         }
-        errorContainer.innerText = "You cannot add more than 5 images.";
-        imageInputErrorTimeout = setTimeout(function () {
-            errorContainer.innerText = "";
-        }, 5000);
     }
 
-}
+    // Remove marked nodes.
+    while (nodesToRemove.length != 0) {
+        var child = nodesToRemove.pop();
+        var parent = child.parentNode;
+        parent.removeChild(child);
+    }
 
-function drawTypeDropDownList() {
-    // Fill select type drop down list.
-    var typeDropDownList = document.getElementById("type-drop-down-list");
-    var announcementTypes = getAnnouncementTypes();
-    var index = 0;
-    for (var type of announcementTypes) {
-        typeDropDownList.innerHTML += "<option value='" + index + "'>" + type + "</option>";
-        index++;
+    // Add empty input at the end if possible.
+    if (items.length < maxInputCount) {
+        var newItem = document.createElement("div");
+        container.appendChild(newItem);
+        newItem.innerHTML = itemInnerHTML;
     }
 }
 
-function drawSubtypeAndSharedPartDropDownList() {
-    // Get drop down list and other necessary elements.
-    var typeDropDownList = document.getElementById("type-drop-down-list");
-    var subtypeDropDownList = document.getElementById("subtype-drop-down-list");
-    var sharedPartDropDownList = document.getElementById("shared-part-drop-down-list");
-    var sharedPartDropDownListContainer = document.getElementById("shared-part-drop-down-list-container");
-
-    // Clear drop down lists if they exists before drawing.
-    subtypeDropDownList.innerHTML = "";
-    if (sharedPartDropDownList != null) {
-        sharedPartDropDownList.innerHTML = "";
+function addInput(item, maxInputCount) {
+    var container = item.parentNode.parentNode; //  Div collection container.
+    var items = container.children;         // Collection of div nodes.
+    var itemInnerHTML = items[0].innerHTML; // Inner html of first div node.
+    // Mark all nodes that should be removed.
+    var nodesToRemove = [];
+    for (var i = 0; i < items.length; i++) {
+        var input = items[i].getElementsByTagName("input");
+        // Verify last input.
+        if (input[input.length - 1].value.trim() == "") {
+            nodesToRemove.push(items[i]);
+        }
     }
 
-    // Fill lists with proper values.
-    var selectedType = parseInt(typeDropDownList.value);
-    switch (selectedType) {
-        case 0: // House
-            var index = 0;
-            var houseSubtypes = getHouseSubtypes();
-            var sharedParts = getSharedParts();
-            for (var subtype of houseSubtypes) {
-                subtypeDropDownList.innerHTML += "<option value='" + index + "'>" + subtype + "</option>";
-                index++;
-            }
+    // Remove marked nodes.
+    while (nodesToRemove.length != 0) {
+        var child = nodesToRemove.pop();
+        var parent = child.parentNode;
+        parent.removeChild(child);
+    }
 
-            // If shared parts drop down list was removed it should be recreated.
-            if (sharedPartDropDownList == null) {
-                sharedPartDropDownListContainer.innerHTML = "<select id='shared-part-drop-down-list'></select>";
-                sharedPartDropDownList = document.getElementById("shared-part-drop-down-list");
-            }
+    // Add empty input at the end if possible.
+    if (items.length < maxInputCount) {
+        var newItem = document.createElement("div");
+        container.appendChild(newItem);
+        newItem.innerHTML = itemInnerHTML;
+    }
+}
 
-            index = 0;
-            for (var sharedPart of sharedParts) {
-                sharedPartDropDownList.innerHTML += "<option value='" + index + "'>" + sharedPart + "</option>";
-                index++;
-            }
+/**
+ * Handles timetable visibility. Every time timetable option is changed
+ * proper additional options (per day reservations or schedule items manager)
+ * are hidden or turned vi
+ */
+function handleTimetableVisibility() {
+    var timetableOptionsNode = document.getElementById("timetable-drop-down-list");
+    var perDayReservationsNode = document.getElementById("per-day-timetable-container");
+    var perHourReservationsNode = document.getElementById("per-hour-timetable-container");
+    switch (parseInt(timetableOptionsNode.value)) {
+        case 0:
+            perDayReservationsNode.hidden = true;
+            perHourReservationsNode.hidden = true;
             break;
-        case 1: // Entertainment
-            var index = 0;
-            var entertainmentSubtypes = getEntertainmentSubtypes();
-            for (var subtype of entertainmentSubtypes) {
-                subtypeDropDownList.innerHTML += "<option value='" + index + "'>" + subtype + "</option>";
-                index++;
-            }
-            sharedPartDropDownListContainer.innerHTML = "";
+        case 1:
+            perDayReservationsNode.hidden = false;
+            perHourReservationsNode.hidden = true;
             break;
-        case 2: // Food
-            var index = 0;
-            var foodSubtypes = getFoodSubtypes();
-            for (var subtype of foodSubtypes) {
-                subtypeDropDownList.innerHTML += "<option value='" + index + "'>" + subtype + "</option>";
-                index++;
-            }
-            sharedPartDropDownListContainer.innerHTML = "";
+        case 2:
+            perDayReservationsNode.hidden = true;
+            perHourReservationsNode.hidden = false;
             break;
-        default:
+    }
+    // Perform validation to correct error span value.
+    handleTimetableValidation();
+}
+
+function handleTypeVisibility() {
+    var typeElement = document.getElementById("announcement-type-drop-down-list");
+    var houseSubtypeElement = document.getElementById("house-subtype-drop-down-list");
+    var entertainmentSubtypeElement = document.getElementById("entertainment-subtype-drop-down-list");
+    var foodSubtypeElement = document.getElementById("food-subtype-drop-down-list");
+    var sharedPartElement = document.getElementById("house-shared-part-drop-down-list");
+    var sharedPartLabelElement = document.getElementById("house-shared-part-label");
+    switch (parseInt(typeElement.value)) {
+        case 0:
+            houseSubtypeElement.hidden = false;
+            entertainmentSubtypeElement.hidden = true;
+            foodSubtypeElement.hidden = true;
+            sharedPartElement.hidden = false;
+            sharedPartLabelElement.hidden = false;
+            break;
+        case 1:
+            houseSubtypeElement.hidden = true;
+            entertainmentSubtypeElement.hidden = true;
+            foodSubtypeElement.hidden = false;
+            sharedPartElement.hidden = true;
+            sharedPartLabelElement.hidden = true;
+            break;
+        case 2:
+            houseSubtypeElement.hidden = true;
+            entertainmentSubtypeElement.hidden = true;
+            foodSubtypeElement.hidden = false;
+            sharedPartElement.hidden = true;
+            sharedPartLabelElement.hidden = true;
             break;
     }
 }

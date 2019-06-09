@@ -1,6 +1,14 @@
 ﻿
+@using BedAndBreakfast.Data;
 @{
-    //ViewData["Title"] = "EditAnnouncementPartialView";
+    List<string> announcementTypes = Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementType)).ToList();
+    List<string> houseSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.HouseSubtype)).ToList();
+    List<string> entertainmentSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.EntertainmentSubtype)).ToList();
+    List<string> foodSubtype = Enum.GetNames(typeof(EnumeratedDbValues.FoodSubtype)).ToList();
+    List<string> sharedParts = Enum.GetNames(typeof(EnumeratedDbValues.HouseSharedPart)).ToList();
+    List<string> contactMethods = Enum.GetNames(typeof(EnumeratedDbValues.ContactType)).ToList();
+    List<string> paymentMethods = Enum.GetNames(typeof(EnumeratedDbValues.PaymentMethod)).ToList();
+    List<string> timetableOptions = Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementTimetableOptions)).ToList();
 }
 
 <div>
@@ -8,13 +16,41 @@
 </div>
 
 <div>
-    <select onchange="handleTypeSelectChange();" id="type-drop-down-list"></select>
-</div>
-<div>
-    <select id="subtype-drop-down-list"></select>
-</div>
-<div id="shared-part-drop-down-list-container">
-    <select id="shared-part-drop-down-list"></select>
+    <label>Announcement type: </label>
+    <select onchange="handleTypeVisibility();" id="announcement-type-drop-down-list">
+        @for (int i = 0; i < announcementTypes.Count(); i++)
+        {
+            <option value="@i">@announcementTypes[i]</option>
+        }
+    </select>
+    <br />
+    <label>Announcement subtype: </label>
+    <select id="house-subtype-drop-down-list">
+        @for (int i = 0; i < houseSubtypes.Count(); i++)
+        {
+            <option value="@i">@houseSubtypes[i]</option>
+        }
+    </select>
+    <select id="entertainment-subtype-drop-down-list">
+        @for (int i = 0; i < entertainmentSubtypes.Count(); i++)
+        {
+            <option value="@i">@entertainmentSubtypes[i]</option>
+        }
+    </select>
+    <select id="food-subtype-drop-down-list">
+        @for (int i = 0; i < foodSubtype.Count(); i++)
+        {
+            <option value="@i">@foodSubtype[i]</option>
+        }
+    </select>
+    <br />
+    <label id="house-shared-part-label">House shared part: </label>
+    <select id="house-shared-part-drop-down-list">
+        @for (int i = 0; i < sharedParts.Count(); i++)
+        {
+            <option value="@i">@sharedParts[i]</option>
+        }
+    </select>
 </div>
 
 <div>
@@ -30,19 +66,17 @@
             <td>Street</td>
             <td>Street number</td>
         </tr>
-        <tr>
-            <td><input onblur="handleRequiredFieldValidation(this.id);" id="country-input-field" type="text"></td>
-            <td><input onblur="handleRequiredFieldValidation(this.id);" id="region-input-field" type="text"></td>
-            <td><input onblur="handleRequiredFieldValidation(this.id);" id="city-input-field" type="text"></td>
-            <td><input onblur="handleRequiredFieldValidation(this.id);" id="street-input-field" type="text"></td>
-            <td><input onblur="handleRequiredFieldValidation(this.id);" id="street-number-input-field" type="text"></td>
+        <tr id="address-input-row">
+            <td><input onblur="handleAddressValidation();" id="country-input-field" type="text"></td>
+            <td><input onblur="handleAddressValidation();" id="region-input-field" type="text"></td>
+            <td><input onblur="handleAddressValidation();" id="city-input-field" type="text"></td>
+            <td><input onblur="handleAddressValidation();" id="street-input-field" type="text"></td>
+            <td><input onblur="handleAddressValidation();" id="street-number-input-field" type="text"></td>
         </tr>
         <tr>
-            <td><span id="country-input-field-error" data-valid="false"></span></td>
-            <td><span id="region-input-field-error" data-valid="false"></span></td>
-            <td><span id="city-input-field-error" data-valid="false"></span></td>
-            <td><span id="street-input-field-error" data-valid="false"></span></td>
-            <td><span id="street-number-input-field-error" data-valid="false"></span></td>
+            <td colspan="5">
+                <span id="address-error-span" data-valid="false"></span>
+            </td>
         </tr>
     </table>
 
@@ -51,54 +85,110 @@
             <td>From</td>
             <td>To</td>
         </tr>
-        <tr>
-            <td><input onblur="handleDateValidation();" type="date" id="from-date-input-field"></td>
-            <td><input onblur="handleDateValidation();" type="date" id="to-date-input-field"></td>
+        <tr id="date-range-input-row">
+            <td><input onblur="handleDateRangeValidation();" type="date" id="from-date-input-field"></td>
+            <td><input onblur="handleDateRangeValidation();" type="date" id="to-date-input-field"></td>
         </tr>
         <tr>
-            <td colspan="2"><span id="date-range-error" data-valid="false"></span></td>
+            <td colspan="2">
+                <span id="date-error-span" data-valid="false"></span>
+            </td>
         </tr>
     </table>
+</div>
 
-    <div>
-        Create announcement description and insert images.
+<div>
+    Create announcement description and insert images.
+</div>
+
+<div>
+    <label>Announcement images: </label>
+    <br />
+    <div id="images-container">
+        <!-- Content of container below is being cloned -->
+        <div>
+            <input onchange="addInput(this, 5);" type="file" accept="image/png, image/jpeg" />
+        </div>
     </div>
-    <div>
-        <button onclick="handleAddImageButton();">Add image slot</button>
-        <div id="image-input-field-container"></div>
-        <span id="image-input-error"></span>
+
+    <label>Description: </label>
+    <br />
+    <textarea oninput="handleTextareaValidation();" rows="10" cols="100" id="description-text-area"></textarea>
+    <span id="text-area-counter-span"></span>
+    <span id="text-area-error-span" data-valid="false"></span>
+</div>
+
+<div>
+    Provide some contact info.
+</div>
+
+<div>
+    <div id="contacts-container">
+        <!-- Content of container below is being cloned -->
+        <div>
+            <select>
+                @for (int i = 0; i < contactMethods.Count(); i++)
+                {
+                    <option value="@i">@contactMethods[i]</option>
+                }
+            </select>
+            <input onchange="addInput(this, 5); handleContactInfoValidation();" type="text" />
+        </div>
     </div>
-    <div>
-        <textarea oninput="handleTextAreaValidation(this.id);" rows="10" cols="100" id="description-text-area"></textarea>
-        <span id="description-text-area-counter"></span>
-        <span id="description-text-area-error" data-valid="false"></span>
+    <span id="contacts-error-span" data-valid="false"></span>
+</div>
+
+<div>
+    Provide some payment info.
+</div>
+
+<div>
+    <div id="payments-container">
+        <!-- Content of container below is being cloned -->
+        <div>
+            <select>
+                @for (int i = 0; i < paymentMethods.Count(); i++)
+                {
+                    <option value="@i">@paymentMethods[i]</option>
+                }
+            </select>
+            <input onchange="addInput(this, 5); handlePaymentInfoValidation();" type="text" />
+        </div>
     </div>
+    <span id="payments-error-span" data-valid="false"></span>
 </div>
 
 <div>
-    Provide some additional contact info.
+    Create schedule for your announcement.
 </div>
 
 <div>
-    <button onclick="handleAddContactButton();">Add contact</button>
-    <div id="contact-info-container"></div>
-    <span id="contact-info-error"></span>
+    <label>Timetable options:</label>
+    <select onchange="handleTimetableVisibility();" id="timetable-drop-down-list">
+        @for (int i = 0; i < timetableOptions.Count(); i++)
+        {
+            <option value="@i">@timetableOptions[i]</option>
+        }
+    </select>
+    <div id="per-day-timetable-container">
+        <label>Reservations: </label>
+        <input onchange="handleTimetableValidation();" type="text" value="10" />
+    </div>
+    <div id="per-hour-timetable-container">
+        <div id="schedule-item-container">
+            <label>Form: </label>
+            <input onchange="addTimeTableInput(this, 12); handleTimetableValidation();" type="time" />
+            <label>To: </label>
+            <input onchange="addTimeTableInput(this, 12); handleTimetableValidation();" type="time" />
+            <label>Reservations: </label>
+            <input onchange="addTimeTableInput(this, 12); handleTimetableValidation();" type="text" />
+        </div>
+    </div>
+    <span id="timetable-error-span" data-valid="false"></span>
 </div>
 
 <div>
-    Provide some additional payment info.
-</div>
-
-<div>
-    <button onclick="handleAddPaymentButton();">Add payment</button>
-    <div id="payment-info-container"></div>
-    <span id="payment-info-error"></span>
-</div>
-
-<div>
-    <button onmouseover="handleSubmitButtonMouseover();" onclick="handleSubmitButtonClick();" id="submit-announcement-button">Create</button>
-    <span id="submit-announcement-button-counter"></span>
-    <span id="submit-announcement-info"></span>
+    <button onclick="handleSubmitButtonClick();">Submit</button>
 </div>
 
 
