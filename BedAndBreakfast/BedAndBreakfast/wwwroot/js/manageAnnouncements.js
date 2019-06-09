@@ -264,6 +264,9 @@ function setGlobalMessage(messageCode) {
         case 3:
             container.innerHTML = "For one or more announcement status has not been changed because of invalid active time range."
             break;
+        case 4:
+            container.innerHTML = "Announcement successfully created.";
+            break;
         default:
             break;
     }

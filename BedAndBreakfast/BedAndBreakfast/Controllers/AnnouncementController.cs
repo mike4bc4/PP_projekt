@@ -681,7 +681,8 @@ namespace BedAndBreakfast.Controllers
                 {
                     announcement.IsActive = !announcement.IsActive;
                 }
-                else {
+                else
+                {
                     error = true;
                 }
             }
@@ -690,8 +691,19 @@ namespace BedAndBreakfast.Controllers
         }
 
         [Authorize(Roles = Role.User)]
-        public IActionResult EditAnnouncement() {
+        public IActionResult EditAnnouncement()
+        {
             return PartialView("EditAnnouncementPartialView");
+        }
+
+        [Authorize(Roles = Role.User)]
+        public async Task<IActionResult> SaveAnnouncement(List<IFormFile> images, string announcement)
+        {
+            // Announcement is passed inside FormData object and comes as serialized JSON object and has to be deserialized manually.
+            SaveAnnouncementViewModel announcementViewModel = JsonConvert
+                .DeserializeObject<SaveAnnouncementViewModel>(announcement);
+
+            return Json(null);
         }
     }
 }

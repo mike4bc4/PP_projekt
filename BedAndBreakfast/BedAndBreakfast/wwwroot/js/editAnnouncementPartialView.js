@@ -1,7 +1,154 @@
 ﻿
+/**
+ * Performs request call to SaveAnnouncement action.
+ * @param {*} context Represents container for read/write operations.
+ * @param {*} requestSynchronizer Used to control communication process.
+ */
+function saveAnnouncement(context, requestSynchronizer) {
+    $.ajax({
+        url: "/Announcement/SaveAnnouncement",
+        data: context.formData,
+        processData: false,
+        contentType: false,
+        type: "POST",
+        success: function (response) {
+            context.saveAnnouncementImagesResponse = response;
+            requestSynchronizer.generator.next();
+        }
+    });
+}
+
 function handlePartialViewInitialLoad(initMode) {
     handleTypeVisibility();
     handleTimetableVisibility();
+}
+
+/**
+ * Performs all available validations that produce message for
+ * each validated section. Collects image and announcement data.
+ * Returns null and sets proper form error message if validation fails.
+ * Sends save announcement request and loads announcement list with
+ * proper global message if announcement has been stored in database.
+ */
+function handleSubmitButton() {
+    var errorSpan = document.getElementById("from-error-span");
+    // Get images and store them in form data object.
+    var formData = new FormData();
+    var images = getImageFiles();
+    for (var i = 0; i < images.length; i++) {
+        formData.append("images", images[i]);
+    }
+    // Get announcement and store it as serialized object in form data.
+    var announcement = {};
+    var typeData = getAnnouncementTypeDate();
+    announcement.type = typeData.type;
+    announcement.subtype = typeData.subtype;
+    announcement.sharedPart = typeData.sharedPart;
+    var addressData = handleAddressValidation();
+    if (addressData == null) {
+        errorSpan.innerText = "Announcement address is invalid.";
+        return;
+    }
+    announcement.country = addressData[0];
+    announcement.region = addressData[1];
+    announcement.city = addressData[2];
+    announcement.street = addressData[3];
+    announcement.streetNumber = addressData[4];
+    var dateRangeData = handleDateRangeValidation();
+    if (dateRangeData == null) {
+        errorSpan.innerText = "Announcement activity time range is invalid.";
+        return;
+    }
+    announcement.from = dateRangeData[0];
+    announcement.to = dateRangeData[1];
+    var description = handleTextareaValidation();
+    if (description == null) {
+        errorSpan.innerText = "Announcement description is invalid.";
+        return;
+    }
+    announcement.description = description;
+    var contacts = handleContactInfoValidation();
+    if (contacts == null) {
+        errorSpan.innerText = "Contact information is invalid.";
+        return;
+    }
+    announcement.contacts = contacts;
+    var payments = handlePaymentInfoValidation();
+    if (payments == null) {
+        errorSpan.innerText = "Payment information is invalid.";
+        return;
+    }
+    announcement.payments = payments;
+    var timetableData = handleTimetableValidation();
+    if(timetableData == null){
+        errorSpan.innerText = "Timetable is invalid.";
+        return;
+    }
+    announcement.timetable = timetableData.timetable;
+    announcement.perDayReservations = timetableData.perDayReservations;
+    announcement.scheduleItems = timetableData.scheduleItems;
+
+    formData.append("announcement", JSON.stringify(announcement));
+    var context = {};
+    context.formData = formData;
+    var requestSynchronizer = new RequestSynchronizer();
+    requestSynchronizer.requestQueue = [
+        function () { saveAnnouncement(context, requestSynchronizer) },
+        function () {
+            // On success load user announcements and set proper message.
+            handleMyAnnouncementsButton();
+            setGlobalMessage(4);
+        },
+    ];
+    requestSynchronizer.run();
+}
+
+/**
+ * Recovers data form type, subtype and shared part drop
+ * down lists. Returns object {type, subtype, sharedPart}
+ * with acquired data.
+ */
+function getAnnouncementTypeDate() {
+    var typeDropDownList = document.getElementById("announcement-type-drop-down-list");
+    var houseSubtypeDropDownList = document.getElementById("house-subtype-drop-down-list");
+    var entertainmentSubtypeDropDownList = document.getElementById("entertainment-subtype-drop-down-list");
+    var foodSubtypeDropDownList = document.getElementById("food-subtype-drop-down-list");
+    var houseSharedPartDropDownList = document.getElementById("house-shared-part-drop-down-list");
+    var output = {};
+    output.type = parseInt(typeDropDownList.value);
+    switch (parseInt(typeDropDownList.value)) {
+        case 0:
+            output.subtype = parseInt(houseSubtypeDropDownList.value);
+            output.sharedPart = parseInt(houseSharedPartDropDownList.value);
+            break;
+        case 1:
+            output.subtype = parseInt(entertainmentSubtypeDropDownList.value);
+            output.sharedPart = null;
+            break;
+        case 2:
+            output.subtype = parseInt(foodSubtypeDropDownList.value);
+            output.sharedPart = null;
+            break;
+    }
+    return output;
+}
+
+/**
+ * Recovers image files from file inputs.
+ * Returns array of files or empty array if no image
+ * provided.
+ */
+function getImageFiles() {
+    var container = document.getElementById("images-container");
+    var imageInputs = container.getElementsByTagName("input");
+    var files = [];
+    for (var i = 0; i < imageInputs.length; i++) {
+        var imageInputFiles = imageInputs[i].files;
+        if (imageInputFiles.length != 0) {
+            files.push(imageInputFiles[0]);
+        }
+    }
+    return files;
 }
 
 /**
