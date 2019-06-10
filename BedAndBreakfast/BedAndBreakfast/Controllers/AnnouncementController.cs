@@ -38,135 +38,6 @@ namespace BedAndBreakfast.Controllers
             this.userManager = userManager;
         }
 
-        /// <summary>
-        /// Checks if caller is able to create announcement and redirects to announcement page.
-        /// </summary>
-        /// <returns></returns>
-        //[Authorize(Roles = Role.User)]
-        //public IActionResult EditAnnouncement(bool newModel = true)
-        //{
-        //    dynamic model = new ExpandoObject();
-        //    model.newModel = newModel;
-        //    TempData["newModel"] = newModel;
-        //    //return View("UnderConstruction");
-
-        //    return View(model);
-        //}
-
-
-        /// <summary>
-        /// Returns specified partial view from hosting container.
-        /// </summary>
-        /// <param name="partialViewName"></param>
-        /// <param name="viewModel"></param>
-        /// <returns></returns>
-        //public IActionResult GetPartialViewWithData(string partialViewName, EditAnnouncementViewModel viewModel)
-        //      {
-        //          return PartialView("PartialViews/" + partialViewName, viewModel);
-        //      }
-
-
-        /// <summary>
-        /// Validates announcement view model and puts it into database
-        /// if it is correct and user is able to create announcement.
-        /// Also changes user role to host if he had user role before.
-        /// If view model is incorrect view data is updated with proper flag
-        /// that results in rendering message.
-        /// </summary>
-        /// <param name="viewModel"></param>
-        /// <returns></returns>
-        //[Authorize(Roles = Role.User)]
-        //public async Task<IActionResult> SaveAnnouncement(EditAnnouncementViewModel viewModel)
-        //{
-        //    User currentUser = await userManager.GetUserAsync(HttpContext.User);
-        //    bool announcementCorrect = AnnouncementServiceLogic.IsAnnouncementViewModelValid(viewModel);
-        //    if (announcementCorrect)
-        //    {
-        //        viewModel.IsCorrect = true;
-        //        bool newModel = (bool)TempData["newModel"];
-        //        await AnnouncementServiceLogic.SaveAnnouncementToDatabase(viewModel, context, currentUser, newModel);
-        //        // Change user role to host if it's his first announcement.
-        //        if (!currentUser.IsHost)
-        //        {
-        //            await AnnouncementServiceLogic.MakeUserHost(currentUser, context);
-        //        }
-        //    }
-
-        //    return Json(new { page = ControllerExtensions.ParseViewToStringAsync(this, viewModel, "PartialViews/SaveAnnouncement", true).Result, announcementCorrect });
-        //}
-
-
-        //[Authorize(Roles = Role.User)]
-        //public async Task<IActionResult> ListUserAnnouncements(string sortingMethod, string queryString)
-        //{
-
-        //    User currentUser = await userManager.GetUserAsync(HttpContext.User);
-        //    // Get only these announcements which were not removed by user.
-        //    List<Announcement> usersAnnouncements = context.Announcements
-        //        .Include(a => a.Address)
-        //        .Where(a => a.User == currentUser)
-        //        .Where(a => a.Removed == false)
-        //        .ToList();
-
-        //    List<EditAnnouncementViewModel> viewModel = AnnouncementServiceLogic.ParseAnnouncementsToViewModelList(usersAnnouncements, context);
-
-        //    dynamic model = new ExpandoObject();
-        //    model.announcements = viewModel;
-
-        //    return View(model);
-        //}
-
-        //public IActionResult GetAnnouncementOwnerInfo(int announcementID)
-        //{
-        //    Announcement announcement = context.Announcements.Include(a => a.User).Include(a => a.User.Profile).Where(a => a.ID == announcementID).SingleOrDefault();
-        //    if (announcement == null)
-        //    {
-        //        return Json(null);
-        //    }
-        //    var userData = new
-        //    {
-        //        userName = announcement.User.UserName,
-        //        firstName = announcement.User.Profile.FirstName,
-        //        lastName = announcement.User.Profile.LastName
-        //    };
-        //    return Json(userData);
-        //}
-
-
-        //[Authorize(Roles = Role.User)]
-        //public async Task<IActionResult> ChangeAnnouncementsStatus(List<int> announcementsIDs, bool? areActive)
-        //{
-        //    List<Announcement> announcements = (from a in context.Announcements
-        //                                        where announcementsIDs.Contains(a.ID)
-        //                                        select a).ToList();
-        //    foreach (Announcement announcement in announcements)
-        //    {
-        //        if (areActive != null)
-        //            announcement.IsActive = (bool)areActive;
-        //        else
-        //            announcement.Removed = true;
-        //    }
-        //    await context.SaveChangesAsync();
-        //    return Json(true);
-        //}
-
-        //public IActionResult Browse(string annBrowserQuery)
-        //{
-        //    dynamic model = new ExpandoObject();
-        //    // Find only these announcements which fit in active time range,
-        //    // were not deactivated or removed by owner and parse them to view model.
-        //    List<EditAnnouncementViewModel> viewModel = AnnouncementServiceLogic
-        //        .ParseAnnouncementsToViewModelList(SearchEngine.FindAnnoucements(annBrowserQuery, context), context)
-        //        .Where(vm => (DateTime.Compare(vm.From, DateTime.Today) <= 0))
-        //        .Where(vm => (DateTime.Compare(vm.To, DateTime.Today) >= 0))
-        //        .Where(vm => vm.IsActive == true)
-        //        .Where(vm => vm.Removed == false).ToList();
-
-        //    model.announcements = viewModel;
-        //    model.query = annBrowserQuery;
-
-        //    return View(model);
-        //}
 
         /// <summary>
         /// Allows to retrieve list of numbers that represent amount of reservations per day or per schedule item.
@@ -732,6 +603,100 @@ namespace BedAndBreakfast.Controllers
                 default:
                     return Json(null);
             }
+        }
+
+        /// <summary>
+        /// Allows to acquire announcement specified by given announcement id number.
+        /// If there is no such announcement null is returned, otherwise save announcement
+        /// view model object is returned. Note that action returns JSON objects.
+        /// </summary>
+        /// <param name="announcementID"></param>
+        /// <returns></returns>
+        [Authorize(Roles = Role.User)]
+        public async Task<IActionResult> GetAnnouncement(int announcementID)
+        {
+            // Get specified announcement.
+            Announcement announcement = await context.Announcements
+                .Include(a => a.Address)
+                .Where(a => a.ID == announcementID).SingleOrDefaultAsync();
+            // Validate
+            if (announcement == null)
+            {
+                return Json(null);
+            }
+            // Get announcement related contacts.
+            List<AdditionalContact> additionalContacts = await context.AnnouncementToContacts
+                .Include(ac => ac.AdditionalContact)
+                .Where(ac => ac.AnnouncementID == announcementID)
+                .Select(ac => ac.AdditionalContact)
+                .ToListAsync();
+            // Get announcement related payment methods.
+            List<PaymentMethod> paymentMethods = await context.AnnouncementToPayments
+                .Include(ap => ap.PaymentMethod)
+                .Where(ap => ap.AnnouncementID == announcementID)
+                .Select(ac => ac.PaymentMethod)
+                .ToListAsync();
+            // Get announcement related schedule items.
+            List<ScheduleItem> scheduleItemsData = await context.AnnouncementToSchedules
+                .Include(ats => ats.ScheduleItem)
+                .Where(ats => ats.AnnouncementID == announcementID)
+                .Select(ats => ats.ScheduleItem)
+                .OrderBy(si => si.From)
+                .ToListAsync();
+            // Parse acquired contacts to view model.
+            List<ContactPaymentItem> contacts = new List<ContactPaymentItem>();
+            foreach (AdditionalContact additionalContact in additionalContacts)
+            {
+                contacts.Add(new ContactPaymentItem()
+                {
+                    Type = additionalContact.Type,
+                    Value = additionalContact.Data,
+                });
+            }
+            // Parse acquired payments to view model.
+            List<ContactPaymentItem> payments = new List<ContactPaymentItem>();
+            foreach (PaymentMethod paymentMethod in paymentMethods)
+            {
+                payments.Add(new ContactPaymentItem()
+                {
+                    Type = paymentMethod.Type,
+                    Value = paymentMethod.Data,
+                });
+            }
+            // Parse acquired schedule items to view model.
+            List<ScheduleItemViewModel> scheduleItems = new List<ScheduleItemViewModel>();
+            foreach (ScheduleItem scheduleItem in scheduleItemsData)
+            {
+                scheduleItems.Add(new ScheduleItemViewModel()
+                {
+                    From = scheduleItem.From,
+                    To = scheduleItem.To,
+                    MaxReservations = scheduleItem.MaxReservations,
+                });
+            }
+            // Collect data into single object and send to view.
+            SaveAnnouncementViewModel outputAnnouncement = new SaveAnnouncementViewModel()
+            {
+                AnnouncementID = announcement.ID,
+                City = announcement.Address.City,
+                Contacts = contacts,
+                Country = announcement.Address.Country,
+                Description = announcement.Description,
+                From = announcement.From,
+                Payments = payments,
+                PerDayReservations = announcement.MaxReservations,
+                Region = announcement.Address.Region,
+                ScheduleItems = scheduleItems,
+                SharedPart = announcement.SharedPart,
+                Street = announcement.Address.Street,
+                StreetNumber = announcement.Address.StreetNumber,
+                Subtype = announcement.Subtype,
+                Timetable = announcement.Timetable,
+                To = announcement.To,
+                Type = announcement.Type,
+            };
+
+            return Json(outputAnnouncement);
         }
     }
 }

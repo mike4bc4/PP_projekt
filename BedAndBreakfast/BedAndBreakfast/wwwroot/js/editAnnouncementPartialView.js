@@ -18,9 +18,11 @@ function saveAnnouncement(context, requestSynchronizer) {
     });
 }
 
-function handlePartialViewInitialLoad(initMode) {
+function handlePartialViewInitialLoad(announcementID) {
     handleTypeVisibility();
     handleTimetableVisibility();
+    document.getElementById("announcement-submit-button")
+        .setAttribute("onclick", "handleSubmitButton(" + announcementID + ");");
 }
 
 /**
@@ -30,7 +32,7 @@ function handlePartialViewInitialLoad(initMode) {
  * Sends save announcement request and loads announcement list with
  * proper global message if announcement has been stored in database.
  */
-function handleSubmitButton() {
+function handleSubmitButton(announcementID) {
     var errorSpan = document.getElementById("from-error-span");
     // Get images and store them in form data object.
     var formData = new FormData();
@@ -41,6 +43,10 @@ function handleSubmitButton() {
     // Get announcement and store it as serialized object in form data.
     var announcement = {};
     var typeData = getAnnouncementTypeDate();
+    // If partial view is launched in edition mode (not creation mode)
+    // announcementID is provided so controller action knows that
+    // existing announcement should be updated.
+    announcement.announcementID = announcementID;
     announcement.type = typeData.type;
     announcement.subtype = typeData.subtype;
     announcement.sharedPart = typeData.sharedPart;
@@ -80,7 +86,7 @@ function handleSubmitButton() {
     }
     announcement.payments = payments;
     var timetableData = handleTimetableValidation();
-    if(timetableData == null){
+    if (timetableData == null) {
         errorSpan.innerText = "Timetable is invalid.";
         return;
     }
@@ -97,7 +103,13 @@ function handleSubmitButton() {
         function () {
             // On success load user announcements and set proper message.
             handleMyAnnouncementsButton();
-            setGlobalMessage(4);
+            if (announcementID == null) {
+                setGlobalMessage(4);
+            }
+            else {
+                // There is different message if announcement was edited.
+                setGlobalMessage(9);
+            }
         },
     ];
     requestSynchronizer.run();

@@ -7,6 +7,7 @@ namespace BedAndBreakfast.Models
 {
     public class SaveAnnouncementViewModel
     {
+        public int? AnnouncementID { get; set; }
         public int Type { get; set; }
         public int Subtype { get; set; }
         public int? SharedPart { get; set; }

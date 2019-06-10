@@ -73,14 +73,169 @@ function handleCreateAnnouncementButton() {
         function () { editAnnouncement(context, requestSynchronizer); },
         function () {
             container.innerHTML = context.editAnnouncementResponse;
-            handlePartialViewInitialLoad("Create");
+            handlePartialViewInitialLoad(null);
         },
     ];
     requestSynchronizer.run();
 }
 
 function handleAnnouncementEditButton(announcementID) {
-    
+    /**
+     * Handles get announcement request (server action).
+     */
+    function getAnnouncementRequest(context, requestSynchronizer) {
+        $.ajax({
+            url: "/Announcement/GetAnnouncement",
+            data: { announcementID: context.announcementID },
+            dataType: "json",
+            method: "post",
+            success: function (response) {
+                context.getAnnouncementRequestResponse = response;
+                requestSynchronizer.generator.next();
+            }
+        });
+    }
+
+    /**
+     * Converts given integer value to hour string which
+     * is correct value for input field.
+     */
+    function parseIntToHour(integer) {
+        if (integer == 24) {
+            return "00:00";
+        }
+        if (integer < 10) {
+            return "0" + integer + ":00";
+        }
+        if (integer >= 10) {
+            return integer + ":00";
+        }
+    }
+
+    /**
+     * Acquires fields from edit announcement partial view and
+     * fills them with data provided as parameter.
+     */
+    function drawExistingAnnouncementData(announcement) {
+        // Get input fields and containers.
+        var typeDropDownList = document.getElementById("announcement-type-drop-down-list");
+        var subtypeDropDownList;
+        var houseSharedPartDropDownList = null;
+        switch (announcement.type) {
+            case 0:
+                subtypeDropDownList = document.getElementById("house-subtype-drop-down-list");
+                houseSharedPartDropDownList = document.getElementById("house-shared-part-drop-down-list");
+                break;
+            case 1:
+                subtypeDropDownList = document.getElementById("entertainment-subtype-drop-down-list");
+                break;
+            case 2:
+                subtypeDropDownList = document.getElementById("food-subtype-drop-down-list");
+                break;
+        }
+        var address = [
+            document.getElementById("country-input-field"),
+            document.getElementById("region-input-field"),
+            document.getElementById("city-input-field"),
+            document.getElementById("street-input-field"),
+            document.getElementById("street-number-input-field"),
+        ];
+        var dateRange = [
+            document.getElementById("from-date-input-field"),
+            document.getElementById("to-date-input-field"),
+        ];
+        var description = document.getElementById("description-text-area");
+        var contactsContainer = document.getElementById("contacts-container");
+        var paymentsContainer = document.getElementById("payments-container");
+        var timetableDropDownList = document.getElementById("timetable-drop-down-list");
+        var perDayTimetableContainer = document.getElementById("per-day-timetable-container");
+        var perHourTimetableContainer = document.getElementById("per-hour-timetable-container");
+        // Fill fields with data.
+        typeDropDownList.value = announcement.type;
+        handleTypeVisibility();
+        subtypeDropDownList.value = announcement.subtype;
+        if (houseSharedPartDropDownList != null) {
+            houseSharedPartDropDownList.value = announcement.sharedPart;
+        }
+        address[0].value = announcement.country;
+        address[1].value = announcement.region;
+        address[2].value = announcement.city;
+        address[3].value = announcement.street;
+        address[4].value = announcement.streetNumber;
+        var from = new Date(announcement.from);
+        from.setHours(12, 0, 0, 0);
+        var to = new Date(announcement.to);
+        to.setHours(12, 0, 0, 0)
+        dateRange[0].value = from.toISOString().substring(0, 10);
+        dateRange[1].value = to.toISOString().substring(0, 10);
+        description.value = announcement.description;
+        handleTextareaValidation();
+        for (var i = 0; i < announcement.contacts.length; i++) {
+            var lastContactElement = contactsContainer.children[contactsContainer.children.length - 1];
+            var selectDropDownList = lastContactElement.getElementsByTagName("select")[0];
+            var inputField = lastContactElement.getElementsByTagName("input")[0];
+            selectDropDownList.value = announcement.contacts[i].type;
+            inputField.value = announcement.contacts[i].value;
+            addInput(inputField, 5);
+            handleContactInfoValidation();
+        }
+        for (var i = 0; i < announcement.payments.length; i++) {
+            var lastPaymentElement = paymentsContainer.children[paymentsContainer.children.length - 1];
+            var selectDropDownList = lastPaymentElement.getElementsByTagName("select")[0];
+            var inputField = lastPaymentElement.getElementsByTagName("input")[0];
+            selectDropDownList.value = announcement.payments[i].type;
+            inputField.value = announcement.payments[i].value;
+            addInput(inputField, 5);
+            handlePaymentInfoValidation();
+        }
+        timetableDropDownList.value = announcement.timetable;
+        handleTimetableVisibility();
+        switch (announcement.timetable) {
+            case 1:
+                var inputField = perDayTimetableContainer.getElementsByTagName("input")[0];
+                inputField.value = announcement.perDayReservations;
+                break;
+            case 2:
+                for (var i = 0; i < announcement.scheduleItems.length; i++) {
+                    var lastScheduleItem = perHourTimetableContainer.children[perHourTimetableContainer.children.length - 1];
+                    var lastScheduleItemInputs = lastScheduleItem.getElementsByTagName("input");
+                    lastScheduleItemInputs[0].value = parseIntToHour(announcement.scheduleItems[i].from);
+                    lastScheduleItemInputs[1].value = parseIntToHour(announcement.scheduleItems[i].to);
+                    lastScheduleItemInputs[2].value = announcement.scheduleItems[i].maxReservations;
+                    addTimeTableInput(lastScheduleItemInputs[0], 12);
+                    handleTimetableValidation();
+                }
+                break;
+        }
+
+
+    }
+
+    var container = document.getElementById("manage-announcements-view-container");
+    var context = {};
+    context.announcementID = announcementID;
+    var requestSynchronizer = new RequestSynchronizer();
+    requestSynchronizer.requestQueue = [
+        function () { getAnnouncementRequest(context, requestSynchronizer) },
+        function () { editAnnouncement(context, requestSynchronizer) },
+        function () {
+            if (context.editAnnouncementResponse == null) {
+                // Failed to acquire edit announcement view.
+                setGlobalMessage(-1);
+                return;
+            }
+            if (context.getAnnouncementRequestResponse == null) {
+                // Failed to acquire announcement view model.
+                setGlobalMessage(0);
+                return;
+            }
+            // Load create announcement view.
+            container.innerHTML = context.editAnnouncementResponse;
+            handlePartialViewInitialLoad(announcementID);
+            drawExistingAnnouncementData(context.getAnnouncementRequestResponse);
+        },
+    ];
+    requestSynchronizer.run();
 }
 
 function handleRemoveSelectedButton(selectedAnnouncementsIDs) {
@@ -328,6 +483,9 @@ function setGlobalMessage(messageCode) {
             break;
         case 8:
             container.innerText = "Reservations updated";
+            break;
+        case 9:
+            container.innerText = "Announcement successfully updated."
             break;
         default:
             break;
