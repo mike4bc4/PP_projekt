@@ -80,7 +80,7 @@ function handleCreateAnnouncementButton() {
 }
 
 function handleAnnouncementEditButton(announcementID) {
-
+    
 }
 
 function handleRemoveSelectedButton(selectedAnnouncementsIDs) {
@@ -312,13 +312,22 @@ function setGlobalMessage(messageCode) {
             container.innerText = "Announcements successfully removed.";
             break;
         case 3:
-            container.innerHTML = "For one or more announcement status has not been changed because of invalid active time range."
+            container.innerText = "For one or more announcement status has not been changed because of invalid active time range."
             break;
         case 4:
-            container.innerHTML = "Announcement successfully created.";
+            container.innerText = "Announcement successfully created.";
             break;
         case 5:
-            container.innerHTML = "This announcement does not have timetable. Use edit button to add it.";
+            container.innerText = "This announcement does not have timetable. Use edit button to add it.";
+            break;
+        case 6:
+            container.innerText = "An error occurred while acquiring reservations data form database.";
+            break;
+        case 7:
+            container.innerText = "An error occurred while updating reservations amount."
+            break;
+        case 8:
+            container.innerText = "Reservations updated";
             break;
         default:
             break;

@@ -185,7 +185,7 @@ namespace BedAndBreakfast.Controllers
             Announcement announcement = context.Announcements.Where(a => a.ID == announcementID).SingleOrDefault();
             if (announcement == null)
             {
-                return null;
+                return Json(null);
             }
             List<ScheduleItem> scheduleItems = context.AnnouncementToSchedules
                 .Where(s => s.Announcement == announcement)
@@ -277,7 +277,7 @@ namespace BedAndBreakfast.Controllers
                 };
                 reservationsPerUser.Add(new { userData = userData, reservations = item.Item2 });
             }
-            return Json(new { reservationsPerUser });
+            return Json(reservationsPerUser);
         }
 
         /// <summary>
@@ -332,22 +332,29 @@ namespace BedAndBreakfast.Controllers
                 List<Reservation> reservationsToRemove = reservations.Take(reservations.Count() - newReservationsAmount).ToList();
                 context.Reservations.RemoveRange(reservationsToRemove);
                 context.SaveChanges();
-                return Json(new { updated = (newReservationsAmount - reservations.Count()) });
+                return Json(newReservationsAmount - reservations.Count());
             }
             else if (reservations.Count() < newReservationsAmount)
             {
                 List<Reservation> reservationsToAdd = new List<Reservation>();
                 for (int i = 0; i < newReservationsAmount - reservations.Count(); i++)
                 {
-                    reservationsToAdd.Add(new Reservation() { Announcement = announcement, Date = date, ScheduleItem = schItem, User = user });
+                    reservationsToAdd.Add(new Reservation()
+                    {
+                        Announcement = announcement,
+                        Date = date,
+                        ScheduleItem = schItem,
+                        User = user,
+                        ReservationDate = DateTime.Today,
+                    });
                 }
                 context.Reservations.AddRange(reservationsToAdd);
                 context.SaveChanges();
-                return Json(new { updated = (reservations.Count() - newReservationsAmount) });
+                return Json(reservations.Count() - newReservationsAmount);
             }
             else
             {
-                return Json(new { updated = 0 });
+                return Json(0);
             }
         }
 
@@ -714,8 +721,10 @@ namespace BedAndBreakfast.Controllers
         /// <param name="timetableOption"></param>
         /// <returns></returns>
         [Authorize(Roles = Role.User)]
-        public IActionResult LoadTimetable(int timetableOption) {
-            switch (timetableOption) {
+        public IActionResult LoadTimetable(int timetableOption)
+        {
+            switch (timetableOption)
+            {
                 case 1:
                     return PartialView("DailyTimetablePartialView");
                 case 2:

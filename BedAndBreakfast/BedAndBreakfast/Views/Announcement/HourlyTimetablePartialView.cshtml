@@ -3,4 +3,60 @@
     ViewData["Title"] = "HourlyTimetablePartialView";
 }
 
+<div>
+    Timetable:
+</div>
+<table border="1">
+    <tr>
+        <td rowspan="2"><button onclick="handlePreviousDayButton();">Previous day</button></td>
+        <td>
+            <div id="hourly-timetable-day-container"></div>
+        </td>
+        <td rowspan="2"><button onclick="handleNextDayButton();">Next day</button></td>
+    </tr>
+    <tr>
+        <td>
+            <table id="hourly-timetable-schedule-item-container" border="1">
+                <tr id="hourly-timetable-schedule-item-prototype" hidden>
+                    <td><label>From: </label><div class="hourly-timetable-schedule-item-from"></div></td>
+                    <td><label>To: </label><div class="hourly-timetable-schedule-item-to"></div></td>
+                    <td><label>Reservations: </label><div class="hourly-timetable-schedule-item-reservations"></div></td>
+                    <td><button onclick="handleDetailsButton();">Details</button></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<div>
+    Details
+</div>
 
+<table id="details-items-container" border="1">
+    <tr id="details-item-prototype" hidden>
+        <td>
+            <label>Username: </label>
+            <div class="details-item-username"></div>
+        </td>
+        <td>
+            <label>First name: </label>
+            <div class="details-item-first-name"></div>
+        </td>
+        <td>
+            <label>Last name: </label>
+            <div class="details-item-last-name"></div>
+        </td>
+        <td>
+            <label>Reservations: </label>
+            <input type="text" />
+        </td>
+        <td>
+            <button onclick="handleReservationsUpdate();">Update</button>
+        </td>
+        <td>
+            <span></span>
+        </td>
+    </tr>
+</table>
+<div id="details-message-container">
+    Click one of timetable buttons to display details.
+</div>

@@ -587,7 +587,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 {
                     foreach (var item in reservationsPerDay)
                     {
-                        if (day == item.date)
+                        if (day.Date == item.date.Date)
                         {
                             reservations[index] = item.reservations;
                         }

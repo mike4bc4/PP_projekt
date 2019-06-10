@@ -4,63 +4,94 @@
 }
 
 <div>
-    Announcement timetable:
-</div>
-<div>
-    <table border="1">
-        <tr>
-            <td rowspan="2">
-                <button>Previous week</button>
-            </td>
-            <td id="timetable-day-0"></td>
-            <td id="timetable-day-1"></td>
-            <td id="timetable-day-2"></td>
-            <td id="timetable-day-3"></td>
-            <td id="timetable-day-4"></td>
-            <td id="timetable-day-5"></td>
-            <td id="timetable-day-6"></td>
-            <td rowspan="2">
-                <button>Next week</button>
-            </td>
-        </tr>
-        <tr>
-            <td id="timetable-day-0-reservations">
-                <div></div>
-                <button>Details</button>
-            </td>
-            <td id="timetable-day-1-reservations">
-                <div></div>
-                <button>Details</button>
-            </td>
-            <td id="timetable-day-2-reservations">
-                <div></div>
-                <button>Details</button>
-            </td>
-            <td id="timetable-day-3-reservations">
-                <div></div>
-                <button>Details</button>
-            </td>
-            <td id="timetable-day-4-reservations">
-                <div></div>
-                <button>Details</button>
-            </td>
-            <td id="timetable-day-5-reservations">
-                <div></div>
-                <button>Details</button>
-            </td>
-            <td id="timetable-day-6-reservations">
-                <div></div>
-                <button>Details</button>
-            </td>
-        </tr>
-    </table>
+    Timetable
 </div>
 
-<div>
-    Reservation details:
-</div>
+<table border="1">
+    <tr>
+        <td rowspan="2">
+            <button onclick="handlePreviousWeekButton();">Previus week</button>
+        </td>
+        <td><div id="timetable-day-date-0"></div></td>
+        <td><div id="timetable-day-date-1"></div></td>
+        <td><div id="timetable-day-date-2"></div></td>
+        <td><div id="timetable-day-date-3"></div></td>
+        <td><div id="timetable-day-date-4"></div></td>
+        <td><div id="timetable-day-date-5"></div></td>
+        <td><div id="timetable-day-date-6"></div></td>
+        <td rowspan="2">
+            <button onclick="handleNexWeekButton();">Next week</button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label>Reservations: </label>
+            <div id="timetable-reservations-0"></div>
+            <button onclick="handleDetailsButton(0);">Details</button>
+        </td>
+        <td>
+            <label>Reservations: </label>
+            <div id="timetable-reservations-1"></div>
+            <button onclick="handleDetailsButton(1);">Details</button>
+        </td>
+        <td>
+            <label>Reservations: </label>
+            <div id="timetable-reservations-2"></div>
+            <button onclick="handleDetailsButton(2);">Details</button>
+        </td>
+        <td>
+            <label>Reservations: </label>
+            <div id="timetable-reservations-3"></div>
+            <button onclick="handleDetailsButton(3);">Details</button>
+        </td>
+        <td>
+            <label>Reservations: </label>
+            <div id="timetable-reservations-4"></div>
+            <button onclick="handleDetailsButton(4);">Details</button>
+        </td>
+        <td>
+            <label>Reservations: </label>
+            <div id="timetable-reservations-5"></div>
+            <button onclick="handleDetailsButton(5);">Details</button>
+        </td>
+        <td>
+            <label>Reservations: </label>
+            <div id="timetable-reservations-6"></div>
+            <button onclick="handleDetailsButton(6);">Details</button>
+        </td>
+    </tr>
+</table>
 
 <div>
-    
+    Details
 </div>
 
+<table id="details-items-container" border="1">
+    <tr id="details-item-prototype" hidden>
+        <td>
+            <label>Username: </label>
+            <div class="details-item-username"></div>
+        </td>
+        <td>
+            <label>First name: </label>
+            <div class="details-item-first-name"></div>
+        </td>
+        <td>
+            <label>Last name: </label>
+            <div class="details-item-last-name"></div>
+        </td>
+        <td>
+            <label>Reservations: </label>
+            <input type="text" />
+        </td>
+        <td>
+            <button onclick="handleReservationsUpdate();">Update</button>
+        </td>
+        <td>
+            <span></span>
+        </td>
+    </tr>
+</table>
+<div id="details-message-container">
+    Click one of timetable buttons to display details.
+</div>
