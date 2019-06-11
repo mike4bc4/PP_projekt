@@ -556,7 +556,7 @@ namespace BedAndBreakfast.Controllers
             foreach (Announcement announcement in announcements)
             {
                 // Activate only these announcements that may be activated.
-                if (announcement.IsActive == true || (announcement.From.Date < DateTime.Today.Date && announcement.To.Date > DateTime.Today.Date))
+                if (announcement.IsActive == true || (announcement.From.Date <= DateTime.Today.Date && announcement.To.Date >= DateTime.Today.Date))
                 {
                     announcement.IsActive = !announcement.IsActive;
                 }
@@ -581,8 +581,200 @@ namespace BedAndBreakfast.Controllers
             // Announcement is passed inside FormData object and comes as serialized JSON object and has to be deserialized manually.
             SaveAnnouncementViewModel announcementViewModel = JsonConvert
                 .DeserializeObject<SaveAnnouncementViewModel>(announcement);
+            // Perform validation
+            // If house type is selected and no shared part is provided.
+            if (announcementViewModel.Type == 0 && announcementViewModel.SharedPart == null)
+            {
+                return Json(null);
+            }
+            // If any part of address is missing.
+            if (string.IsNullOrEmpty(announcementViewModel.Country) ||
+                string.IsNullOrEmpty(announcementViewModel.Region) ||
+                string.IsNullOrEmpty(announcementViewModel.City) ||
+                string.IsNullOrEmpty(announcementViewModel.Street) ||
+                string.IsNullOrEmpty(announcementViewModel.StreetNumber))
+            {
+                return Json(null);
+            }
+            // If date range is invalid.
+            if (announcementViewModel.From == null ||
+                announcementViewModel.To == null ||
+                announcementViewModel.From.Date > announcementViewModel.To.Date ||
+                announcementViewModel.To.Date <= DateTime.Today.Date ||
+                announcementViewModel.From.Date < new DateTime(2000, 1, 1).Date)
+            {
+                return Json(null);
+            }
+            // If description is empty.
+            if (string.IsNullOrEmpty(announcementViewModel.Description))
+            {
+                return Json(null);
+            }
+            // If contacts is empty or has invalid value.
+            if (announcementViewModel.Contacts.Count() == 0)
+            {
+                return Json(null);
+            }
+            foreach (ContactPaymentItem item in announcementViewModel.Contacts)
+            {
+                if (string.IsNullOrEmpty(item.Value))
+                {
+                    return Json(null);
+                }
+            }
+            // If payments is empty or has invalid value.
+            if (announcementViewModel.Payments.Count() == 0)
+            {
+                return Json(null);
+            }
+            foreach (ContactPaymentItem item in announcementViewModel.Payments)
+            {
+                if (string.IsNullOrEmpty(item.Value))
+                {
+                    return Json(null);
+                }
+            }
+            // Timetable validation
+            switch (announcementViewModel.Timetable)
+            {
+                case 0:
+                    // If timetable is off and per day reservations or schedule items exist.
+                    if (announcementViewModel.PerDayReservations != null ||
+                        announcementViewModel.ScheduleItems != null)
+                    {
+                        return Json(null);
+                    }
+                    break;
+                case 1:
+                    // If timetable is set as per day and schedule items exist or per day reservations is invalid.
+                    if (announcementViewModel.PerDayReservations == null ||
+                        announcementViewModel.PerDayReservations < 1 ||
+                        announcementViewModel.PerDayReservations > 1000 ||
+                        announcementViewModel.ScheduleItems != null)
+                    {
+                        return Json(null);
+                    }
+                    break;
+                case 2:
+                    // If timetable is set as per hour and per day reservations exist or there is no schedule items.
+                    if (announcementViewModel.PerDayReservations != null ||
+                        announcementViewModel.ScheduleItems == null)
+                    {
+                        return Json(null);
+                    }
+                    // Validate schedule items.
+                    foreach (ScheduleItemViewModel item in announcementViewModel.ScheduleItems)
+                    {
+                        if (item.From < 0 || item.From > 23 ||
+                            item.To < 1 || item.To > 24 ||
+                            item.MaxReservations < 1 ||
+                            item.MaxReservations > 1000)
+                        {
+                            return Json(null);
+                        }
+                    }
+                    break;
+            }
 
-            return Json(null);
+            //-------------------------------------------------------->TODO: Image validation, count should be smaller than 5 (defined in db settings), also take into account preview images.
+
+            // Announcement is valid.
+            // Get announcement if it should be edited instead created.
+            Announcement editedAnnouncement = null;
+            Announcement addedAnnouncement = null;
+            if (announcementViewModel.AnnouncementID != null)
+            {
+                editedAnnouncement = await context.Announcements
+                    .Include(a => a.Address)
+                    .Where(a => a.ID == announcementViewModel.AnnouncementID)
+                    .SingleOrDefaultAsync();
+            }
+            // Announcement specified by id has not been found - error.
+            if (announcementViewModel.AnnouncementID != null && editedAnnouncement == null)
+            {
+                return Json(null);
+            }
+            if (announcementViewModel.AnnouncementID != null)
+            {
+                // Edit announcement
+                editedAnnouncement.Description = announcementViewModel.Description;
+                editedAnnouncement.From = announcementViewModel.From;
+                editedAnnouncement.IsActive = true;
+                editedAnnouncement.MaxReservations = announcementViewModel.PerDayReservations;
+                editedAnnouncement.Removed = false;
+                editedAnnouncement.SharedPart = (byte?)announcementViewModel.SharedPart;
+                editedAnnouncement.Subtype = (byte)announcementViewModel.Subtype;
+                editedAnnouncement.Timetable = (byte)announcementViewModel.Timetable;
+                editedAnnouncement.To = announcementViewModel.To;
+                editedAnnouncement.Type = (byte)announcementViewModel.Type;
+                // Remove previous relations.
+                AnnouncementServiceLogic.ClearContactsAndPaymentMethodRelations(editedAnnouncement, context);
+                AnnouncementServiceLogic.ClearScheduleItemsRelations(editedAnnouncement, context);
+                AnnouncementServiceLogic.ClearTagRelations(editedAnnouncement, context);
+                // Generate new relations.
+                await AnnouncementServiceLogic.CreateAddressForAnnouncement(announcementViewModel, editedAnnouncement, context);
+                await AnnouncementServiceLogic.CreateContactsForAnnoucement(announcementViewModel, editedAnnouncement, context);
+                await AnnouncementServiceLogic.CreatePaymentsForAnnoucement(announcementViewModel, editedAnnouncement, context);
+                if (announcementViewModel.ScheduleItems != null)
+                {
+                    await AnnouncementServiceLogic.CreateScheduleItemsForAnnoucement(announcementViewModel, editedAnnouncement, context);
+                }
+                await AnnouncementServiceLogic.CreateTagsForAnnouncement(editedAnnouncement, context);
+            }
+            else
+            {
+                // Create new announcement.
+                addedAnnouncement = new Announcement()
+                {
+                    Description = announcementViewModel.Description,
+                    From = announcementViewModel.From,
+                    IsActive = true,
+                    MaxReservations = announcementViewModel.PerDayReservations,
+                    Removed = false,
+                    SharedPart = (byte?)announcementViewModel.SharedPart,
+                    Subtype = (byte)announcementViewModel.Subtype,
+                    Timetable = (byte)announcementViewModel.Timetable,
+                    To = announcementViewModel.To,
+                    Type = (byte)announcementViewModel.Type,
+                    User = await userManager.GetUserAsync(HttpContext.User),
+                };
+                // Add created announcement.
+                await context.Announcements.AddAsync(addedAnnouncement);
+                await AnnouncementServiceLogic.CreateAddressForAnnouncement(announcementViewModel, addedAnnouncement, context);
+                await AnnouncementServiceLogic.CreateContactsForAnnoucement(announcementViewModel, addedAnnouncement, context);
+                await AnnouncementServiceLogic.CreatePaymentsForAnnoucement(announcementViewModel, addedAnnouncement, context);
+                // Add schedule items relations only if such exists in view model.
+                if (announcementViewModel.ScheduleItems != null)
+                {
+                    await AnnouncementServiceLogic.CreateScheduleItemsForAnnoucement(announcementViewModel, addedAnnouncement, context);
+                }
+                await AnnouncementServiceLogic.CreateTagsForAnnouncement(addedAnnouncement, context);
+            }
+
+            //-------------------------------------------------------->TODO: Remove all images related to this announcement. Pass preview images (to keep these that were not removed).
+
+            // Store images to database
+            List<Image> imagesToAdd = new List<Image>();
+            foreach (IFormFile image in images)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    Image addedImage = new Image()
+                    {
+                        Announcement = addedAnnouncement ?? editedAnnouncement,
+                        ImageName = image.FileName,
+                    };
+                    await image.CopyToAsync(memoryStream);
+                    addedImage.StoredImage = memoryStream.ToArray();
+                    imagesToAdd.Add(addedImage);
+                }
+            }
+            await context.Images.AddRangeAsync(imagesToAdd);
+
+            // Save db context.
+            int result = await context.SaveChangesAsync();
+            // Return amount of affected db rows.
+            return Json(result);
         }
 
         /// <summary>
@@ -643,6 +835,10 @@ namespace BedAndBreakfast.Controllers
                 .Select(ats => ats.ScheduleItem)
                 .OrderBy(si => si.From)
                 .ToListAsync();
+            // Get announcement related images.
+            List<Image> images = await context.Images
+                .Where(i => i.AnnouncementID == announcementID)
+                .ToListAsync();
             // Parse acquired contacts to view model.
             List<ContactPaymentItem> contacts = new List<ContactPaymentItem>();
             foreach (AdditionalContact additionalContact in additionalContacts)
@@ -674,6 +870,16 @@ namespace BedAndBreakfast.Controllers
                     MaxReservations = scheduleItem.MaxReservations,
                 });
             }
+            // Parse acquired images to view model.
+            List<ImageViewModel> imageViewModels = new List<ImageViewModel>();
+            foreach (Image image in images)
+            {
+                imageViewModels.Add(new ImageViewModel
+                {
+                    ImageByteArray = image.StoredImage,
+                    ImageName = image.ImageName,
+                });
+            }
             // Collect data into single object and send to view.
             SaveAnnouncementViewModel outputAnnouncement = new SaveAnnouncementViewModel()
             {
@@ -694,9 +900,12 @@ namespace BedAndBreakfast.Controllers
                 Timetable = announcement.Timetable,
                 To = announcement.To,
                 Type = announcement.Type,
+                Images = imageViewModels,
             };
 
             return Json(outputAnnouncement);
         }
+
+
     }
 }

@@ -10,310 +10,14 @@ namespace BedAndBreakfast.Models.ServicesLogic
 {
     public static class AnnouncementServiceLogic
     {
-
-        //public static bool IsAnnouncementViewModelValid(EditAnnouncementViewModel viewModel)
-        //{
-        //    // Validate received view model.
-        //    if (viewModel.Type == null)
-        //    {
-        //        return false;
-        //    }
-        //    // Continue validation only if current model state is valid.
-        //    // Check subtype.
-        //    if (viewModel.Type == (byte)EnumeratedDbValues.AnnouncementType.House)
-        //    {
-        //        if (viewModel.Subtype == null || viewModel.SharedPart == null)
-        //        {
-        //            return false;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (viewModel.Subtype == null)
-        //        {
-        //            return false;
-        //        }
-        //    }
-        //    // Check address.
-        //    if (viewModel.Country == null || viewModel.Region == null || viewModel.City == null || viewModel.Street == null || viewModel.StreetNumber == null)
-        //    {
-        //        return false;
-        //    }
-        //    int len = IoCContainer.DbSettings.Value.MaxAddressInputLength;
-        //    if (viewModel.Country.Length > len || viewModel.Region.Length > len || viewModel.City.Length > len
-        //        || viewModel.Street.Length > len || viewModel.StreetNumber.Length > len)
-        //    {
-        //        return false;
-        //    }
-        //    // Check time.
-        //    if (DateTime.Compare(viewModel.From, viewModel.To) > 0 || DateTime.Compare(viewModel.From, DateTime.Today) < 0)
-        //    {
-        //        return false;
-        //    }
-        //    // Check description.
-        //    if (viewModel.Description == null)
-        //    {
-        //        return false;
-        //    }
-        //    // Check contacts
-        //    if (viewModel.ContactMethods.Count() > 0)
-        //    {
-        //        foreach (var item in viewModel.ContactMethods)
-        //        {
-        //            if (string.IsNullOrEmpty(item.Key))
-        //            {
-        //                return false;
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-        //    // Check payment methods.
-        //    if (viewModel.PaymentMethods.Count() > 0)
-        //    {
-        //        foreach (var item in viewModel.PaymentMethods)
-        //        {
-        //            if (string.IsNullOrEmpty(item.Key))
-        //            {
-        //                return false;
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-        //    // Check timetable options
-        //    switch (viewModel.Timetable)
-        //    {
-        //        case 1:
-        //            if (viewModel.MaxReservations == null || viewModel.MaxReservations == 0)
-        //            {
-        //                return false;
-        //            }
-        //            break;
-        //        case 2:
-        //            // If list does not exist or is empty report validation error.
-        //            if (viewModel.ScheduleItems == null || viewModel.ScheduleItems.Count() == 0)
-        //            {
-        //                return false;
-        //            }
-        //            bool scheduleItemsNotEmpty = false;
-        //            foreach (var item in viewModel.ScheduleItems)
-        //            {
-        //                // At the same time check if list is not full of null values.
-        //                if (item != null)
-        //                {
-        //                    scheduleItemsNotEmpty = true;
-        //                }
-        //                // For each item in schedule items.
-        //                /// Represents set of time ranges: 0:00-1:00, 1:00-2:00...
-        //                List<bool> availableHours = new List<bool> {
-        //                    true,true,true,true,true,true,true,true,
-        //                    true,true,true,true,true,true,true,true,
-        //                    true,true,true,true,true,true,true,true
-        //                };
-        //                /// Represents set of time ranges: 0:00-1:00, 1:00-2:00...
-        //                List<bool> currentItemAvailableHours = new List<bool> {
-        //                    true,true,true,true,true,true,true,true,
-        //                    true,true,true,true,true,true,true,true,
-        //                    true,true,true,true,true,true,true,true
-        //                };
-        //                for (var i = 0; i < viewModel.ScheduleItems.Count(); i++)
-        //                {
-        //                    if (viewModel.ScheduleItems[i] != null && viewModel.ScheduleItems[i] != item)
-        //                    {
-        //                        // Mark hours as unavailable for every other schedule item.
-        //                        for (var j = viewModel.ScheduleItems[i].From; j < viewModel.ScheduleItems[i].To; j++)
-        //                        {
-        //                            availableHours[j] = false;
-        //                        }
-        //                    }
-        //                }
-        //                // Mark hours as unavailable fro currently validated item.
-        //                for (var i = item.From; i < item.To; i++)
-        //                {
-        //                    currentItemAvailableHours[i] = false;
-        //                }
-        //                for (var i = 0; i < availableHours.Count(); i++)
-        //                {
-        //                    // If any unavailable hour for all other items overlaps with currently validated item available hours report validation error.
-        //                    if (availableHours[i] == false && currentItemAvailableHours[i] == false)
-        //                    {
-        //                        return false;
-        //                    }
-        //                }
-        //                // If no time range error detected check if amount of max reservations is correct (not null or 0).
-        //                if (item.MaxReservations == null || item.MaxReservations == 0)
-        //                {
-        //                    return false;
-        //                }
-        //            }
-        //            // If list is full of null values report validation error.
-        //            if (!scheduleItemsNotEmpty)
-        //            {
-        //                return false;
-        //            }
-        //            break;
-        //    }
-        //    // Everything is correct.
-        //    return true;
-        //}
-
         /// <summary>
-        /// Saves announcement to database. If such announcement is already present
-        /// in database it will be updated. Also generates browser tags for announcement. 
-        /// </summary>
-        /// <param name="viewModel"></param>
-        /// <param name="context"></param>
-        /// <param name="announcementOwner"></param>
-        /// <param name="newModel"></param>
-        /// <returns></returns>
-        //public static async Task SaveAnnouncementToDatabase(EditAnnouncementViewModel viewModel, AppDbContext context, User announcementOwner, bool newModel)
-        //{
-        //    Announcement announcement;
-        //    if (newModel)
-        //        announcement = new Announcement();
-        //    else
-        //    {
-        //        // If model is edited it has to be found in database by provided ID.
-        //        announcement = context.Announcements.Include(a => a.Address).Where(a => a.ID == viewModel.ID).Single();
-        //        // All payment methods and contact relations are removed to avoid duplicate relations and
-        //        // saving back those which were removed by user.
-        //        ClearContactsAndPaymentMethodRelations(announcement, context);
-        //        // Remove tag relations.
-        //        ClearTagRelations(announcement, context);
-        //        // Remove schedule items relations.
-        //        ClearScheduleItemsRelations(announcement, context);
-        //    }
-
-        //    Address viewModelAddress = new Address
-        //    {
-        //        Country = viewModel.Country,
-        //        Region = viewModel.Region,
-        //        City = viewModel.City,
-        //        Street = viewModel.Street,
-        //        StreetNumber = viewModel.StreetNumber
-        //    };
-
-        //    Address addressInDatabase = SearchEngine.FindAddressByContent(viewModelAddress, context);
-
-        //    // If there is already similar address in database add it.
-        //    if (addressInDatabase != null)
-        //    {
-        //        announcement.Address = addressInDatabase;
-        //        announcement.AddressFK = addressInDatabase.ID;
-        //    }
-        //    else
-        //    {
-        //        announcement.Address = viewModelAddress;
-        //    }
-
-        //    announcement.Type = (byte)viewModel.Type;
-        //    announcement.Subtype = (byte)viewModel.Subtype;
-        //    announcement.SharedPart = viewModel.SharedPart;
-        //    announcement.From = viewModel.From;
-        //    announcement.To = viewModel.To;
-        //    announcement.Description = viewModel.Description;
-        //    announcement.User = announcementOwner;
-        //    announcement.Timetable = (byte)viewModel.Timetable;
-        //    announcement.MaxReservations = viewModel.MaxReservations;
-
-        //    // Add all contacts relations.
-        //    foreach (KeyValuePair<string, byte> contact in viewModel.ContactMethods)
-        //    {
-        //        AdditionalContact viewModelContact = new AdditionalContact { Type = contact.Value, Data = contact.Key };
-        //        AdditionalContact contactInDatabase = SearchEngine.FindAdditionalContact(viewModelContact, context);
-        //        if (contactInDatabase != null)
-        //        {
-        //            context.AnnouncementToContacts.Add(new AnnouncementToContact
-        //            { Announcement = announcement, AdditionalContact = contactInDatabase });
-        //        }
-        //        else
-        //        {
-        //            context.AnnouncementToContacts.Add(new AnnouncementToContact
-        //            { Announcement = announcement, AdditionalContact = viewModelContact });
-        //        }
-        //    }
-        //    // Add all payment methods relations.
-        //    foreach (KeyValuePair<string, byte> payment in viewModel.PaymentMethods)
-        //    {
-        //        PaymentMethod viewModelPaymentMethod = new PaymentMethod { Type = payment.Value, Data = payment.Key };
-        //        PaymentMethod paymentMethodInDatabase = SearchEngine.FindPaymentMethod(viewModelPaymentMethod, context);
-        //        if (paymentMethodInDatabase != null)
-        //        {
-
-        //            context.AnnouncementToPayments.Add(new AnnouncementToPayment
-        //            { Announcement = announcement, PaymentMethod = paymentMethodInDatabase });
-        //        }
-        //        else
-        //        {
-        //            context.AnnouncementToPayments.Add(new AnnouncementToPayment
-        //            { Announcement = announcement, PaymentMethod = viewModelPaymentMethod });
-        //        }
-        //    }
-        //    // Add all schedule items relations.
-        //    foreach (var item in viewModel.ScheduleItems)
-        //    {
-        //        ScheduleItem scheduleItemInDB = SearchEngine.FindScheduleItem((byte)item.From, (byte)item.To, (int)item.MaxReservations, context);
-        //        if (scheduleItemInDB == null)
-        //        {
-        //            ScheduleItem newScheduleItem = new ScheduleItem() { From = (byte)item.From, To = (byte)item.To, MaxReservations = (int)item.MaxReservations };
-        //            context.ScheduleItems.Add(newScheduleItem);
-        //            context.AnnouncementToSchedules.Add(new AnnouncementToSchedule() { Announcement = announcement, ScheduleItem = newScheduleItem });
-        //        }
-        //        else
-        //        {
-        //            context.AnnouncementToSchedules.Add(new AnnouncementToSchedule() { Announcement = announcement, ScheduleItem = scheduleItemInDB });
-        //        }
-        //    }
-
-
-        //    // When all data is provided generate tags.
-        //    foreach (string tag in GenerateTags(announcement))
-        //    {
-        //        AnnouncementTag tagInDb = SearchEngine.FindTag(tag, context);
-        //        if (tagInDb != null)
-        //        {
-        //            context.AnnouncementToTags
-        //                .Add(new AnnouncementToTag
-        //                {
-        //                    Announcement = announcement,
-        //                    AnnouncementID = announcement.ID,
-        //                    AnnouncementTag = tagInDb,
-        //                    AnnouncementTagID = tagInDb.Value
-        //                });
-        //        }
-        //        else
-        //        {
-        //            AnnouncementTag newAnnouncementTag = new AnnouncementTag { Value = tag };
-        //            context.AnnouncementTags
-        //                .Add(newAnnouncementTag);
-        //            context.AnnouncementToTags
-        //                .Add(new AnnouncementToTag
-        //                {
-        //                    Announcement = announcement,
-        //                    AnnouncementID = announcement.ID,
-        //                    AnnouncementTag = newAnnouncementTag
-        //                });
-        //        }
-        //    }
-
-        //    await context.SaveChangesAsync();
-
-        //}
-
-
-
-        /// <summary>
-        /// Generates tags which should be applied to announcement based
-        /// on address, type and subtype.
+        /// Generates tags for provided announcement based on type, subtype and
+        /// address. Tags that does not exist in database are added and then
+        /// relations are created. Note that all changes have to be saved to persist.
         /// </summary>
         /// <param name="announcement"></param>
         /// <returns></returns>
-        private static List<string> GenerateTags(Announcement announcement)
+        public static async Task<int> CreateTagsForAnnouncement(Announcement announcement, AppDbContext context)
         {
             // Add tags based on address.
             List<string> generatedTags = new List<string>
@@ -358,7 +62,51 @@ namespace BedAndBreakfast.Models.ServicesLogic
                     break;
             }
             // Remove duplicates.
-            return generatedTags.Distinct().ToList();
+            generatedTags = generatedTags.Distinct().ToList();
+
+            List<AnnouncementTag> dbAnnouncementTags = new List<AnnouncementTag>();
+            List<AnnouncementTag> newAnnouncementTags = new List<AnnouncementTag>();
+            foreach (string tag in generatedTags)
+            {
+                AnnouncementTag dbAnnouncementTag = await context.AnnouncementTags
+                    .Where(at => at.Value == tag)
+                    .SingleOrDefaultAsync();
+                if (dbAnnouncementTag != null)
+                {
+                    dbAnnouncementTags.Add(dbAnnouncementTag);
+                }
+                else
+                {
+                    newAnnouncementTags.Add(new AnnouncementTag()
+                    {
+                        Value = tag,
+                    });
+                }
+            }
+            // Add new tags to context.
+            await context.AnnouncementTags.AddRangeAsync(newAnnouncementTags);
+            // Create relations.
+            List<AnnouncementToTag> announcementToTags = new List<AnnouncementToTag>();
+            foreach (AnnouncementTag tag in dbAnnouncementTags)
+            {
+                announcementToTags.Add(new AnnouncementToTag()
+                {
+                    Announcement = announcement,
+                    AnnouncementTag = tag,
+                });
+            }
+            foreach (AnnouncementTag tag in newAnnouncementTags)
+            {
+                announcementToTags.Add(new AnnouncementToTag()
+                {
+                    Announcement = announcement,
+                    AnnouncementTag = tag,
+                });
+            }
+            // Add relations to context.
+            await context.AnnouncementToTags.AddRangeAsync(announcementToTags);
+
+            return 0;
         }
 
         /// <summary>
@@ -367,7 +115,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// </summary>
         /// <param name="announcement"></param>
         /// <param name="context"></param>
-        private static void ClearScheduleItemsRelations(Announcement announcement, AppDbContext context)
+        public static void ClearScheduleItemsRelations(Announcement announcement, AppDbContext context)
         {
             List<AnnouncementToSchedule> announcementToSchedulesToRemove = context.AnnouncementToSchedules.Where(ats => ats.Announcement == announcement).ToList();
             context.AnnouncementToSchedules.RemoveRange(announcementToSchedulesToRemove);
@@ -379,7 +127,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// </summary>
         /// <param name="announcement"></param>
         /// <param name="context"></param>
-        private static void ClearTagRelations(Announcement announcement, AppDbContext context)
+        public static void ClearTagRelations(Announcement announcement, AppDbContext context)
         {
             List<AnnouncementToTag> tagRelationsToRemove = context.AnnouncementToTags.Where(att => att.Announcement == announcement).ToList();
             context.AnnouncementToTags.RemoveRange(tagRelationsToRemove);
@@ -391,7 +139,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// </summary>
         /// <param name="announcement"></param>
         /// <param name="context"></param>
-        private static void ClearContactsAndPaymentMethodRelations(Announcement announcement, AppDbContext context)
+        public static void ClearContactsAndPaymentMethodRelations(Announcement announcement, AppDbContext context)
         {
             List<AnnouncementToContact> contactRelationsToRemove = context.AnnouncementToContacts.Where(ac => ac.Announcement == announcement).ToList();
             List<AnnouncementToPayment> paymentMethodRelationsToRemove = context.AnnouncementToPayments.Where(ap => ap.Announcement == announcement).ToList();
@@ -411,68 +159,6 @@ namespace BedAndBreakfast.Models.ServicesLogic
             user.IsHost = true;
             await context.SaveChangesAsync();
         }
-
-        /// <summary>
-        /// Creates and returns list of announcements parsed into view model list which
-        /// is easier to work with for view.
-        /// </summary>
-        /// <param name="announcements"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        //public static List<EditAnnouncementViewModel> ParseAnnouncementsToViewModelList(List<Announcement> announcements,
-        //    AppDbContext context)
-        //{
-        //    if (announcements == null)
-        //    {
-        //        return null;
-        //    }
-        //    List<Dictionary<string, byte>> contacts = GetListOfAdditonalContacts(announcements, context);
-        //    List<Dictionary<string, byte>> payments = GetListOfPaymentMehtods(announcements, context);
-        //    List<List<ScheduleItem>> scheduleItems = GetListOfScheduleItems(announcements, context);
-
-        //    // Parse list of schedule items from database to list of schedule items of view model.
-        //    List<List<ScheduleItemViewModel>> scheduleItemsViewModels = new List<List<ScheduleItemViewModel>>();
-        //    foreach (List<ScheduleItem> list in scheduleItems)
-        //    {
-        //        List<ScheduleItemViewModel> scheduleItemsViewModel = new List<ScheduleItemViewModel>();
-        //        foreach (ScheduleItem scheduleItem in list)
-        //        {
-        //            scheduleItemsViewModel.Add(new ScheduleItemViewModel() { From = scheduleItem.From, To = scheduleItem.To, MaxReservations = scheduleItem.MaxReservations });
-        //        }
-        //        scheduleItemsViewModels.Add(scheduleItemsViewModel);
-        //    }
-
-
-        //    List<EditAnnouncementViewModel> viewModelList = new List<EditAnnouncementViewModel>();
-        //    int index = 0;
-        //    foreach (Announcement announcement in announcements)
-        //    {
-        //        viewModelList.Add(new EditAnnouncementViewModel
-        //        {
-        //            ID = announcement.ID,
-        //            Type = announcement.Type,
-        //            Subtype = announcement.Subtype,
-        //            SharedPart = announcement.SharedPart,
-        //            Country = announcement.Address.Country,
-        //            Region = announcement.Address.Region,
-        //            City = announcement.Address.City,
-        //            Street = announcement.Address.Street,
-        //            StreetNumber = announcement.Address.StreetNumber,
-        //            From = announcement.From,
-        //            To = announcement.To,
-        //            ContactMethods = contacts[index],
-        //            Description = announcement.Description,
-        //            PaymentMethods = payments[index],
-        //            IsActive = announcement.IsActive,
-        //            Removed = announcement.Removed,
-        //            MaxReservations = announcement.MaxReservations,
-        //            Timetable = announcement.Timetable,
-        //            ScheduleItems = scheduleItemsViewModels[index]
-        //        });
-        //        index++;
-        //    }
-        //    return viewModelList;
-        //}
 
         private static List<List<ScheduleItem>> GetListOfScheduleItems(List<Announcement> usersAnnouncements, AppDbContext context)
         {
@@ -633,7 +319,228 @@ namespace BedAndBreakfast.Models.ServicesLogic
             return null;
         }
 
+        /// <summary>
+        /// Either finds address that is the same as address provided in database
+        /// or creates new one, adds it to db context and then to provided announcement.
+        /// </summary>
+        /// <param name="announcementViewModel"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static async Task<int> CreateAddressForAnnouncement(SaveAnnouncementViewModel announcementViewModel, Announcement announcement, AppDbContext context)
+        {
+            // Check if provided address already exists in database.
+            Address newAddress = new Address();
+            Address dbAddress = await context.Addresses
+                .Where(a => a.Country == announcementViewModel.Country)
+                .Where(a => a.Region == announcementViewModel.Region)
+                .Where(a => a.City == announcementViewModel.City)
+                .Where(a => a.Street == announcementViewModel.Street)
+                .Where(a => a.StreetNumber == announcementViewModel.StreetNumber)
+                .SingleOrDefaultAsync();
+            if (dbAddress != null)
+            {
+                newAddress = dbAddress;
+            }
+            else
+            {
+                // Create new address object if it does not exists.
+                newAddress = new Address()
+                {
+                    Country = announcementViewModel.Country,
+                    Region = announcementViewModel.Region,
+                    City = announcementViewModel.City,
+                    Street = announcementViewModel.Street,
+                    StreetNumber = announcementViewModel.StreetNumber,
+                };
+                // Add address to context
+                await context.Addresses.AddAsync(newAddress);
+            }
+            announcement.Address = newAddress;
+            return 0;
+        }
 
+        /// <summary>
+        /// Creates contacts and relations between provided announcement and
+        /// contacts created or these stored in database that are the same as
+        /// contacts given in view model. Note that context changes have to be saved
+        /// to persist.
+        /// </summary>
+        /// <param name="announcementViewModel"></param>
+        /// <param name="announcement"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static async Task<int> CreateContactsForAnnoucement(SaveAnnouncementViewModel announcementViewModel, Announcement announcement, AppDbContext context)
+        {
+            // Check if contacts defined in view model exist in database.
+            List<AdditionalContact> newContacts = new List<AdditionalContact>();
+            List<AdditionalContact> dbContacts = new List<AdditionalContact>();
+            foreach (ContactPaymentItem item in announcementViewModel.Contacts)
+            {
+                AdditionalContact dbContact = await context.AdditionalContacts
+                    .Where(ac => ac.Type == item.Type)
+                    .Where(ac => ac.Data == item.Value)
+                    .SingleOrDefaultAsync();
+                // If such contact was found in database add it to list
+                // else create new one.
+                if (dbContact != null)
+                {
+                    dbContacts.Add(dbContact);
+                }
+                else
+                {
+                    newContacts.Add(new AdditionalContact()
+                    {
+                        Data = item.Value,
+                        Type = (byte)item.Type,
+                    });
+                }
+            }
+            // Add new contacts to context.
+            await context.AdditionalContacts.AddRangeAsync(newContacts);
+            // Create list of relations.
+            List<AnnouncementToContact> announcementToContacts = new List<AnnouncementToContact>();
+            foreach (AdditionalContact contact in dbContacts)
+            {
+                announcementToContacts.Add(new AnnouncementToContact()
+                {
+                    Announcement = announcement,
+                    AdditionalContact = contact,
+                });
+            }
+            foreach (AdditionalContact contact in newContacts)
+            {
+                announcementToContacts.Add(new AnnouncementToContact()
+                {
+                    Announcement = announcement,
+                    AdditionalContact = contact,
+                });
+            }
+            // Add relations to contaxt.
+            await context.AnnouncementToContacts.AddRangeAsync(announcementToContacts);
+            return 0;
+        }
+
+        /// <summary>
+        /// Creates payments and relations between provided announcement and
+        /// payments created or these stored in database that are the same as
+        /// payments given in view model. Note that context changes have to be saved
+        /// to persist.
+        /// </summary>
+        /// <param name="announcementViewModel"></param>
+        /// <param name="announcement"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static async Task<int> CreatePaymentsForAnnoucement(SaveAnnouncementViewModel announcementViewModel, Announcement announcement, AppDbContext context)
+        {
+            // Check if payments defined in view model exist in database.
+            List<PaymentMethod> newPayments = new List<PaymentMethod>();
+            List<PaymentMethod> dbPayments = new List<PaymentMethod>();
+            foreach (ContactPaymentItem item in announcementViewModel.Payments)
+            {
+                PaymentMethod dbPayment = await context.PaymentMethods
+                    .Where(pm => pm.Type == item.Type)
+                    .Where(pm => pm.Data == item.Value)
+                    .SingleOrDefaultAsync();
+                // If such payment was found in database add it to list
+                // else create new one.
+                if (dbPayment != null)
+                {
+                    dbPayments.Add(dbPayment);
+                }
+                else
+                {
+                    newPayments.Add(new PaymentMethod()
+                    {
+                        Data = item.Value,
+                        Type = (byte)item.Type,
+                    });
+                }
+            }
+            // Add new payments to context.
+            await context.PaymentMethods.AddRangeAsync(newPayments);
+            // Create list of relations.
+            List<AnnouncementToPayment> announcementToPayments = new List<AnnouncementToPayment>();
+            foreach (PaymentMethod payment in dbPayments)
+            {
+                announcementToPayments.Add(new AnnouncementToPayment()
+                {
+                    Announcement = announcement,
+                    PaymentMethod = payment,
+                });
+            }
+            foreach (PaymentMethod payment in newPayments)
+            {
+                announcementToPayments.Add(new AnnouncementToPayment()
+                {
+                    Announcement = announcement,
+                    PaymentMethod = payment,
+                });
+            }
+            // Add relations to context.
+            await context.AnnouncementToPayments.AddRangeAsync(announcementToPayments);
+            return 0;
+        }
+
+        /// <summary>
+        /// Creates schedule items and relations to them. Schedule items are not
+        /// created if similar to those provided in view model are in database.
+        /// Then just simple relations with existing ones are created. Note that changes
+        /// need to be saved to persist.
+        /// </summary>
+        /// <param name="announcementViewModel"></param>
+        /// <param name="announcement"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static async Task<int> CreateScheduleItemsForAnnoucement(SaveAnnouncementViewModel announcementViewModel, Announcement announcement, AppDbContext context)
+        {
+            // Get schedule items that already exist in database or create new ones if the does not.
+            List<ScheduleItem> dbScheduleItems = new List<ScheduleItem>();
+            List<ScheduleItem> newScheduleItems = new List<ScheduleItem>();
+            foreach (ScheduleItemViewModel scheduleItem in announcementViewModel.ScheduleItems)
+            {
+                ScheduleItem dbScheduleItem = await context.ScheduleItems
+                    .Where(si => si.MaxReservations == scheduleItem.MaxReservations)
+                    .Where(si => si.From == scheduleItem.From)
+                    .Where(si => si.To == scheduleItem.To)
+                    .SingleOrDefaultAsync();
+                if (dbScheduleItem != null)
+                {
+                    dbScheduleItems.Add(dbScheduleItem);
+                }
+                else
+                {
+                    newScheduleItems.Add(new ScheduleItem()
+                    {
+                        From = (byte)scheduleItem.From,
+                        To = (byte)scheduleItem.To,
+                        MaxReservations = (int)scheduleItem.MaxReservations,
+                    });
+                }
+            }
+            // Add new schedule items to context.
+            await context.ScheduleItems.AddRangeAsync(newScheduleItems);
+            // Create relations between announcement and schedule items.
+            List<AnnouncementToSchedule> announcementToSchedule = new List<AnnouncementToSchedule>();
+            foreach (ScheduleItem scheduleItem in dbScheduleItems)
+            {
+                announcementToSchedule.Add(new AnnouncementToSchedule()
+                {
+                    Announcement = announcement,
+                    ScheduleItem = scheduleItem,
+                });
+            }
+            foreach (ScheduleItem scheduleItem in newScheduleItems)
+            {
+                announcementToSchedule.Add(new AnnouncementToSchedule()
+                {
+                    Announcement = announcement,
+                    ScheduleItem = scheduleItem,
+                });
+            }
+            // Add created relations to context.
+            await context.AnnouncementToSchedules.AddRangeAsync(announcementToSchedule);
+            return 0;
+        }
 
     }
 }

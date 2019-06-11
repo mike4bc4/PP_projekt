@@ -39,6 +39,7 @@ namespace BedAndBreakfast.Data
         public List<Reservation> Reservations { get; set; }
         public List<Review> Reviews { get; set; }
         public List<Conversation> RelatedConversations { get; set; }
+        public List<Image> Images { get; set; }
 
         public User User { get; set; }
 		[MaxLength(450)]

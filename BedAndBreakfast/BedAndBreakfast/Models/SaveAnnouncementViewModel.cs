@@ -24,6 +24,7 @@ namespace BedAndBreakfast.Models
         public int Timetable { get; set; }
         public int? PerDayReservations { get; set; }
         public List<ScheduleItemViewModel> ScheduleItems { get; set; }
+        public List<ImageViewModel> Images { get; set; }
     }
 
 

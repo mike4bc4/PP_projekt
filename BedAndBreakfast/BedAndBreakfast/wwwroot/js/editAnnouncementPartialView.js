@@ -18,6 +18,35 @@ function saveAnnouncement(context, requestSynchronizer) {
     });
 }
 
+/**
+ * Removes one of preview images. Adds blank image input if necessary.
+ * Changes add input function parameters of file inputs on page.
+ * Hides preview table container if it is empty.
+ */
+function handlePreviewImageRemoval(buttonNode) {
+    // Update maximum amount of inputs for images.
+    var imagesContainer = document.getElementById("images-container");
+    var currentImageInputMax = imagesContainer.children[0].getElementsByTagName("input")[0].getAttribute("onchange");
+    currentImageInputMax = currentImageInputMax.split(",")[1];
+    currentImageInputMax = parseInt(currentImageInputMax.split(")")[0]);
+    for (var i = 0; i < imagesContainer.children.length; i++) {
+        imagesContainer.children[i].getElementsByTagName("input")[0].setAttribute("onchange", "addInput(this," + (currentImageInputMax + 1) + ");");
+    }
+    // Call add input to add new empty image slot if possible.
+    addInput(imagesContainer.children[imagesContainer.children.length - 1].getElementsByTagName("input")[0], currentImageInputMax + 1);
+
+    // Remove image node.
+    var imagePreviewTable = document.getElementById("images-preview-table");
+    var imagePreviewTableRow = imagePreviewTable.getElementsByTagName("tr")[0];
+    var buttonContainer = buttonNode.parentNode;
+    imagePreviewTableRow.removeChild(buttonContainer);
+
+    // Hide image preview table if contains only element prototype.   
+    if(imagePreviewTableRow.children.length == 1){
+        imagePreviewTable.hidden = true;
+    }
+}
+
 function handlePartialViewInitialLoad(announcementID) {
     handleTypeVisibility();
     handleTimetableVisibility();
@@ -65,8 +94,12 @@ function handleSubmitButton(announcementID) {
         errorSpan.innerText = "Announcement activity time range is invalid.";
         return;
     }
+    // Set hours to 12:00 to avoid timezone effect while
+    // serializing announcement data.
     announcement.from = dateRangeData[0];
+    announcement.from.setHours(12, 0, 0, 0);
     announcement.to = dateRangeData[1];
+    announcement.to.setHours(12, 0, 0, 0);
     var description = handleTextareaValidation();
     if (description == null) {
         errorSpan.innerText = "Announcement description is invalid.";
@@ -637,8 +670,8 @@ function handleTypeVisibility() {
             break;
         case 1:
             houseSubtypeElement.hidden = true;
-            entertainmentSubtypeElement.hidden = true;
-            foodSubtypeElement.hidden = false;
+            entertainmentSubtypeElement.hidden = false;
+            foodSubtypeElement.hidden = true;
             sharedPartElement.hidden = true;
             sharedPartLabelElement.hidden = true;
             break;

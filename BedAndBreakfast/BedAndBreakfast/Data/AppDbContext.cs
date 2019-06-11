@@ -39,6 +39,7 @@ namespace BedAndBreakfast.Data
         public DbSet<ScheduleItemToConversation> ScheduleItemToConversations { get; set; }
         public DbSet<UserToConversation> UserToConversations { get; set; }
         public DbSet<HiddenConversationToUser> HiddenConversationToUsers { get; set; }
+        public DbSet<Image> Images { get; set; }
 
 
 
@@ -70,6 +71,12 @@ namespace BedAndBreakfast.Data
             modelBuilder.Entity<HiddenConversationToUser>()
                 .HasKey(uc => new { uc.ConversationID, uc.UserID });
             // ---------- Configure relations ----------
+
+            // Single announcement may have multiple images.
+            modelBuilder.Entity<Image>()
+                .HasOne(i => i.Announcement)
+                .WithMany(a => a.Images)
+                .HasForeignKey(i => i.AnnouncementID);
 
             // User may have multiple hidden conversations.
             // Conversation may have multiple users that wish to hide it.

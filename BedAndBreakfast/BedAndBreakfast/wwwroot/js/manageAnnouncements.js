@@ -207,8 +207,40 @@ function handleAnnouncementEditButton(announcementID) {
                 }
                 break;
         }
+        drawAnnouncementImagesPreview(announcement);
+    }
 
+    function drawAnnouncementImagesPreview(announcement) {
+        // If there is no images related to this announcement return.
+        if (announcement.images.length == 0) {
+            return;
+        }
+        var imagesPreviewTable = document.getElementById("images-preview-table");
+        var imagesPreviewTableRow = imagesPreviewTable.getElementsByTagName("tr")[0];
+        var imagePreviewPrototype = document.getElementById("image-preview-prototype");
 
+        // Show item preview table (hidden by default).
+        imagesPreviewTable.hidden = false;
+        // Clear table row drawing.
+        imagesPreviewTableRow.innerHTML = "";
+        // Store prototype back.
+        imagesPreviewTableRow.appendChild(imagePreviewPrototype);
+
+        // Add prototype clones.
+        for (var i = 0; i < announcement.images.length; i++) {
+            // Setup clone.
+            var newNode = imagePreviewPrototype.cloneNode(true);
+            newNode.removeAttribute("id");
+            newNode.hidden = false;
+            // Fill clone data.
+            newNode.getElementsByTagName("label")[0].innerText = announcement.images[i].imageName;
+            newNode.getElementsByTagName("img")[0].setAttribute("src", "data:image/png;base64," + announcement.images[i].imageByteArray);
+            imagesPreviewTableRow.appendChild(newNode);
+        }
+
+        // Change amount of available image inputs.
+        var imageInputsContainer = document.getElementById("images-container");
+        imageInputsContainer.children[0].getElementsByTagName("input")[0].setAttribute("onchange", "addInput(this, " + (5 - announcement.images.length) + ");");
     }
 
     var container = document.getElementById("manage-announcements-view-container");
@@ -482,7 +514,7 @@ function setGlobalMessage(messageCode) {
             container.innerText = "An error occurred while updating reservations amount."
             break;
         case 8:
-            container.innerText = "Reservations updated";
+            container.innerText = "Reservations amount successfully updated";
             break;
         case 9:
             container.innerText = "Announcement successfully updated."

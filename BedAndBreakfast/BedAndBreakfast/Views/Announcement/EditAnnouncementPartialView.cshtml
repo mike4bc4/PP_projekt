@@ -104,6 +104,19 @@
 <div>
     <label>Announcement images: </label>
     <br />
+    <!-- By default this item is hidden (only while announcement is being edited it should be visible) -->
+    <table id="images-preview-table" hidden>
+        <tr>
+            <!-- Content of container below is being copied -->
+            <td id="image-preview-prototype" hidden>
+                <label></label>
+                <br />
+                <img style="width: 300px;" />
+                <br />
+                <button onclick="handlePreviewImageRemoval(this);">Remove</button>
+            </td>
+        </tr>
+    </table>
     <div id="images-container">
         <!-- Content of container below is being cloned -->
         <div>

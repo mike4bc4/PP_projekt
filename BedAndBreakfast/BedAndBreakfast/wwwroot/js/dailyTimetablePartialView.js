@@ -135,7 +135,7 @@ function handleReservationsUpdate(button) {
     // Perform reservations count validation.
     if (isNaN(reservationsCount) || reservationsCount < 0) {
         // Set message and return.
-        setErrorSpanMessage("Reservations count is invalid.");
+        setErrorSpanMessage("Reservations amount is invalid.");
         return;
     }
 
@@ -161,7 +161,7 @@ function handleReservationsUpdate(button) {
                 return;
             }
             if (context.updateReservationsRequestResponse == 0) {
-                setErrorSpanMessage("Reservations amount remains the same.");
+                setErrorSpanMessage("Reservations amount has not changed.");
                 return;
             }
             // Initialize reload.
