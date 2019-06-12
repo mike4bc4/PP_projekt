@@ -956,7 +956,14 @@ namespace BedAndBreakfast.Controllers
             return Json(outputAnnouncement);
         }
 
-
+        /// <summary>
+        /// Acquires all announcements matching query. Parses them into list of
+        /// model items and then redirects to view with view model containing
+        /// announcements list. Note that only active and non removed announcements
+        /// are returned.
+        /// </summary>
+        /// <param name="announcementBrowserQuery"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Browse(string announcementBrowserQuery) {
             // Get announcements matching query.
             List<Announcement> announcementsFound = SearchEngine
@@ -976,7 +983,7 @@ namespace BedAndBreakfast.Controllers
                 // Get average rating.
                 // Average rating will be null if there is no reviews.
                 double? averageRating = null;
-                if (reviews.Count() == 0)
+                if (reviews.Count() != 0)
                 {
                     averageRating = 0;
                     foreach (Review review in reviews)
@@ -985,6 +992,21 @@ namespace BedAndBreakfast.Controllers
                     }
                     averageRating = averageRating / reviews.Count();
                 }
+                // Calculate reservations per month.
+                DateTime from = DateTime.Today.AddDays(-14);
+                DateTime to = DateTime.Today.AddDays(14);
+                // Get reservations for time range.
+                List<Reservation> reservations = await context.Reservations
+                    .Where(r => r.Announcement == announcement)
+                    .Where(r => r.Date.Date > from.Date)
+                    .Where(r => r.Date.Date < to.Date)
+                    .ToListAsync();
+                // Get images byte arrays for this announcement;
+                List<byte[]> imagesByteArrays = await context.Images
+                    .Where(i => i.Announcement == announcement)
+                    .Select(i => i.StoredImage)
+                    .ToListAsync();
+
                 announcementPreviewModels.Add(new AnnouncementPreviewModel() {
                     AnnouncementID = announcement.ID,
                     AverageRating = averageRating,
@@ -998,9 +1020,20 @@ namespace BedAndBreakfast.Controllers
                     StreetNumber = announcement.Address.StreetNumber,
                     Subtype = announcement.Subtype,
                     Type = announcement.Type,
+                    ReservationsPerMonth = reservations.Count(),
+                    ImagesByteArrays = imagesByteArrays,
                 });
             }
             return View(new BrowseViewModel() { announcementPreviewModels = announcementPreviewModels });
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="announcementID"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> DisplaySingle(int announcementID) {
+            return View();
         }
 
     }

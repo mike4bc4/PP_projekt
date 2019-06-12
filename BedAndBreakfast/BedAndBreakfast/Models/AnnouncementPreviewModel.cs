@@ -19,5 +19,7 @@ namespace BedAndBreakfast.Models
         public string Description { get; set; }
         public double? AverageRating { get; set; }
         public int ReviewsCount { get; set; }
+        public double? ReservationsPerMonth { get; set; }
+        public List<byte[]> ImagesByteArrays { get; set; }
     }
 }

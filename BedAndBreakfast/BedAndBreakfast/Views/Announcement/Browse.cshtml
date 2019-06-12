@@ -2,6 +2,15 @@
 @using BedAndBreakfast.Data;
 @{
     ViewData["Title"] = "BrowseAnnouncements";
+    List<string> announcementPreviewSortOptions = Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementPreviewSortOptions)).ToList();
+    List<string> announcementTypes = Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementType)).ToList();
+    List<string> houseSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.HouseSubtype)).ToList();
+    List<string> entertainmentSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.EntertainmentSubtype)).ToList();
+    List<string> foodSubtype = Enum.GetNames(typeof(EnumeratedDbValues.FoodSubtype)).ToList();
+    List<string> sharedParts = Enum.GetNames(typeof(EnumeratedDbValues.HouseSharedPart)).ToList();
+    List<string> contactMethods = Enum.GetNames(typeof(EnumeratedDbValues.ContactType)).ToList();
+    List<string> paymentMethods = Enum.GetNames(typeof(EnumeratedDbValues.PaymentMethod)).ToList();
+
 }
 
 
@@ -10,22 +19,80 @@
 <script type="text/javascript" src="~/js/browseAnnouncements.js"></script>
 <script type="text/javascript">
     window.onload = function () {
+        browseAnnouncementsInit();
+    }
+    function getAnnouncements() {
+        return @Html.Raw(Json.Serialize(Model.announcementPreviewModels));
+    }
+    function getAnnouncementTypes() {
+        return @Html.Raw(Json.Serialize(announcementTypes));
+    }
+    function getHouseSubtypes() {
+        return @Html.Raw(Json.Serialize(houseSubtypes));
+    }
+    function getEntertainmentSubtypes() {
+        return @Html.Raw(Json.Serialize(entertainmentSubtypes));
+    }
+    function getFoodSubtypes() {
+        return @Html.Raw(Json.Serialize(foodSubtype));
+    }
+    function getHouseSharedParts() {
+        return @Html.Raw(Json.Serialize(sharedParts));
     }
 </script>
 
 <!--Sorting and filtering options header-->
 <div>
-
+    <label>Sort by: </label>
+    <select onchange="handleSortOptionChange(this);" id="announcemens-preview-sort-option">
+        @for (int i = 0; i < announcementPreviewSortOptions.Count(); i++)
+        {
+            <option value="@i">@announcementPreviewSortOptions[i]</option>
+        }
+    </select>
+    <label>Filter options: </label>
+    <table border="1">
+        <tr id="announcements-preview-filter-options-container">
+            @for (var i = 0; i < announcementTypes.Count(); i++)
+            {
+                <td>
+                    <div id="announcements-preview-filter-option-@i" onclick="handleFilterItemClick(this);" data-selected="false">@announcementTypes[i]</div>
+                </td>
+            }
+        </tr>
+    </table>
 </div>
 
 <div id="global-message-container"></div>
 <!--Scrollable container with announcement previews-->
-<div>
-    <table id="announcements-preview-table">
-        <tr id="announcement-preview-prototype">
-            <td></td>
-        </tr>
-    </table>
+<div id="announcement-previews-container">
+    <div id="announcement-preview-prototype" hidden>
+        <table border="1">
+            <tr>
+                <td rowspan="4" class="announcement-preview-images-container"></td>
+                <td class="announcement-preview-type-data-container"></td>
+            </tr>
+            <tr>
+                <td class="announcement-preview-address-container"></td>
+            </tr>
+            <tr>
+                <td class="announcement-preview-description-container"></td>
+            </tr>
+            <tr>
+                <td class="announcement-preview-rating-container"></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <form asp-action="DisplaySingle" asp-controller="Announcement">
+                        <input type="hidden" name="announcementID" value="" />
+                        <button type="submit">Display announcement details</button>
+                    </form>
+                    <div onclick="">Toggle visible on map</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="announcement-previews-message-container" hidden></div>
 </div>
 <!--Static map container-->
 <div>

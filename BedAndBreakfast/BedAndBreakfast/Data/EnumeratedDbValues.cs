@@ -13,12 +13,13 @@ namespace BedAndBreakfast.Data
     {
         public enum Gender
         {
-            Male,          
-            Female,          
-            Unspecified          
+            Male,
+            Female,
+            Unspecified
         };
 
-        public enum Currency {
+        public enum Currency
+        {
             USD,
             EUR,
             JPY,
@@ -27,7 +28,8 @@ namespace BedAndBreakfast.Data
             PLN
         };
 
-        public enum Language {
+        public enum Language
+        {
             en_EN,
             en_US,
             pl_PL,
@@ -37,67 +39,73 @@ namespace BedAndBreakfast.Data
             es_ES
         }
 
-		/// <summary>
-		/// Represents types of announcements that user may be host of.
-		/// </summary>
-		public enum AnnouncementType {
-			House = 0,
-			Entertainment = 1,
-			Food = 2
-		}
+        /// <summary>
+        /// Represents types of announcements that user may be host of.
+        /// </summary>
+        public enum AnnouncementType
+        {
+            House = 0,
+            Entertainment = 1,
+            Food = 2
+        }
 
-		public enum HouseSubtype {
-			Apartment = 0,
-			House = 1,
-			Bungalow = 2,
-			Hotel = 3,
-			Other = 4
-		}
+        public enum HouseSubtype
+        {
+            Apartment = 0,
+            House = 1,
+            Bungalow = 2,
+            Hotel = 3,
+            Other = 4
+        }
 
-		public enum EntertainmentSubtype
-		{
-			Party = 0,
-			Art = 1,
-			Trip = 2,
-			Science = 3,
-			Other = 4
-		}
+        public enum EntertainmentSubtype
+        {
+            Party = 0,
+            Art = 1,
+            Trip = 2,
+            Science = 3,
+            Other = 4
+        }
 
-		public enum FoodSubtype
-		{
-			Restaurant = 0,
-			Foodtruck = 1,
-			Bar = 2,
-			Pub = 3,
-			Other = 4
-		}
+        public enum FoodSubtype
+        {
+            Restaurant = 0,
+            Foodtruck = 1,
+            Bar = 2,
+            Pub = 3,
+            Other = 4
+        }
 
-		public enum HouseSharedPart {
-			Exterior = 0,
-			Room = 1,
-			Rooms = 2,
-			RoomWithBathroom = 3,
-			RoomsWithBathroom = 4,
-			Floor = 5,
-			FloorWithBathroom = 6,
-			House = 7,
-			Other = 8,
-			NotApplicable = 9
-		}
+        public enum HouseSharedPart
+        {
+            Exterior = 0,
+            Room = 1,
+            Rooms = 2,
+            RoomWithBathroom = 3,
+            RoomsWithBathroom = 4,
+            Floor = 5,
+            FloorWithBathroom = 6,
+            House = 7,
+            Other = 8,
+            NotApplicable = 9
+        }
 
-		public enum ContactType {
-			EmailAddress = 0,
-			PhoneNumber = 1,
-			Other = 2
-		}
+        public enum ContactType
+        {
+            EmailAddress = 0,
+            PhoneNumber = 1,
+            Other = 2
+        }
 
-		public enum PaymentMethod {
-			PayPal = 0,
-			BankTransfer = 1,
-			Other = 2
-		}
+        public enum PaymentMethod
+        {
+            PayPal = 0,
+            BankTransfer = 1,
+            Other = 2
+        }
 
-        public enum AnnouncementSortOptions {
+        public enum AnnouncementSortOptions
+        {
             TypeAsc = 0,
             TypeDesc = 1,
             SubtypeAsc = 2,
@@ -110,15 +118,27 @@ namespace BedAndBreakfast.Data
             IsInactive = 9
         }
 
-        public enum AnnouncementTimetableOptions {
+        public enum AnnouncementTimetableOptions
+        {
             Off = 0,
             PerDay = 1,
             PerHour = 2
         }
 
+        public enum AnnouncementPreviewSortOptions
+        {
+            RatingAscending = 0,
+            RatingDescending = 1,
+            ReviewAmountAscending = 2,
+            ReviewAmountDescending = 3,
+            ReservationsAmountAscending = 4,
+            ReservationsAmountDescending = 5,
+        }
 
 
-		public static List<SelectListItem> CreateListOfItems<T>(string currentlySelectedValue) {
+
+        public static List<SelectListItem> CreateListOfItems<T>(string currentlySelectedValue)
+        {
             List<SelectListItem> list = new List<SelectListItem>();
             foreach (T item in Enum.GetValues(typeof(T)))
             {
@@ -133,14 +153,16 @@ namespace BedAndBreakfast.Data
             return list;
         }
 
-        public static Dictionary<string, int> ParseEnumToDictionary<T>() {
+        public static Dictionary<string, int> ParseEnumToDictionary<T>()
+        {
             Array enumVaules = Enum.GetValues(typeof(T));
             Dictionary<string, int> dict = new Dictionary<string, int>();
-            foreach (int enumValue in enumVaules) {
+            foreach (int enumValue in enumVaules)
+            {
                 dict.Add(Enum.GetName(typeof(T), enumValue), enumValue);
             }
             return dict;
         }
-      
+
     }
 }
