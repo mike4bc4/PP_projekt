@@ -675,8 +675,11 @@ namespace BedAndBreakfast.Controllers
                     }
                     break;
             }
-
-            //-------------------------------------------------------->TODO: Image validation, count should be smaller than 5 (defined in db settings), also take into account preview images.
+            // Images count validation.
+            if (announcementViewModel.Images.Count() + images.Count() > IoCContainer.DbSettings.Value.MaxAnnouncementImagesCount)
+            {
+                return Json(null);
+            }
 
             // Announcement is valid.
             // Get announcement if it should be edited instead created.
@@ -750,8 +753,23 @@ namespace BedAndBreakfast.Controllers
                 }
                 await AnnouncementServiceLogic.CreateTagsForAnnouncement(addedAnnouncement, context);
             }
-
-            //-------------------------------------------------------->TODO: Remove all images related to this announcement. Pass preview images (to keep these that were not removed).
+            // Remove announcement related images for edited announcement that has 
+            // not been included in view model (were removed by user).
+            if (editedAnnouncement != null)
+            {
+                List<string> remainingImageNames = new List<string>();
+                foreach (ImageViewModel image in announcementViewModel.Images)
+                {
+                    remainingImageNames.Add(image.ImageName);
+                }
+                // List these images that are related to edited announcement
+                // but are not stored in view model.
+                List<Image> imagesToRemove = await context.Images
+                    .Where(i => i.Announcement == editedAnnouncement)
+                    .Where(i => !remainingImageNames.Contains(i.ImageName))
+                    .ToListAsync();
+                context.Images.RemoveRange(imagesToRemove);
+            }
 
             // Store images to database
             List<Image> imagesToAdd = new List<Image>();

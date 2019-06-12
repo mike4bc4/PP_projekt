@@ -24,5 +24,7 @@ namespace BedAndBreakfast.Settings
         public int MaxConversationTitleLength { get; set; }
         public int MaxConversationMessageLength { get; set; }
         public int ManageConversationsDefaultListedUsers { get; set; }
+        public int MaxAnnouncementImagesCount { get; set; }
+
     }
 }

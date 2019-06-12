@@ -12,7 +12,7 @@ function saveAnnouncement(context, requestSynchronizer) {
         contentType: false,
         type: "POST",
         success: function (response) {
-            context.saveAnnouncementImagesResponse = response;
+            context.saveAnnouncementResponse = response;
             requestSynchronizer.generator.next();
         }
     });
@@ -37,9 +37,9 @@ function handlePreviewImageRemoval(buttonNode) {
 
     // Remove image node.
     var imagePreviewTable = document.getElementById("images-preview-table");
-    var imagePreviewTableRow = imagePreviewTable.getElementsByTagName("tr")[0];
-    var buttonContainer = buttonNode.parentNode;
-    imagePreviewTableRow.removeChild(buttonContainer);
+	var imagePreviewTableRow = imagePreviewTable.getElementsByTagName("tr")[0];
+    var imagePreviewItem = buttonNode.parentNode;
+	imagePreviewTableRow.removeChild(imagePreviewItem);
 
     // Hide image preview table if contains only element prototype.   
     if(imagePreviewTableRow.children.length == 1){
@@ -125,7 +125,27 @@ function handleSubmitButton(announcementID) {
     }
     announcement.timetable = timetableData.timetable;
     announcement.perDayReservations = timetableData.perDayReservations;
-    announcement.scheduleItems = timetableData.scheduleItems;
+	announcement.scheduleItems = timetableData.scheduleItems;
+    announcement.images = [];
+	// Add currently announcement related images to view model.
+	var imagesPreviewTableRow = document.getElementById("images-preview-table")
+		.getElementsByTagName("tr")[0];
+	// Skip first element as it should be prototype item.
+	for (var i = 1; i < imagesPreviewTableRow.children.length; i++) {
+		var imageName = imagesPreviewTableRow.children[i].getElementsByTagName("label")[0].innerText;
+		// Byte array string is stored in SRC parameter of image tag.
+		var byteArrayString = imagesPreviewTableRow.children[i]
+			.getElementsByTagName("img")[0].src.split(",")[1].trim();
+		// Parse byte string array to byte array.
+		var byteArray = [];
+		for (var j = 0; j < byteArrayString.length; j++) {
+			byteArray.push(byteArrayString[j].charCodeAt(0));
+        }
+        announcement.images.push({
+            imageName: imageName,
+            imageByteArray: byteArray,
+        });
+	}
 
     formData.append("announcement", JSON.stringify(announcement));
     var context = {};
@@ -134,6 +154,10 @@ function handleSubmitButton(announcementID) {
     requestSynchronizer.requestQueue = [
         function () { saveAnnouncement(context, requestSynchronizer) },
         function () {
+            if(context.saveAnnouncementResponse == null){
+                setGlobalMessage(10);
+                return;
+            }
             // On success load user announcements and set proper message.
             handleMyAnnouncementsButton();
             if (announcementID == null) {
