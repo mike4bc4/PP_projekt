@@ -1,20 +1,7 @@
-﻿
+﻿@model BedAndBreakfast.Models.BrowseViewModel
 @using BedAndBreakfast.Data;
 @{
     ViewData["Title"] = "BrowseAnnouncements";
-    //List<EditAnnouncementViewModel> announcements = Model.announcements;
-    string query = Model.query;
-
-    List<string> announcementTypes = Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementType)).ToList();
-    List<string> houseSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.HouseSubtype)).ToList();
-    List<string> entertainmnetSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.EntertainmentSubtype)).ToList();
-    List<string> foodSubtypes = Enum.GetNames(typeof(EnumeratedDbValues.FoodSubtype)).ToList();
-    List<string> houseSharedParts = Enum.GetNames(typeof(EnumeratedDbValues.HouseSharedPart)).ToList();
-
-    List<string> paymentMethods = Enum.GetNames(typeof(EnumeratedDbValues.PaymentMethod)).ToList();
-    List<string> contactMethods = Enum.GetNames(typeof(EnumeratedDbValues.ContactType)).ToList();
-    List<string> timetableOptions = Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementTimetableOptions)).ToList();
-
 }
 
 
@@ -23,98 +10,27 @@
 <script type="text/javascript" src="~/js/browseAnnouncements.js"></script>
 <script type="text/javascript">
     window.onload = function () {
-        drawAnnouncementsList();
-        setSessionReservations(null);
-    };
-    function getAnnouncementTypes() {
-        return @Html.Raw(Json.Serialize(announcementTypes));
-    }
-    function getHouseSubtypes() {
-        return @Html.Raw(Json.Serialize(houseSubtypes));
-    }
-    function getEntertainmentSubtypes() {
-        return @Html.Raw(Json.Serialize(entertainmnetSubtypes));
-    }
-    function getFoodSubtypes() {
-        return @Html.Raw(Json.Serialize(foodSubtypes));
-    }
-    function getHouseSharedParts() {
-        return @Html.Raw(Json.Serialize(houseSharedParts));
-    }
-    function getPaymentMethods() {
-        return @Html.Raw(Json.Serialize(paymentMethods));
-    }
-    function getContactMethods() {
-        return @Html.Raw(Json.Serialize(contactMethods));
-    }
-    function getTimetableOptions() {
-        return @Html.Raw(Json.Serialize(timetableOptions));
-    }
-    function getAnnouncements() {
-
-    }
-    function getQuery() {
-        return @Html.Raw(Json.Serialize(query));
-    }
-    function isUserAuthenticated() {
-        return @Html.Raw(Json.Serialize(User.Identity.IsAuthenticated));
     }
 </script>
 
-<style>
-    .ann-row {
-        font-family: 'Lato', sans-serif;
-        color: rgba(26, 94, 178, 1);
-        padding: 10px;
-        border-bottom: 1px solid rgba(26, 94, 178, 1);
-    }
+<!--Sorting and filtering options header-->
+<div>
 
-        .ann-row:hover {
-            background-color: rgba(26, 94, 178, 0.5);
-            
-            cursor: pointer;
-        }
+</div>
 
-    .ann-row-subtitle {
-        font-weight: bold;
-    }
-
-    p, h4 {
-        margin: 3px;
-    }
-
-    table {
-        border-collapse: collapse;
-    }
-
-    td {
-        border: 1px solid black;
-    }
-
-    .clickable:hover {
-        cursor: pointer;
-        background-color: slategray;
-    }
-
-    .browse-announcements-header {
-        font-family: 'Lato', sans-serif;
-        font-size: 22px;
-        color: rgba(26, 94, 178, 1);
-        margin: 20px;
-        padding: 10px;
-        padding-top: 20px;
-        border-bottom: 1px solid rgba(26, 94, 178, 1);
-    }
-
-    .browse-announcement-container {
-        margin: 20px;
-    }
-
-</style>
-<div id="edit_ann_list" style="overflow-x:hidden; overflow-y:auto; height: 700px; width:1000px;">
-    <div class="browse-announcements-header">Browse</div>
-    <div id="message-container"></div>
-    <div class="browse-announcement-container" id="browse-ann-view-container"></div>
-    <div class="space_30"></div>
+<div id="global-message-container"></div>
+<!--Scrollable container with announcement previews-->
+<div>
+    <table id="announcements-preview-table">
+        <tr id="announcement-preview-prototype">
+            <td></td>
+        </tr>
+    </table>
+</div>
+<!--Static map container-->
+<div>
+    <div id="map">
 
     </div>
+</div>
+

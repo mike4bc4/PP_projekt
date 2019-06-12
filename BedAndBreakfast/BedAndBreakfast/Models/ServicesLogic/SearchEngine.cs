@@ -272,13 +272,14 @@ namespace BedAndBreakfast.Models
         /// <summary>
         /// Returns announcements found by query which are sorted descending by match score.
         /// If query is null or empty returns default number of announcements from top of
-        /// database table.
+        /// database table. This action uses announcement tags for searching.
         /// </summary>
         /// <param name="query"></param>
         /// <param name="context"></param>
         /// <returns></returns>
         public static List<Announcement> FindAnnoucements(string query, AppDbContext context)
         {
+            // If query is empty take announcements from top database table.
             if (string.IsNullOrEmpty(query))
             {
                 return context.Announcements

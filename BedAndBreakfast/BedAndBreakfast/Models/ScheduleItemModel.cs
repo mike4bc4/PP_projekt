@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BedAndBreakfast.Models
 {
-    public class ScheduleItemViewModel
+    public class ScheduleItemModel
     {
         public int From { get; set; }
         public int To { get; set; }

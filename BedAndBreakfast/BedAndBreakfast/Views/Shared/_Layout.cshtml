@@ -26,31 +26,31 @@
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"></script>
-    <script type="text/javascript">
+    @*<script type="text/javascript">
         window.onload = function () {
             setAnnouncementSearchField();
         }
-    </script>
+    </script>*@
 </head>
 
 <body>
-    @*User identity*@  
+    @*User identity*@
     @{
-     if (User.Identity.IsAuthenticated)
-     {
-         <div class="welcome-bar-container">
-             <div class="welcome-bar">
-                 @if (userProfile != null)
-                 {
-                     @:Hello @userProfile.FirstName, how are you today?
-                 }
-                 else
-                 {
-                     @:Hello @currentUser?.UserName, how are you today?
-                 }
-             </div>
-         </div>
-     }
+        if (User.Identity.IsAuthenticated)
+        {
+            <div class="welcome-bar-container">
+                <div class="welcome-bar">
+                    @if (userProfile != null)
+                    {
+                        @:Hello @userProfile.FirstName, how are you today?
+                    }
+                    else
+                    {
+                        @:Hello @currentUser?.UserName, how are you today?
+                    }
+                </div>
+            </div>
+        }
     }
 
     <!-------------------------------------------------------------------------------------------->
@@ -62,18 +62,11 @@
                 <img src="https://localhost:44318/images/logo.png" id="logo" />
             </a>
             <a asp-area="" asp-controller="Help" class="tilelink" asp-action="Browse">Help</a>
+            <a asp-area="" asp-controller="Home" class="tilelink" asp-action="Index">Home</a>
 
             @*If user is not an administrator.*@
             @if (!User.IsInRole(Role.Admin))
             {
-                @*@if (currentUser == null || !currentUser.IsHost)
-                {
-                    <a id="becomeHostTag" asp-area="" asp-controller="Announcement" class="tilelink" asp-action="EditAnnouncement">Become a Host</a>
-                }
-                else
-                {
-                    <a asp-area="" asp-controller="Announcement" class="tilelink" asp-action="ListUserAnnouncements">Manage my announcements</a>
-                }*@
                 @if (!User.Identity.IsAuthenticated)
                 {
                     <a asp-area="" asp-controller="Account" class="tilelink" asp-action="Login">Log In</a>
@@ -81,7 +74,7 @@
                 }
                 else
                 {
-                    <a asp-controller="Announcement" asp-action="ManageAnnouncements">My announcements</a>
+                    <a asp-controller="Announcement" class="tilelink" asp-action="ManageAnnouncements">My announcements</a>
                     <a asp-controller="Announcement" class="tilelink" asp-action="ShowReservations">My reservations</a>
                     <a asp-controller="Message" class="tilelink" asp-action="ShowConversations">My conversations</a>
                     <a asp-area="" asp-controller="Profile" class="tilelink" asp-action="Edit">Profile</a>

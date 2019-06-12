@@ -217,10 +217,10 @@ namespace BedAndBreakfast.Controllers
                     .ToListAsync();
 
                 // Parse schedule items to view model.
-                List<ScheduleItemViewModel> scheduleItemViewModels = new List<ScheduleItemViewModel>();
+                List<ScheduleItemModel> scheduleItemModels = new List<ScheduleItemModel>();
                 foreach (ScheduleItem scheduleItem in conversationScheduleItems)
                 {
-                    scheduleItemViewModels.Add(new ScheduleItemViewModel()
+                    scheduleItemModels.Add(new ScheduleItemModel()
                     {
                         From = scheduleItem.From,
                         To = scheduleItem.To,
@@ -245,7 +245,7 @@ namespace BedAndBreakfast.Controllers
                     DateStarted = conversation.DateStarted,
                     ReadOnly = conversation.ReadOnly,
                     Title = conversation.Title,
-                    ScheduleItems = scheduleItemViewModels,
+                    ScheduleItems = scheduleItemModels,
                     IsHidden = (hiddenConversationToUser != null) ? true : false,
                 });
             }

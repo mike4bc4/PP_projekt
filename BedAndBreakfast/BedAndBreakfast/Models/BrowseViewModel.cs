@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace BedAndBreakfast.Models
 {
-    public class ImageViewModel
+    public class BrowseViewModel
     {
-        public string ImageName { get; set; }
-        public byte[] ImageByteArray { get; set; }
+        public List<AnnouncementPreviewModel> announcementPreviewModels { get; set; }
     }
 }

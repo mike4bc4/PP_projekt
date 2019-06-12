@@ -323,19 +323,19 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// Either finds address that is the same as address provided in database
         /// or creates new one, adds it to db context and then to provided announcement.
         /// </summary>
-        /// <param name="announcementViewModel"></param>
+        /// <param name="announcementModel"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static async Task<int> CreateAddressForAnnouncement(SaveAnnouncementViewModel announcementViewModel, Announcement announcement, AppDbContext context)
+        public static async Task<int> CreateAddressForAnnouncement(SaveAnnouncemenModel announcementModel, Announcement announcement, AppDbContext context)
         {
             // Check if provided address already exists in database.
             Address newAddress = new Address();
             Address dbAddress = await context.Addresses
-                .Where(a => a.Country == announcementViewModel.Country)
-                .Where(a => a.Region == announcementViewModel.Region)
-                .Where(a => a.City == announcementViewModel.City)
-                .Where(a => a.Street == announcementViewModel.Street)
-                .Where(a => a.StreetNumber == announcementViewModel.StreetNumber)
+                .Where(a => a.Country == announcementModel.Country)
+                .Where(a => a.Region == announcementModel.Region)
+                .Where(a => a.City == announcementModel.City)
+                .Where(a => a.Street == announcementModel.Street)
+                .Where(a => a.StreetNumber == announcementModel.StreetNumber)
                 .SingleOrDefaultAsync();
             if (dbAddress != null)
             {
@@ -346,11 +346,11 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 // Create new address object if it does not exists.
                 newAddress = new Address()
                 {
-                    Country = announcementViewModel.Country,
-                    Region = announcementViewModel.Region,
-                    City = announcementViewModel.City,
-                    Street = announcementViewModel.Street,
-                    StreetNumber = announcementViewModel.StreetNumber,
+                    Country = announcementModel.Country,
+                    Region = announcementModel.Region,
+                    City = announcementModel.City,
+                    Street = announcementModel.Street,
+                    StreetNumber = announcementModel.StreetNumber,
                 };
                 // Add address to context
                 await context.Addresses.AddAsync(newAddress);
@@ -365,16 +365,16 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// contacts given in view model. Note that context changes have to be saved
         /// to persist.
         /// </summary>
-        /// <param name="announcementViewModel"></param>
+        /// <param name="announcementModel"></param>
         /// <param name="announcement"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static async Task<int> CreateContactsForAnnoucement(SaveAnnouncementViewModel announcementViewModel, Announcement announcement, AppDbContext context)
+        public static async Task<int> CreateContactsForAnnoucement(SaveAnnouncemenModel announcementModel, Announcement announcement, AppDbContext context)
         {
             // Check if contacts defined in view model exist in database.
             List<AdditionalContact> newContacts = new List<AdditionalContact>();
             List<AdditionalContact> dbContacts = new List<AdditionalContact>();
-            foreach (ContactPaymentItem item in announcementViewModel.Contacts)
+            foreach (ContactPaymentItem item in announcementModel.Contacts)
             {
                 AdditionalContact dbContact = await context.AdditionalContacts
                     .Where(ac => ac.Type == item.Type)
@@ -426,16 +426,16 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// payments given in view model. Note that context changes have to be saved
         /// to persist.
         /// </summary>
-        /// <param name="announcementViewModel"></param>
+        /// <param name="announcementModel"></param>
         /// <param name="announcement"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static async Task<int> CreatePaymentsForAnnoucement(SaveAnnouncementViewModel announcementViewModel, Announcement announcement, AppDbContext context)
+        public static async Task<int> CreatePaymentsForAnnoucement(SaveAnnouncemenModel announcementModel, Announcement announcement, AppDbContext context)
         {
             // Check if payments defined in view model exist in database.
             List<PaymentMethod> newPayments = new List<PaymentMethod>();
             List<PaymentMethod> dbPayments = new List<PaymentMethod>();
-            foreach (ContactPaymentItem item in announcementViewModel.Payments)
+            foreach (ContactPaymentItem item in announcementModel.Payments)
             {
                 PaymentMethod dbPayment = await context.PaymentMethods
                     .Where(pm => pm.Type == item.Type)
@@ -487,16 +487,16 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// Then just simple relations with existing ones are created. Note that changes
         /// need to be saved to persist.
         /// </summary>
-        /// <param name="announcementViewModel"></param>
+        /// <param name="announcementModel"></param>
         /// <param name="announcement"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static async Task<int> CreateScheduleItemsForAnnoucement(SaveAnnouncementViewModel announcementViewModel, Announcement announcement, AppDbContext context)
+        public static async Task<int> CreateScheduleItemsForAnnoucement(SaveAnnouncemenModel announcementModel, Announcement announcement, AppDbContext context)
         {
             // Get schedule items that already exist in database or create new ones if the does not.
             List<ScheduleItem> dbScheduleItems = new List<ScheduleItem>();
             List<ScheduleItem> newScheduleItems = new List<ScheduleItem>();
-            foreach (ScheduleItemViewModel scheduleItem in announcementViewModel.ScheduleItems)
+            foreach (ScheduleItemModel scheduleItem in announcementModel.ScheduleItems)
             {
                 ScheduleItem dbScheduleItem = await context.ScheduleItems
                     .Where(si => si.MaxReservations == scheduleItem.MaxReservations)

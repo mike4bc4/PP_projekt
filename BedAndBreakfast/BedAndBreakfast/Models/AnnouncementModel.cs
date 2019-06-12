@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BedAndBreakfast.Models
 {
-    public class AnnouncementViewModel
+    public class AnnouncementModel
     {
         public int AnnouncementID { get; set; }
         public int Type { get; set; }

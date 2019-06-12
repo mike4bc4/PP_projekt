@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BedAndBreakfast.Models
 {
-    public class SaveAnnouncementViewModel
+    public class SaveAnnouncemenModel
     {
         public int? AnnouncementID { get; set; }
         public int Type { get; set; }
@@ -23,8 +23,8 @@ namespace BedAndBreakfast.Models
         public List<ContactPaymentItem> Payments { get; set; }
         public int Timetable { get; set; }
         public int? PerDayReservations { get; set; }
-        public List<ScheduleItemViewModel> ScheduleItems { get; set; }
-        public List<ImageViewModel> Images { get; set; }
+        public List<ScheduleItemModel> ScheduleItems { get; set; }
+        public List<ImageModel> Images { get; set; }
     }
 
 

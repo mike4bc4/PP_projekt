@@ -11,7 +11,7 @@ namespace BedAndBreakfast.Models
         public ShowReservationsViewModel(ScheduleItem scheduleItem) {
             if (scheduleItem != null)
             {
-                ScheduleItem = new ScheduleItemViewModel()
+                ScheduleItem = new ScheduleItemModel()
                 {
                     From = scheduleItem.From,
                     To = scheduleItem.To,
@@ -32,7 +32,7 @@ namespace BedAndBreakfast.Models
         public DateTime Date { get; set; }
         public DateTime ReservationDate { get; set; }
         public int? ScheduleItemID { get; set; }
-        public ScheduleItemViewModel ScheduleItem { get; set; } = null;
+        public ScheduleItemModel ScheduleItem { get; set; } = null;
         public int Amount { get; set; }
     }
 }

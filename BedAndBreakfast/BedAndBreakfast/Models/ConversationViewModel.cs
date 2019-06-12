@@ -12,7 +12,7 @@ namespace BedAndBreakfast.Models
         public DateTime DateStarted { get; set; }
         public bool ReadOnly { get; set; }
         public int? AnnouncementID { get; set; }
-        public List<ScheduleItemViewModel> ScheduleItems { get; set; }
+        public List<ScheduleItemModel> ScheduleItems { get; set; }
         public bool IsHidden { get; set; }
     }
 }

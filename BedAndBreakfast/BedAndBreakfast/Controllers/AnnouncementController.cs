@@ -52,7 +52,7 @@ namespace BedAndBreakfast.Controllers
         public IActionResult GetReservations(int announcementID, DateTime date)
         {
             List<int?> reservations = new List<int?>();
-            List<ScheduleItemViewModel> scheduleItemsViewModel = new List<ScheduleItemViewModel>();
+            List<ScheduleItemModel> scheduleItemModels = new List<ScheduleItemModel>();
             Announcement announcement = context.Announcements.Where(a => a.ID == announcementID).SingleOrDefault();
             if (announcement == null)
             {
@@ -65,7 +65,7 @@ namespace BedAndBreakfast.Controllers
                 .ToList();
             foreach (ScheduleItem scheduleItem in scheduleItems)
             {
-                scheduleItemsViewModel.Add(new ScheduleItemViewModel
+                scheduleItemModels.Add(new ScheduleItemModel
                 {
                     From = scheduleItem.From,
                     To = scheduleItem.To,
@@ -85,7 +85,7 @@ namespace BedAndBreakfast.Controllers
                     timetable = announcement.Timetable,
                     maxReservations = announcement.MaxReservations
                 },
-                scheduleItems = scheduleItemsViewModel
+                scheduleItems = scheduleItemModels
             });
         }
 
@@ -98,7 +98,7 @@ namespace BedAndBreakfast.Controllers
         /// <param name="scheduleItem"></param>
         /// <returns></returns>
         [Authorize(Roles = Role.User)]
-        public IActionResult GetUsersReservations(int announcementID, DateTime date, ScheduleItemViewModel scheduleItem)
+        public IActionResult GetUsersReservations(int announcementID, DateTime date, ScheduleItemModel scheduleItem)
         {
             Announcement announcement = context.Announcements.Where(a => a.ID == announcementID).SingleOrDefault();
             if (announcement == null)
@@ -164,7 +164,7 @@ namespace BedAndBreakfast.Controllers
         /// <param name="scheduleItem"></param>
         /// <returns></returns>
         [Authorize(Roles = Role.User)]
-        public IActionResult UpdateReservations(int announcementID, string userName, DateTime date, int newReservationsAmount, ScheduleItemViewModel scheduleItem)
+        public IActionResult UpdateReservations(int announcementID, string userName, DateTime date, int newReservationsAmount, ScheduleItemModel scheduleItem)
         {
             Announcement announcement = context.Announcements.Where(a => a.ID == announcementID).SingleOrDefault();
             User user = context.Users.Where(u => u.UserName == userName).SingleOrDefault();
@@ -463,13 +463,13 @@ namespace BedAndBreakfast.Controllers
             {
                 return Json(null);
             }
-            ScheduleItemViewModel scheduleItemViewModel = new ScheduleItemViewModel()
+            ScheduleItemModel scheduleItemModel = new ScheduleItemModel()
             {
                 From = scheduleItem.From,
                 MaxReservations = scheduleItem.From,
                 To = scheduleItem.To,
             };
-            return Json(scheduleItemViewModel);
+            return Json(scheduleItemModel);
         }
 
         /// <summary>
@@ -482,6 +482,12 @@ namespace BedAndBreakfast.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Returns set of announcements with basic data for current logged in user.
+        /// This action should be used to display announcements in announcement manager.
+        /// Note that list of announcements is returned as JSON object.
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = Role.User)]
         public async Task<IActionResult> GetCurrentUserAnnouncements()
         {
@@ -498,14 +504,14 @@ namespace BedAndBreakfast.Controllers
             {
                 return Json(0);
             }
-            List<AnnouncementViewModel> announcementViewModels = new List<AnnouncementViewModel>();
+            List<AnnouncementModel> announcementModels = new List<AnnouncementModel>();
             foreach (Announcement announcement in usersAnnouncements)
             {
                 if (announcement.From.Date > DateTime.Today.Date || announcement.To.Date < DateTime.Today.Date)
                 {
                     announcement.IsActive = false;
                 }
-                announcementViewModels.Add(new AnnouncementViewModel()
+                announcementModels.Add(new AnnouncementModel()
                 {
                     AnnouncementID = announcement.ID,
                     City = announcement.Address.City,
@@ -524,9 +530,15 @@ namespace BedAndBreakfast.Controllers
                 });
             }
             await context.SaveChangesAsync();
-            return Json(announcementViewModels);
+            return Json(announcementModels);
         }
 
+        /// <summary>
+        /// Changes removed flag for announcements in database. No announcement
+        /// is permanently removed.
+        /// </summary>
+        /// <param name="announcementIDs"></param>
+        /// <returns></returns>
         [Authorize(Roles = Role.User)]
         public async Task<IActionResult> RemoveAnnouncements(List<int> announcementIDs)
         {
@@ -544,6 +556,13 @@ namespace BedAndBreakfast.Controllers
             return Json(result);
         }
 
+        /// <summary>
+        /// Changes announcement activity status. This method works like 
+        /// toggle button but will only switch announcement status if its time
+        /// range allows to such operation (can be activated).
+        /// </summary>
+        /// <param name="announcementIDs"></param>
+        /// <returns></returns>
         [Authorize(Roles = Role.User)]
         public async Task<IActionResult> ChangeAnnouncementsStatus(List<int> announcementIDs)
         {
@@ -569,53 +588,66 @@ namespace BedAndBreakfast.Controllers
             return Json(new { result, error });
         }
 
+        /// <summary>
+        /// Returns edit announcement partial view which allows to create or edit
+        /// existing announcement.
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = Role.User)]
         public IActionResult EditAnnouncement()
         {
             return PartialView("EditAnnouncementPartialView");
         }
 
+        /// <summary>
+        /// Creates new or updates announcement that already exists if announcement id
+        /// is provided in view model. Also manages announcement images that are removed
+        /// or added to announcement if user uploads them via view model.
+        /// </summary>
+        /// <param name="images"></param>
+        /// <param name="announcement"></param>
+        /// <returns></returns>
         [Authorize(Roles = Role.User)]
         public async Task<IActionResult> SaveAnnouncement(List<IFormFile> images, string announcement)
         {
             // Announcement is passed inside FormData object and comes as serialized JSON object and has to be deserialized manually.
-            SaveAnnouncementViewModel announcementViewModel = JsonConvert
-                .DeserializeObject<SaveAnnouncementViewModel>(announcement);
+            SaveAnnouncemenModel announcementModel = JsonConvert
+                .DeserializeObject<SaveAnnouncemenModel>(announcement);
             // Perform validation
             // If house type is selected and no shared part is provided.
-            if (announcementViewModel.Type == 0 && announcementViewModel.SharedPart == null)
+            if (announcementModel.Type == 0 && announcementModel.SharedPart == null)
             {
                 return Json(null);
             }
             // If any part of address is missing.
-            if (string.IsNullOrEmpty(announcementViewModel.Country) ||
-                string.IsNullOrEmpty(announcementViewModel.Region) ||
-                string.IsNullOrEmpty(announcementViewModel.City) ||
-                string.IsNullOrEmpty(announcementViewModel.Street) ||
-                string.IsNullOrEmpty(announcementViewModel.StreetNumber))
+            if (string.IsNullOrEmpty(announcementModel.Country) ||
+                string.IsNullOrEmpty(announcementModel.Region) ||
+                string.IsNullOrEmpty(announcementModel.City) ||
+                string.IsNullOrEmpty(announcementModel.Street) ||
+                string.IsNullOrEmpty(announcementModel.StreetNumber))
             {
                 return Json(null);
             }
             // If date range is invalid.
-            if (announcementViewModel.From == null ||
-                announcementViewModel.To == null ||
-                announcementViewModel.From.Date > announcementViewModel.To.Date ||
-                announcementViewModel.To.Date <= DateTime.Today.Date ||
-                announcementViewModel.From.Date < new DateTime(2000, 1, 1).Date)
+            if (announcementModel.From == null ||
+                announcementModel.To == null ||
+                announcementModel.From.Date > announcementModel.To.Date ||
+                announcementModel.To.Date <= DateTime.Today.Date ||
+                announcementModel.From.Date < new DateTime(2000, 1, 1).Date)
             {
                 return Json(null);
             }
             // If description is empty.
-            if (string.IsNullOrEmpty(announcementViewModel.Description))
+            if (string.IsNullOrEmpty(announcementModel.Description))
             {
                 return Json(null);
             }
             // If contacts is empty or has invalid value.
-            if (announcementViewModel.Contacts.Count() == 0)
+            if (announcementModel.Contacts.Count() == 0)
             {
                 return Json(null);
             }
-            foreach (ContactPaymentItem item in announcementViewModel.Contacts)
+            foreach (ContactPaymentItem item in announcementModel.Contacts)
             {
                 if (string.IsNullOrEmpty(item.Value))
                 {
@@ -623,11 +655,11 @@ namespace BedAndBreakfast.Controllers
                 }
             }
             // If payments is empty or has invalid value.
-            if (announcementViewModel.Payments.Count() == 0)
+            if (announcementModel.Payments.Count() == 0)
             {
                 return Json(null);
             }
-            foreach (ContactPaymentItem item in announcementViewModel.Payments)
+            foreach (ContactPaymentItem item in announcementModel.Payments)
             {
                 if (string.IsNullOrEmpty(item.Value))
                 {
@@ -635,35 +667,35 @@ namespace BedAndBreakfast.Controllers
                 }
             }
             // Timetable validation
-            switch (announcementViewModel.Timetable)
+            switch (announcementModel.Timetable)
             {
                 case 0:
                     // If timetable is off and per day reservations or schedule items exist.
-                    if (announcementViewModel.PerDayReservations != null ||
-                        announcementViewModel.ScheduleItems != null)
+                    if (announcementModel.PerDayReservations != null ||
+                        announcementModel.ScheduleItems != null)
                     {
                         return Json(null);
                     }
                     break;
                 case 1:
                     // If timetable is set as per day and schedule items exist or per day reservations is invalid.
-                    if (announcementViewModel.PerDayReservations == null ||
-                        announcementViewModel.PerDayReservations < 1 ||
-                        announcementViewModel.PerDayReservations > 1000 ||
-                        announcementViewModel.ScheduleItems != null)
+                    if (announcementModel.PerDayReservations == null ||
+                        announcementModel.PerDayReservations < 1 ||
+                        announcementModel.PerDayReservations > 1000 ||
+                        announcementModel.ScheduleItems != null)
                     {
                         return Json(null);
                     }
                     break;
                 case 2:
                     // If timetable is set as per hour and per day reservations exist or there is no schedule items.
-                    if (announcementViewModel.PerDayReservations != null ||
-                        announcementViewModel.ScheduleItems == null)
+                    if (announcementModel.PerDayReservations != null ||
+                        announcementModel.ScheduleItems == null)
                     {
                         return Json(null);
                     }
                     // Validate schedule items.
-                    foreach (ScheduleItemViewModel item in announcementViewModel.ScheduleItems)
+                    foreach (ScheduleItemModel item in announcementModel.ScheduleItems)
                     {
                         if (item.From < 0 || item.From > 23 ||
                             item.To < 1 || item.To > 24 ||
@@ -676,7 +708,7 @@ namespace BedAndBreakfast.Controllers
                     break;
             }
             // Images count validation.
-            if (announcementViewModel.Images.Count() + images.Count() > IoCContainer.DbSettings.Value.MaxAnnouncementImagesCount)
+            if (announcementModel.Images.Count() + images.Count() > IoCContainer.DbSettings.Value.MaxAnnouncementImagesCount)
             {
                 return Json(null);
             }
@@ -685,42 +717,42 @@ namespace BedAndBreakfast.Controllers
             // Get announcement if it should be edited instead created.
             Announcement editedAnnouncement = null;
             Announcement addedAnnouncement = null;
-            if (announcementViewModel.AnnouncementID != null)
+            if (announcementModel.AnnouncementID != null)
             {
                 editedAnnouncement = await context.Announcements
                     .Include(a => a.Address)
-                    .Where(a => a.ID == announcementViewModel.AnnouncementID)
+                    .Where(a => a.ID == announcementModel.AnnouncementID)
                     .SingleOrDefaultAsync();
             }
             // Announcement specified by id has not been found - error.
-            if (announcementViewModel.AnnouncementID != null && editedAnnouncement == null)
+            if (announcementModel.AnnouncementID != null && editedAnnouncement == null)
             {
                 return Json(null);
             }
-            if (announcementViewModel.AnnouncementID != null)
+            if (announcementModel.AnnouncementID != null)
             {
                 // Edit announcement
-                editedAnnouncement.Description = announcementViewModel.Description;
-                editedAnnouncement.From = announcementViewModel.From;
+                editedAnnouncement.Description = announcementModel.Description;
+                editedAnnouncement.From = announcementModel.From;
                 editedAnnouncement.IsActive = true;
-                editedAnnouncement.MaxReservations = announcementViewModel.PerDayReservations;
+                editedAnnouncement.MaxReservations = announcementModel.PerDayReservations;
                 editedAnnouncement.Removed = false;
-                editedAnnouncement.SharedPart = (byte?)announcementViewModel.SharedPart;
-                editedAnnouncement.Subtype = (byte)announcementViewModel.Subtype;
-                editedAnnouncement.Timetable = (byte)announcementViewModel.Timetable;
-                editedAnnouncement.To = announcementViewModel.To;
-                editedAnnouncement.Type = (byte)announcementViewModel.Type;
+                editedAnnouncement.SharedPart = (byte?)announcementModel.SharedPart;
+                editedAnnouncement.Subtype = (byte)announcementModel.Subtype;
+                editedAnnouncement.Timetable = (byte)announcementModel.Timetable;
+                editedAnnouncement.To = announcementModel.To;
+                editedAnnouncement.Type = (byte)announcementModel.Type;
                 // Remove previous relations.
                 AnnouncementServiceLogic.ClearContactsAndPaymentMethodRelations(editedAnnouncement, context);
                 AnnouncementServiceLogic.ClearScheduleItemsRelations(editedAnnouncement, context);
                 AnnouncementServiceLogic.ClearTagRelations(editedAnnouncement, context);
                 // Generate new relations.
-                await AnnouncementServiceLogic.CreateAddressForAnnouncement(announcementViewModel, editedAnnouncement, context);
-                await AnnouncementServiceLogic.CreateContactsForAnnoucement(announcementViewModel, editedAnnouncement, context);
-                await AnnouncementServiceLogic.CreatePaymentsForAnnoucement(announcementViewModel, editedAnnouncement, context);
-                if (announcementViewModel.ScheduleItems != null)
+                await AnnouncementServiceLogic.CreateAddressForAnnouncement(announcementModel, editedAnnouncement, context);
+                await AnnouncementServiceLogic.CreateContactsForAnnoucement(announcementModel, editedAnnouncement, context);
+                await AnnouncementServiceLogic.CreatePaymentsForAnnoucement(announcementModel, editedAnnouncement, context);
+                if (announcementModel.ScheduleItems != null)
                 {
-                    await AnnouncementServiceLogic.CreateScheduleItemsForAnnoucement(announcementViewModel, editedAnnouncement, context);
+                    await AnnouncementServiceLogic.CreateScheduleItemsForAnnoucement(announcementModel, editedAnnouncement, context);
                 }
                 await AnnouncementServiceLogic.CreateTagsForAnnouncement(editedAnnouncement, context);
             }
@@ -729,27 +761,27 @@ namespace BedAndBreakfast.Controllers
                 // Create new announcement.
                 addedAnnouncement = new Announcement()
                 {
-                    Description = announcementViewModel.Description,
-                    From = announcementViewModel.From,
+                    Description = announcementModel.Description,
+                    From = announcementModel.From,
                     IsActive = true,
-                    MaxReservations = announcementViewModel.PerDayReservations,
+                    MaxReservations = announcementModel.PerDayReservations,
                     Removed = false,
-                    SharedPart = (byte?)announcementViewModel.SharedPart,
-                    Subtype = (byte)announcementViewModel.Subtype,
-                    Timetable = (byte)announcementViewModel.Timetable,
-                    To = announcementViewModel.To,
-                    Type = (byte)announcementViewModel.Type,
+                    SharedPart = (byte?)announcementModel.SharedPart,
+                    Subtype = (byte)announcementModel.Subtype,
+                    Timetable = (byte)announcementModel.Timetable,
+                    To = announcementModel.To,
+                    Type = (byte)announcementModel.Type,
                     User = await userManager.GetUserAsync(HttpContext.User),
                 };
                 // Add created announcement.
                 await context.Announcements.AddAsync(addedAnnouncement);
-                await AnnouncementServiceLogic.CreateAddressForAnnouncement(announcementViewModel, addedAnnouncement, context);
-                await AnnouncementServiceLogic.CreateContactsForAnnoucement(announcementViewModel, addedAnnouncement, context);
-                await AnnouncementServiceLogic.CreatePaymentsForAnnoucement(announcementViewModel, addedAnnouncement, context);
+                await AnnouncementServiceLogic.CreateAddressForAnnouncement(announcementModel, addedAnnouncement, context);
+                await AnnouncementServiceLogic.CreateContactsForAnnoucement(announcementModel, addedAnnouncement, context);
+                await AnnouncementServiceLogic.CreatePaymentsForAnnoucement(announcementModel, addedAnnouncement, context);
                 // Add schedule items relations only if such exists in view model.
-                if (announcementViewModel.ScheduleItems != null)
+                if (announcementModel.ScheduleItems != null)
                 {
-                    await AnnouncementServiceLogic.CreateScheduleItemsForAnnoucement(announcementViewModel, addedAnnouncement, context);
+                    await AnnouncementServiceLogic.CreateScheduleItemsForAnnoucement(announcementModel, addedAnnouncement, context);
                 }
                 await AnnouncementServiceLogic.CreateTagsForAnnouncement(addedAnnouncement, context);
             }
@@ -758,7 +790,7 @@ namespace BedAndBreakfast.Controllers
             if (editedAnnouncement != null)
             {
                 List<string> remainingImageNames = new List<string>();
-                foreach (ImageViewModel image in announcementViewModel.Images)
+                foreach (ImageModel image in announcementModel.Images)
                 {
                     remainingImageNames.Add(image.ImageName);
                 }
@@ -878,10 +910,10 @@ namespace BedAndBreakfast.Controllers
                 });
             }
             // Parse acquired schedule items to view model.
-            List<ScheduleItemViewModel> scheduleItems = new List<ScheduleItemViewModel>();
+            List<ScheduleItemModel> scheduleItems = new List<ScheduleItemModel>();
             foreach (ScheduleItem scheduleItem in scheduleItemsData)
             {
-                scheduleItems.Add(new ScheduleItemViewModel()
+                scheduleItems.Add(new ScheduleItemModel()
                 {
                     From = scheduleItem.From,
                     To = scheduleItem.To,
@@ -889,17 +921,17 @@ namespace BedAndBreakfast.Controllers
                 });
             }
             // Parse acquired images to view model.
-            List<ImageViewModel> imageViewModels = new List<ImageViewModel>();
+            List<ImageModel> imageModels = new List<ImageModel>();
             foreach (Image image in images)
             {
-                imageViewModels.Add(new ImageViewModel
+                imageModels.Add(new ImageModel
                 {
                     ImageByteArray = image.StoredImage,
                     ImageName = image.ImageName,
                 });
             }
             // Collect data into single object and send to view.
-            SaveAnnouncementViewModel outputAnnouncement = new SaveAnnouncementViewModel()
+            SaveAnnouncemenModel outputAnnouncement = new SaveAnnouncemenModel()
             {
                 AnnouncementID = announcement.ID,
                 City = announcement.Address.City,
@@ -918,12 +950,58 @@ namespace BedAndBreakfast.Controllers
                 Timetable = announcement.Timetable,
                 To = announcement.To,
                 Type = announcement.Type,
-                Images = imageViewModels,
+                Images = imageModels,
             };
 
             return Json(outputAnnouncement);
         }
 
+
+        public async Task<IActionResult> Browse(string announcementBrowserQuery) {
+            // Get announcements matching query.
+            List<Announcement> announcementsFound = SearchEngine
+                .FindAnnoucements(announcementBrowserQuery, context);
+            // Leave only non removed and active announcements.
+            announcementsFound = announcementsFound
+                .Where(a => a.IsActive == true)
+                .Where(a => a.Removed == false)
+                .ToList();
+            // Parse announcements to view model.
+            List<AnnouncementPreviewModel> announcementPreviewModels = new List<AnnouncementPreviewModel>();
+            foreach (Announcement announcement in announcementsFound) {
+                // Get announcement reviews.
+                List<Review> reviews = await context.Reviews
+                    .Where(r => r.Announcement == announcement)
+                    .ToListAsync();
+                // Get average rating.
+                // Average rating will be null if there is no reviews.
+                double? averageRating = null;
+                if (reviews.Count() == 0)
+                {
+                    averageRating = 0;
+                    foreach (Review review in reviews)
+                    {
+                        averageRating += review.Rating;
+                    }
+                    averageRating = averageRating / reviews.Count();
+                }
+                announcementPreviewModels.Add(new AnnouncementPreviewModel() {
+                    AnnouncementID = announcement.ID,
+                    AverageRating = averageRating,
+                    City =announcement.Address.City,
+                    Country = announcement.Address.Country,
+                    Description = announcement.Description,
+                    Region = announcement.Address.Region,
+                    ReviewsCount = reviews.Count(),
+                    SharedPart = announcement.SharedPart,
+                    Street =announcement.Address.Street,
+                    StreetNumber = announcement.Address.StreetNumber,
+                    Subtype = announcement.Subtype,
+                    Type = announcement.Type,
+                });
+            }
+            return View(new BrowseViewModel() { announcementPreviewModels = announcementPreviewModels });
+        }
 
     }
 }
