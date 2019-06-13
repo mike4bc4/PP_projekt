@@ -104,15 +104,7 @@ function drawAnnouncementList(announcements) {
 
         // Add preview image.
         var imageContainerNode = newNode.getElementsByClassName("announcement-preview-images-container")[0];
-        if (announcements[i].imagesByteArrays.length != 0) {
-            var image = document.createElement("img");
-            image.src = "data:image/png;base64," + announcements[i].imagesByteArrays[0];
-            image.style.width = "400px";
-            imageContainerNode.appendChild(image);
-        }
-        else {
-            imageContainerNode.innerText = "This announcement has no images."
-        }
+        ImageSwiper.Add(imageContainerNode, 400, 255, announcements[i].imagesByteArrays, announcements[i].announcementID);
 
         // Update redirect form.
         newNode.getElementsByTagName("form")[0].getElementsByTagName("input")[0].value = announcements[i].announcementID;

@@ -964,7 +964,8 @@ namespace BedAndBreakfast.Controllers
         /// </summary>
         /// <param name="announcementBrowserQuery"></param>
         /// <returns></returns>
-        public async Task<IActionResult> Browse(string announcementBrowserQuery) {
+        public async Task<IActionResult> Browse(string announcementBrowserQuery)
+        {
             // Get announcements matching query.
             List<Announcement> announcementsFound = SearchEngine
                 .FindAnnoucements(announcementBrowserQuery, context);
@@ -975,7 +976,8 @@ namespace BedAndBreakfast.Controllers
                 .ToList();
             // Parse announcements to view model.
             List<AnnouncementPreviewModel> announcementPreviewModels = new List<AnnouncementPreviewModel>();
-            foreach (Announcement announcement in announcementsFound) {
+            foreach (Announcement announcement in announcementsFound)
+            {
                 // Get announcement reviews.
                 List<Review> reviews = await context.Reviews
                     .Where(r => r.Announcement == announcement)
@@ -1007,16 +1009,17 @@ namespace BedAndBreakfast.Controllers
                     .Select(i => i.StoredImage)
                     .ToListAsync();
 
-                announcementPreviewModels.Add(new AnnouncementPreviewModel() {
+                announcementPreviewModels.Add(new AnnouncementPreviewModel()
+                {
                     AnnouncementID = announcement.ID,
                     AverageRating = averageRating,
-                    City =announcement.Address.City,
+                    City = announcement.Address.City,
                     Country = announcement.Address.Country,
                     Description = announcement.Description,
                     Region = announcement.Address.Region,
                     ReviewsCount = reviews.Count(),
                     SharedPart = announcement.SharedPart,
-                    Street =announcement.Address.Street,
+                    Street = announcement.Address.Street,
                     StreetNumber = announcement.Address.StreetNumber,
                     Subtype = announcement.Subtype,
                     Type = announcement.Type,
@@ -1032,8 +1035,102 @@ namespace BedAndBreakfast.Controllers
         /// </summary>
         /// <param name="announcementID"></param>
         /// <returns></returns>
-        public async Task<IActionResult> DisplaySingle(int announcementID) {
-            return View();
+        public async Task<IActionResult> Announcement(int announcementID)
+        {
+            AnnouncementViewModel viewModel = new AnnouncementViewModel();
+            // Get announcement by ID.
+            Announcement announcement = await context.Announcements
+                .Include(a => a.Address)
+                .Where(a => a.ID == announcementID)
+                .SingleOrDefaultAsync();
+            // Return null if no announcement with provided ID exists in database.
+            if (announcement == null)
+            {
+                return View(null);
+            }
+            // Get contacts and payment for this announcement.
+            List<AdditionalContact> additionalContacts = await context.AnnouncementToContacts
+                .Include(ac => ac.AdditionalContact)
+                .Where(ac => ac.Announcement == announcement)
+                .Select(ac => ac.AdditionalContact)
+                .ToListAsync();
+            List<PaymentMethod> paymentMethods = await context.AnnouncementToPayments
+                .Include(ap => ap.PaymentMethod)
+                .Where(ap => ap.Announcement == announcement)
+                .Select(ap => ap.PaymentMethod)
+                .ToListAsync();
+            // Parse contact and payments to models.
+            List<ContactPaymentItem> contacts = new List<ContactPaymentItem>();
+            List<ContactPaymentItem> payments = new List<ContactPaymentItem>();
+            foreach (AdditionalContact contact in additionalContacts)
+            {
+                contacts.Add(new ContactPaymentItem()
+                {
+                    Type = contact.Type,
+                    Value = contact.Data,
+                });
+            }
+            foreach (PaymentMethod payment in paymentMethods)
+            {
+                payments.Add(new ContactPaymentItem()
+                {
+                    Type = payment.Type,
+                    Value = payment.Data,
+                });
+            }
+            // Get announcement reviews.
+            List<Review> reviews = await context.Reviews
+                .Where(r => r.Announcement == announcement)
+                .ToListAsync();
+            // Get average rating.
+            // Average rating will be null if there is no reviews.
+            double? averageRating = null;
+            if (reviews.Count() != 0)
+            {
+                averageRating = 0;
+                foreach (Review review in reviews)
+                {
+                    averageRating += review.Rating;
+                }
+                averageRating = averageRating / reviews.Count();
+            }
+            // Get images byte arrays for this announcement;
+            List<byte[]> imagesByteArrays = await context.Images
+                .Where(i => i.Announcement == announcement)
+                .Select(i => i.StoredImage)
+                .ToListAsync();
+            // Calculate reservations per month.
+            DateTime from = DateTime.Today.AddDays(-14);
+            DateTime to = DateTime.Today.AddDays(14);
+            // Get reservations for time range.
+            List<Reservation> reservations = await context.Reservations
+                .Where(r => r.Announcement == announcement)
+                .Where(r => r.Date.Date > from.Date)
+                .Where(r => r.Date.Date < to.Date)
+                .ToListAsync();
+            // Fill view model with data.
+            viewModel.AnnouncementPreviewModel = new AnnouncementPreviewModel()
+            {
+                AnnouncementID = announcement.ID,
+                AverageRating = averageRating,
+                City = announcement.Address.City,
+                Country = announcement.Address.Country,
+                Description = announcement.Description,
+                ImagesByteArrays = imagesByteArrays,
+                Region = announcement.Address.Region,
+                ReservationsPerMonth = reservations.Count(),
+                ReviewsCount = reviews.Count(),
+                SharedPart = announcement.SharedPart,
+                Street = announcement.Address.Street,
+                StreetNumber = announcement.Address.StreetNumber,
+                Subtype = announcement.Subtype,
+                Type = announcement.Type,
+            };
+            viewModel.Contacts = contacts;
+            viewModel.Payments = payments;
+            viewModel.From = announcement.From;
+            viewModel.To = announcement.To;
+            return View(viewModel);
         }
 
     }

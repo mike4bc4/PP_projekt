@@ -13,8 +13,7 @@
 
 }
 
-
-
+<script type="text/javascript" src="~/js/imageSwiper.js"></script>
 <script type="text/javascript" src="~/js/messageSystem.js"></script>
 <script type="text/javascript" src="~/js/browseAnnouncements.js"></script>
 <script type="text/javascript">
@@ -83,7 +82,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <form asp-action="DisplaySingle" asp-controller="Announcement">
+                    <form asp-action="Announcement" asp-controller="Announcement">
                         <input type="hidden" name="announcementID" value="" />
                         <button type="submit">Display announcement details</button>
                     </form>
@@ -96,7 +95,7 @@
 </div>
 <!--Static map container-->
 <div>
-    <div id="map">
+    <div id="announcement-previews-map-container">
 
     </div>
 </div>
