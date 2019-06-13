@@ -12,7 +12,8 @@
     List<string> paymentMethods = Enum.GetNames(typeof(EnumeratedDbValues.PaymentMethod)).ToList();
 }
 
-<script type="text/javascript" src=""></script>
+<script type="text/javascript" src="~/js/announcementView.js"></script>
+<script type="text/javascript" src="~/js/imageSwiper.js"></script>
 
 <div>
     @if (Model == null)
@@ -40,7 +41,7 @@
                     }
                 </td>
                 <td rowspan="6">
-                    <div id="announcement-map-container"></div>
+                    <div id="map-container"></div>
                 </td>
             </tr>
             <tr>

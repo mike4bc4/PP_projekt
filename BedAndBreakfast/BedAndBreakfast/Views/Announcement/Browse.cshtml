@@ -10,12 +10,13 @@
     List<string> sharedParts = Enum.GetNames(typeof(EnumeratedDbValues.HouseSharedPart)).ToList();
     List<string> contactMethods = Enum.GetNames(typeof(EnumeratedDbValues.ContactType)).ToList();
     List<string> paymentMethods = Enum.GetNames(typeof(EnumeratedDbValues.PaymentMethod)).ToList();
-
 }
 
 <script type="text/javascript" src="~/js/imageSwiper.js"></script>
 <script type="text/javascript" src="~/js/messageSystem.js"></script>
 <script type="text/javascript" src="~/js/browseAnnouncements.js"></script>
+<script type="text/javascript" src="~/js/mapboxMaps.js"></script>
+
 <script type="text/javascript">
     window.onload = function () {
         browseAnnouncementsInit();
@@ -64,7 +65,7 @@
 
 <div id="global-message-container"></div>
 <!--Scrollable container with announcement previews-->
-<div id="announcement-previews-container">
+<div id="announcement-previews-container" style="float: left;">
     <div id="announcement-preview-prototype" hidden>
         <table border="1">
             <tr>
@@ -86,7 +87,7 @@
                         <input type="hidden" name="announcementID" value="" />
                         <button type="submit">Display announcement details</button>
                     </form>
-                    <div onclick="">Toggle visible on map</div>
+                    <div class="announcement-preview-toggle-map-visible" onclick="" data-selected="false" >Toggle visible on map</div>
                 </td>
             </tr>
         </table>
@@ -95,8 +96,5 @@
 </div>
 <!--Static map container-->
 <div>
-    <div id="announcement-previews-map-container">
-
-    </div>
+    <div id="map"  style="width: 500px; height: 500px; float:left; background: grey"></div>
 </div>
-

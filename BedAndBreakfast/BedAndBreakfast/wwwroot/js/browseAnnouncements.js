@@ -5,6 +5,33 @@ function handleSortOptionChange(dropDownList) {
 
 }
 
+function handleToggleVisibleOnMapClick(announcementID) {
+    var announcementPreviewItem = document.getElementById("announcement-preview-" + announcementID);
+    var toggleMapVisibleNode = announcementPreviewItem.getElementsByClassName("announcement-preview-toggle-map-visible")[0];
+    if (toggleMapVisibleNode.getAttribute("data-selected") == "false") {
+        toggleMapVisibleNode.setAttribute("data-selected", "true");
+        toggleMapVisibleNode.style.backgroundColor = "lightgray";
+
+        var address = announcementPreviewItem.getElementsByClassName("announcement-preview-address-container")[0].innerText;
+        var popupContent = announcementPreviewItem.getElementsByClassName("announcement-preview-description-container")[0].innerText;
+        // Shorten popup content if necessary.
+        if (popupContent.length > 100) {
+            popupContent = popupContent.substr(0, 100);
+            popupContent += "...";
+        }
+        performGeocoding(address, "<strong>" + address + "</strong><p>" + popupContent + "</p>.", announcementID, 13);
+    }
+    else {
+        toggleMapVisibleNode.setAttribute("data-selected", "false");
+        toggleMapVisibleNode.style.backgroundColor = "white";
+        removeMapMarker(announcementID)
+    }
+}
+
+/**
+ * Filters announcement previews by selected options. By default 
+ * all found preview items are displayed.
+ */
 function handleFilterItemClick(clickedNode) {
     var filterID = parseInt(clickedNode.id.split("-").pop());
     // Toggle filter item selection.
@@ -27,12 +54,17 @@ function handleFilterItemClick(clickedNode) {
 
     // Apply filters
     var announcements = getAnnouncements();
-    var announcementsToDraw = [];
-    for (var i = 0; i < announcements.length; i++) {
-        for (var j = 0; j < selectedFilterOptions.length; j++) {
-            if (announcements[i].type == selectedFilterOptions[j]) {
-                announcementsToDraw.push(announcements[i]);
-                break;
+    var announcementsToDraw = announcements;
+    // Apply sorting options only if there are any selected
+    // otherwise print all announcements.
+    if (selectedFilterOptions.length != 0) {
+        announcementsToDraw = [];
+        for (var i = 0; i < announcements.length; i++) {
+            for (var j = 0; j < selectedFilterOptions.length; j++) {
+                if (announcements[i].type == selectedFilterOptions[j]) {
+                    announcementsToDraw.push(announcements[i]);
+                    break;
+                }
             }
         }
     }
@@ -42,8 +74,19 @@ function handleFilterItemClick(clickedNode) {
 function browseAnnouncementsInit() {
     var announcements = getAnnouncements();
     drawAnnouncementList(announcements);
+    createMap(2, [20, 50]);
+    if (announcements.length != 0) {
+        handleToggleVisibleOnMapClick(announcements[0].announcementID);
+    }
+    // setTimeout(function () {
+    //     performGeocoding("australia melbourne albert park", "<strong>Some test popup message</strong><p>Popup description</p>.", 1, 13);
+    // }, 3000);
 }
 
+/**
+ * Fills announcement previews container with items containing
+ * images (animated widget), type, address, description and rates.
+ */
 function drawAnnouncementList(announcements) {
 
     var announcementPreviewsContainer = document.getElementById("announcement-previews-container");
@@ -108,6 +151,9 @@ function drawAnnouncementList(announcements) {
 
         // Update redirect form.
         newNode.getElementsByTagName("form")[0].getElementsByTagName("input")[0].value = announcements[i].announcementID;
+        // Update toggle visible on map.
+        newNode.getElementsByClassName("announcement-preview-toggle-map-visible")[0]
+            .setAttribute("onclick", "handleToggleVisibleOnMapClick(" + announcements[i].announcementID + ");");
 
         // Add node to container.
         announcementPreviewsContainer.appendChild(newNode);
