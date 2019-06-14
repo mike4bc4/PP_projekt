@@ -10,10 +10,23 @@
 
     List<string> contactTypes = Enum.GetNames(typeof(EnumeratedDbValues.ContactType)).ToList();
     List<string> paymentMethods = Enum.GetNames(typeof(EnumeratedDbValues.PaymentMethod)).ToList();
+
 }
 
+<script type="text/javascript" src="~/js/effects.js"></script>
 <script type="text/javascript" src="~/js/announcementView.js"></script>
 <script type="text/javascript" src="~/js/imageSwiper.js"></script>
+<script type="text/javascript" src="~/js/mapboxMaps.js"></script>
+<script type="text/javascript" src="~/js/messageSystem.js"></script>
+<script type="text/javascript">
+    window.onload = function () {
+        announcementViewInit();
+    }
+    function getAnnouncementViewModel() {
+        return @Html.Raw(Json.Serialize(Model));
+    }
+    
+</script>
 
 <div>
     @if (Model == null)
@@ -41,7 +54,7 @@
                     }
                 </td>
                 <td rowspan="6">
-                    <div id="map-container"></div>
+                    <div id="announcement-map-container"></div>
                 </td>
             </tr>
             <tr>
@@ -66,7 +79,7 @@
             </tr>
             <tr>
                 <td>
-                    <p>
+                    <p id="announcement-address-container">
                         @Model.AnnouncementPreviewModel.Country
                         @Model.AnnouncementPreviewModel.Region
                         @Model.AnnouncementPreviewModel.City
@@ -111,46 +124,56 @@
             </tr>
             <tr>
                 <td colspan="2" id="announcement-reservations-container">
-                    <div id="announcement-reservation-prototype">
+                    <div id="announcement-reservation-prototype" hidden>
                         <label>Reservation for: </label>
                         <label class="announcement-reservation-date-container"></label>
                         <label>Amount: </label>
-                        <button class="announcement-reservation-decrease-button">-</button>
-                        <input class="announcement-reservation-input-field" type="text" />
-                        <button class="announcement-reservation-increase-button">+</button>
+                        <button class="announcement-reservation-decrease-10-button">-10</button>
+                        <button class="announcement-reservation-decrease-1-button">-1</button>
+                        <input class="announcement-reservation-input-field" type="text" readonly />
+                        <button class="announcement-reservation-increase-1-button">+1</button>
+                        <button class="announcement-reservation-increase-10-button">+10</button>
                         <button class="announcement-reservation-remove-button">Remove</button>
                     </div>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <button id="announcement-reservation-submit-button">Make reservation</button><span id="announcement-reservation-error-span"></span>
+                    <button onclick="handleSubmitReservationsButton();">Make reservation</button><span id="announcement-reservation-error-span"></span>
                 </td>
             </tr>
             <tr>
                 <td colspan="2" id="review-creator-container">
                     <p>
                         <label>Rate: </label>
-                        <input id="reservation-creator-rating-input" type="text" />
+                        <input size="2" maxlength="2" onchange="handleRateValidation();" id="review-creator-rating-input" type="text" /><span>/10</span>
+                        <span id="review-creator-rating-error-span" ></span>
+
+                    </p>
+                    <p>
+                        <label>Your name: </label>
+                        <input maxlength="50" id="review-creator-nickname-input" type="text" /><span id="review-creator-nickname-error-span"></span>
                     </p>
                     <p>
                         <label>Review content: </label><br />
-                        <textarea cols="100" rows="20" id="review-creator-textarea"></textarea>
+                        <textarea oninput="handleReviewTextareaInput();" cols="100" rows="12" id="review-creator-textarea"></textarea>
                     </p>
-                    <p id="reservation-creator-textarea-counter-container"></p>
+                        <p id="review-creator-textarea-counter"></p><span id="review-creator-textarea-error-span"></span>
                     <p>
-                        <button id="reservation-creator-submit-button">Post review</button><span id="reservation-creator-error-span"></span>
+                        <button onclick="handlePostReviewButtonClick(this);">Post review</button><span id="review-creator-error-span"></span>
                     </p>
                 </td>
             </tr>
             <tr>
                 <td colspan="2" id="announcement-reviews-container">
-                    <div id="announcement-review-prototype">
+                    <div id="announcement-review-prototype" hidden>
                         <p>
                             <label>Rate: </label>
                             <label class="announcement-review-rating-container"></label>
-                            <label>Written by: </label>
-                            <label class="announcement-review-username-container"></label>
+                            <label>Written on: </label>
+                            <label class="announcement-review-date-container"></label>
+                            <label> by: </label>
+                            <label class="announcement-review-name-container"></label>
                         </p>
                         <p class="announcement-review-message-container"></p>
                     </div>

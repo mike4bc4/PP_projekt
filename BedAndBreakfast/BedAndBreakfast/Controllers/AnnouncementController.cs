@@ -237,7 +237,7 @@ namespace BedAndBreakfast.Controllers
         /// <param name="reservations"></param>
         /// <returns></returns>
         [Authorize(Roles = Role.User)]
-        public async Task<IActionResult> MakeReservations(List<ReservationViewModel> reservations)
+        public async Task<IActionResult> MakeReservations(List<ReservationModel> reservations)
         {
             List<Reservation> reservationsToAdd = new List<Reservation>();
             Announcement announcement = await context.Announcements.Where(a => a.ID == reservations[0].AnnouncementID).SingleOrDefaultAsync();
@@ -249,7 +249,7 @@ namespace BedAndBreakfast.Controllers
             }
 
             List<int> scheduleItemsIDs = new List<int>();
-            foreach (ReservationViewModel reservation in reservations)
+            foreach (ReservationModel reservation in reservations)
             {
                 ScheduleItem scheduleItem = null;
                 if (reservation.From != null || reservation.To != null || reservation.MaxReservations != null)
@@ -296,10 +296,10 @@ namespace BedAndBreakfast.Controllers
         /// in database settings. 
         /// </summary>
         /// <param name="announcementID"></param>
-        /// <param name="reviewViewModel"></param>
+        /// <param name="reviewModel"></param>
         /// <returns></returns>
         [Authorize(Roles = Role.User)]
-        public async Task<IActionResult> PostReview(int announcementID, ReviewViewModel reviewViewModel)
+        public async Task<IActionResult> PostReview(int announcementID, ReviewModel reviewModel)
         {
             Announcement announcement = await context.Announcements.Where(a => a.ID == announcementID).SingleOrDefaultAsync();
             User currentUser = await userManager.GetUserAsync(HttpContext.User);
@@ -308,16 +308,16 @@ namespace BedAndBreakfast.Controllers
                 return Json(null);
             }
             // Validate review
-            if (string.IsNullOrEmpty(reviewViewModel.Name) ||
-                reviewViewModel.Name.Count() > IoCContainer.DbSettings.Value.MaxReviewNameLength ||
-                reviewViewModel.ReviewDate == null ||
-                string.IsNullOrEmpty(reviewViewModel.Content) ||
-                reviewViewModel.Content.Count() > IoCContainer.DbSettings.Value.MaxReviewContentLength)
+            if (string.IsNullOrEmpty(reviewModel.Name) ||
+                reviewModel.Name.Count() > IoCContainer.DbSettings.Value.MaxReviewNameLength ||
+                reviewModel.ReviewDate == null ||
+                string.IsNullOrEmpty(reviewModel.Content) ||
+                reviewModel.Content.Count() > IoCContainer.DbSettings.Value.MaxReviewContentLength)
             {
                 return Json(null);
             }
-            if (reviewViewModel.Rating < 0 ||
-                reviewViewModel.Rating > 10)
+            if (reviewModel.Rating < 0 ||
+                reviewModel.Rating > 10)
             {
                 return Json(null);
             }
@@ -326,10 +326,10 @@ namespace BedAndBreakfast.Controllers
             {
                 Announcement = announcement,
                 User = currentUser,
-                Name = reviewViewModel.Name,
-                Rating = (byte)reviewViewModel.Rating,
-                Content = reviewViewModel.Content,
-                ReviewDate = reviewViewModel.ReviewDate
+                Name = reviewModel.Name,
+                Rating = (byte)reviewModel.Rating,
+                Content = reviewModel.Content,
+                ReviewDate = reviewModel.ReviewDate
             };
             await context.Reviews.AddAsync(review);
             var result = await context.SaveChangesAsync();
@@ -359,10 +359,10 @@ namespace BedAndBreakfast.Controllers
                 return Json(null);
             }
             List<Review> announcementReviews = await context.Reviews.Where(ar => ar.Announcement == announcement).OrderByDescending(ar => ar.ReviewDate).ToListAsync();
-            List<ReviewViewModel> reviewViewModels = new List<ReviewViewModel>();
+            List<ReviewModel> reviewViewModels = new List<ReviewModel>();
             foreach (Review review in announcementReviews)
             {
-                reviewViewModels.Add(new ReviewViewModel
+                reviewViewModels.Add(new ReviewModel
                 {
                     Name = review.Name,
                     Rating = review.Rating,
@@ -370,7 +370,7 @@ namespace BedAndBreakfast.Controllers
                     ReviewDate = review.ReviewDate
                 });
             }
-            return Json(new { reviews = reviewViewModels });
+            return Json(reviewViewModels);
         }
 
         /// <summary>
@@ -1108,6 +1108,24 @@ namespace BedAndBreakfast.Controllers
                 .Where(r => r.Date.Date > from.Date)
                 .Where(r => r.Date.Date < to.Date)
                 .ToListAsync();
+            // Get schedule items for this announcement.
+            List<ScheduleItemModel> scheduleItemModels = new List<ScheduleItemModel>();
+            if (announcement.Timetable == 2)
+            {
+                List<ScheduleItem> scheduleItems = await context.AnnouncementToSchedules
+                    .Include(ats => ats.ScheduleItem)
+                    .Where(ats => ats.Announcement == announcement)
+                    .Select(ats => ats.ScheduleItem)
+                    .ToListAsync();
+                foreach (ScheduleItem item in scheduleItems) {
+                    scheduleItemModels.Add(new ScheduleItemModel()
+                    {
+                        From = item.From,
+                        To = item.To,
+                        MaxReservations = item.MaxReservations,
+                    });
+                }
+            }
             // Fill view model with data.
             viewModel.AnnouncementPreviewModel = new AnnouncementPreviewModel()
             {
@@ -1130,6 +1148,10 @@ namespace BedAndBreakfast.Controllers
             viewModel.Payments = payments;
             viewModel.From = announcement.From;
             viewModel.To = announcement.To;
+            viewModel.Timetable = announcement.Timetable;
+            viewModel.PerDayReservations = announcement.MaxReservations;
+            viewModel.ScheduleItems = scheduleItemModels;
+
             return View(viewModel);
         }
 

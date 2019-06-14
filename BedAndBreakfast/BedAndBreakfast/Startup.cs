@@ -102,7 +102,7 @@ namespace BedAndBreakfast
             {
                 options.AddPolicy(Policy.LoggedInUser, policy => policy.RequireRole(Role.User));
             });
-           
+
             // Configure IoC references before database setup.
             IServiceProvider serviceProvider = services.BuildServiceProvider();
             IoCContainer.DbSettings = serviceProvider.GetRequiredService<IOptions<DbSettings>>();

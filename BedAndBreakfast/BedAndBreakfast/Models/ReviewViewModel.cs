@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BedAndBreakfast.Models
 {
-    public class ReviewViewModel
+    public class ReviewModel
     {
         public string Name { get; set; }
         public int Rating { get; set; }

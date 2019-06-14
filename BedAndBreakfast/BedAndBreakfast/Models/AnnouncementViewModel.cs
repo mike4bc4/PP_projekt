@@ -12,5 +12,8 @@ namespace BedAndBreakfast.Models
         public DateTime To { get; set; }
         public List<ContactPaymentItem> Contacts { get; set; }
         public List<ContactPaymentItem> Payments { get; set; }
+        public int Timetable { get; set; }
+        public int? PerDayReservations { get; set; }
+        public List<ScheduleItemModel> ScheduleItems { get; set; }
     }
 }

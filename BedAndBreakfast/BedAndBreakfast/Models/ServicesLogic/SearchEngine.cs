@@ -33,7 +33,7 @@ namespace BedAndBreakfast.Models
             }
 
             // Get normalized query tags.
-            List<string> queryTags = StringManager.RemoveSpecials(query.ToUpper()).Split(' ').ToList();
+            List<string> queryTags = StringExtensions.RemoveSpecials(query.ToUpper()).Split(' ').ToList();
 
 
 
@@ -289,7 +289,7 @@ namespace BedAndBreakfast.Models
                     .Take(IoCContainer.DbSettings.Value.DefAnnouncementsDisplayed).ToList();
             }
 
-            List<string> queryTags = StringManager.RemoveSpecials(query.ToUpper()).Split(' ').ToList();
+            List<string> queryTags = StringExtensions.RemoveSpecials(query.ToUpper()).Split(' ').ToList();
             var announcementTags = (from at in context.AnnouncementTags
                                     select at.Value);
             var tagMatchingQuery = (from at in announcementTags

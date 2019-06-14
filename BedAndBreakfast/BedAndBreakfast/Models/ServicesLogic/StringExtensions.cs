@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BedAndBreakfast.Models
 {
-    public static class StringManager
+    public static class StringExtensions
     {
         public static string RemoveSpecials(string str) {
             var sb = new StringBuilder();
@@ -41,6 +41,17 @@ namespace BedAndBreakfast.Models
             }
             return output.TrimEnd();
         }
+
+        public static string FirstLettersToUpperCase(string str) {
+            List<string> strWords = str.Trim().Split(' ').ToList();
+            var sb = new StringBuilder();
+            foreach (string word in strWords) {
+                sb.Append(word.First().ToString().ToUpper() + word.Substring(1));
+                sb.Append(" ");
+            }
+            return sb.ToString().TrimEnd();          
+        }
+
 
 
     }

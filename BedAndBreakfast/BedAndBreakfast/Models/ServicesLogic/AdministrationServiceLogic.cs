@@ -188,7 +188,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
             helpPage.IsLocked = viewModel.IsLocked;
 
             // Prepare tags string.
-            List<string> newTagsList = StringManager.RemoveDuplicateWords(StringManager.RemoveSpecials(viewModel.Tags.ToUpper().Trim())).Split(' ').ToList();
+            List<string> newTagsList = StringExtensions.RemoveDuplicateWords(StringExtensions.RemoveSpecials(viewModel.Tags.ToUpper().Trim())).Split(' ').ToList();
 
             // Find additions and deletions.
             var deleteRange = (from hpht in context.HelpPageHelpTags

@@ -346,11 +346,11 @@ namespace BedAndBreakfast.Models.ServicesLogic
                 // Create new address object if it does not exists.
                 newAddress = new Address()
                 {
-                    Country = announcementModel.Country,
-                    Region = announcementModel.Region,
-                    City = announcementModel.City,
-                    Street = announcementModel.Street,
-                    StreetNumber = announcementModel.StreetNumber,
+                    Country = StringExtensions.FirstLettersToUpperCase(announcementModel.Country),
+                    Region = StringExtensions.FirstLettersToUpperCase(announcementModel.Region),
+                    City = StringExtensions.FirstLettersToUpperCase(announcementModel.City),
+                    Street = StringExtensions.FirstLettersToUpperCase(announcementModel.Street),
+                    StreetNumber = StringExtensions.FirstLettersToUpperCase(announcementModel.StreetNumber),
                 };
                 // Add address to context
                 await context.Addresses.AddAsync(newAddress);

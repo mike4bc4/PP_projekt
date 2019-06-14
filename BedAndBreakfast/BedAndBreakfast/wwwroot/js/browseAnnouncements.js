@@ -1,13 +1,213 @@
 ﻿
-
+function sortAnnouncements(announcements, sortingFunctionIndex = 0) {
+    if (announcements == undefined || announcements == null) {
+        return;
+    }
+    // Sort announcements.
+    var sortedAnnouncements = [];
+    switch (sortingFunctionIndex) {
+        case 0:
+            sortedAnnouncements = announcements.sort(SortingExtensions.RatingAscending);
+            break;
+        case 1:
+            sortedAnnouncements = announcements.sort(SortingExtensions.RatingDescending);
+            break;
+        case 2:
+            sortedAnnouncements = announcements.sort(SortingExtensions.ReviewAmountAscending);
+            break;
+        case 3:
+            sortedAnnouncements = announcements.sort(SortingExtensions.ReviewAmountDescending);
+            break;
+        case 4:
+            sortedAnnouncements = announcements.sort(SortingExtensions.ReservationsAscending);
+            break;
+        case 5:
+            sortedAnnouncements = announcements.sort(SortingExtensions.ReservationsDescending);
+            break;
+    }
+    return sortedAnnouncements
+}
 
 function handleSortOptionChange(dropDownList) {
+    function getCurrentlyVisibleAnnouncementsIDs() {
+        var announcementPreviewsContainer = document.getElementById("announcement-previews-container");
+        var IDsArray = [];
+        // First two items are prototype and message div.
+        for (var i = 2; i < announcementPreviewsContainer.children.length; i++) {
+            IDsArray.push(parseInt(announcementPreviewsContainer.children[i].id.split("-").pop()));
+        }
+        return IDsArray;
+    }
+
+    // Base announcement data.
+    var announcements = getAnnouncements();
+    if (announcements.length == 0) {
+        return;
+    }
+
+    // Get ids of visible announcements.
+    var announcementPreviewsIDs = getCurrentlyVisibleAnnouncementsIDs();
+    // Get visible announcements data.
+    var announcementPreviews = [];
+    for (var i = 0; i < announcements.length; i++) {
+        for (var j = 0; j < announcementPreviewsIDs.length; j++) {
+            if (announcementPreviewsIDs[j] == announcements[i].announcementID) {
+                announcementPreviews.push(announcements[i]);
+                break;
+            }
+        }
+    }
+    // Remove map markers for visible announcements.
+    for (var i = 0; i < announcementPreviews.length; i++) {
+        handleToggleVisibleOnMapClick(announcementPreviews[i].announcementID, true);
+    }
+
+    // Sort announcements.
+    var announcementsToDraw = sortAnnouncements(announcementPreviews, parseInt(dropDownList.value));
+
+    // Draw sorted announcements.
+    drawAnnouncementList(announcementsToDraw);
+
+    // Mark first filtered element on map if possible.
+    if (announcementsToDraw.length != 0) {
+        handleToggleVisibleOnMapClick(announcementsToDraw[0].announcementID);
+    }
+
 
 }
 
-function handleToggleVisibleOnMapClick(announcementID) {
+class SortingExtensions {
+    static RatingAscending(announcement1, announcement2) {
+        var rating1 = announcement1.averageRating;
+        var rating2 = announcement2.averageRating;
+        if (rating1 == null) {
+            rating1 = 0;
+        }
+        if (rating2 == null) {
+            rating2 = 0;
+        }
+        if (rating1 < rating2) {
+            return 1;
+        }
+        else if (rating1 > rating2) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
+    }
+    static RatingDescending(announcement1, announcement2) {
+        var rating1 = announcement1.averageRating;
+        var rating2 = announcement2.averageRating;
+        if (rating1 == null) {
+            rating1 = 0;
+        }
+        if (rating2 == null) {
+            rating2 = 0;
+        }
+        if (rating1 > rating2) {
+            return 1;
+        }
+        else if (rating1 < rating2) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
+    }
+    static ReviewAmountAscending(announcement1, announcement2) {
+        if (announcement1.reviewsCount > announcement2.reviewsCount) {
+            return 1;
+        }
+        else if (announcement1.reviewsCount < announcement2.reviewsCount) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
+    }
+    static ReviewAmountDescending(announcement1, announcement2) {
+        if (announcement1.reviewsCount < announcement2.reviewsCount) {
+            return 1;
+        }
+        else if (announcement1.reviewsCount > announcement2.reviewsCount) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
+    }
+    static ReservationsAscending(announcement1, announcement2) {
+        var reservations1 = announcement1.reservationsPerMonth;
+        var reservations2 = announcement2.reservationsPerMonth;
+        if (reservations1 == null) {
+            reservations1 = 0;
+        }
+        if (reservations2 == null) {
+            reservations2 = 0;
+        }
+        if (reservations1 > reservations2) {
+            return 1;
+        }
+        else if (reservations1 < reservations2) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
+    }
+    static ReservationsDescending(announcement1, announcement2) {
+        var reservations1 = announcement1.reservationsPerMonth;
+        var reservations2 = announcement2.reservationsPerMonth;
+        if (reservations1 == null) {
+            reservations1 = 0;
+        }
+        if (reservations2 == null) {
+            reservations2 = 0;
+        }
+        if (reservations1 < reservations2) {
+            return 1;
+        }
+        else if (reservations1 > reservations2) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
+    }
+}
+
+
+
+/**
+ * Toggles geocoding and marker placing on the map.
+ * If item was selected marker an popup will be removed otherwise
+ * geocoding will be performed and map will fly to new location.
+ * If geocoding is not possible simple alert will be displayed.
+ */
+function handleToggleVisibleOnMapClick(announcementID, forceSwitchOff = false) {
+
     var announcementPreviewItem = document.getElementById("announcement-preview-" + announcementID);
+    // Return if no such announcement preview item.
+    if (announcementPreviewItem == null) {
+        return;
+    }
+
     var toggleMapVisibleNode = announcementPreviewItem.getElementsByClassName("announcement-preview-toggle-map-visible")[0];
+
+    // Only switching off.
+    if (forceSwitchOff == true) {
+        if (toggleMapVisibleNode.getAttribute("data-selected") == "false") {
+            return;
+        }
+        else {
+            toggleMapVisibleNode.setAttribute("data-selected", "false");
+            toggleMapVisibleNode.style.backgroundColor = "white";
+            removeMapMarker(announcementID)
+            return;
+        }
+    }
+
     if (toggleMapVisibleNode.getAttribute("data-selected") == "false") {
         toggleMapVisibleNode.setAttribute("data-selected", "true");
         toggleMapVisibleNode.style.backgroundColor = "lightgray";
@@ -33,7 +233,13 @@ function handleToggleVisibleOnMapClick(announcementID) {
  * all found preview items are displayed.
  */
 function handleFilterItemClick(clickedNode) {
-    var filterID = parseInt(clickedNode.id.split("-").pop());
+    var announcements = getAnnouncements();
+    // Remove map tracking for all announcements.
+    for (var i = 0; i < announcements.length; i++) {
+        handleToggleVisibleOnMapClick(announcements[i].announcementID, true);
+    }
+
+
     // Toggle filter item selection.
     if (clickedNode.getAttribute("data-selected") == "false") {
         clickedNode.setAttribute("data-selected", "true");
@@ -53,7 +259,6 @@ function handleFilterItemClick(clickedNode) {
     }
 
     // Apply filters
-    var announcements = getAnnouncements();
     var announcementsToDraw = announcements;
     // Apply sorting options only if there are any selected
     // otherwise print all announcements.
@@ -68,19 +273,27 @@ function handleFilterItemClick(clickedNode) {
             }
         }
     }
+
+    // Sort after filtering.
+    announcementsToDraw = sortAnnouncements(announcementsToDraw, parseInt(document.getElementById("announcements-preview-sort-option").value));
+
     drawAnnouncementList(announcementsToDraw);
+
+    // Mark first filtered element on map if possible.
+    if (announcementsToDraw.length != 0) {
+        handleToggleVisibleOnMapClick(announcementsToDraw[0].announcementID);
+    }
 }
 
 function browseAnnouncementsInit() {
     var announcements = getAnnouncements();
+    // Sort before drawing.
+    announcements = sortAnnouncements(announcements, parseInt(document.getElementById("announcements-preview-sort-option").value));
     drawAnnouncementList(announcements);
-    createMap(2, [20, 50]);
+    createMap(document.getElementById("announcement-previews-map-container"));
     if (announcements.length != 0) {
         handleToggleVisibleOnMapClick(announcements[0].announcementID);
     }
-    // setTimeout(function () {
-    //     performGeocoding("australia melbourne albert park", "<strong>Some test popup message</strong><p>Popup description</p>.", 1, 13);
-    // }, 3000);
 }
 
 /**
@@ -138,10 +351,16 @@ function drawAnnouncementList(announcements) {
             " " + announcements[i].city +
             " " + announcements[i].street +
             " " + announcements[i].streetNumber;
-        descriptionContainer.innerText = announcements[i].description;
+        // Set short description.
+        var descriptionString = announcements[i].description;
+        if (announcements[i].description.length > 100) {
+            descriptionString = announcements[i].description.substr(0, 100) + "...";
+        }
+        descriptionContainer.innerText = descriptionString;
+        // Set rating.
         var ratingString = "No rates yet.";
         if (announcements[i].averageRating != null) {
-            ratingString = averageRating + "/10";
+            ratingString = "Rate: " + announcements[i].averageRating + "/10, based on: " + announcements[i].reviewsCount + " review(s).";
         }
         ratingContainer.innerText = ratingString;
 
@@ -157,6 +376,10 @@ function drawAnnouncementList(announcements) {
 
         // Add node to container.
         announcementPreviewsContainer.appendChild(newNode);
+
+        // Add fade effect to announcement.
+        newNode.style.opacity = 0;
+        Effects.OpacityFade(newNode, 0.05, 1, "announcementPreview" + announcements[i].announcementID, false);
     }
 
 }

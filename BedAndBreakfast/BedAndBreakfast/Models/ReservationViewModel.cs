@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BedAndBreakfast.Models
 {
-    public class ReservationViewModel
+    public class ReservationModel
     {
         public int AnnouncementID { get; set; }
         public DateTime Date { get; set; }

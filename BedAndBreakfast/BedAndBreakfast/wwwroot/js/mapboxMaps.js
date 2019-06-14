@@ -1,23 +1,24 @@
-function createMap(zoom, center) {
+function createMap(container, zoom = 2, center = [20, 50]) {
 
     mapboxgl.accessToken = 'pk.eyJ1IjoicGlja2FzaG9lIiwiYSI6ImNqd3V4d3pzczAwYTIzeWxnb3B0Z2tmbDAifQ.Pp1RsX3lhGM56Pmfu-q2AQ';
     var mapboxClient = mapboxSdk({ accessToken: mapboxgl.accessToken });
 
     var map = new mapboxgl.Map({
-        container: 'map',
+        container: container,
         style: 'mapbox://styles/mapbox/streets-v11',
         center: center,
         zoom: zoom
     });
 
-    window["mapboxClient"] = mapboxClient;
-    window["mapboxMap"] = map;
+    window.MapBoxLibrary = {};
+    window.MapBoxLibrary["mapboxClient"] = mapboxClient;
+    window.MapBoxLibrary["mapboxMap"] = map;
 }
 
 
 function performGeocoding(geocoderQuery, popupHtmlContent, markerID, zoom = 15, speed = 0.5) {
-    var mapboxClient = window["mapboxClient"];
-    var map = window["mapboxMap"];
+    var mapboxClient = window.MapBoxLibrary["mapboxClient"];
+    var map = window.MapBoxLibrary["mapboxMap"];
     // Do not perform geocoding if any of conditions is not met.
     if (map === undefined ||
         mapboxClient == undefined ||
@@ -46,14 +47,14 @@ function performGeocoding(geocoderQuery, popupHtmlContent, markerID, zoom = 15, 
                     .setHTML(popupHtmlContent);
 
                 // Add marker and store it in array.
-                if (window["mapboxMapMarkers"] === undefined) {
-                    window["mapboxMapMarkers"] = [];
+                if (window.MapBoxLibrary["mapboxMapMarkers"] === undefined) {
+                    window.MapBoxLibrary["mapboxMapMarkers"] = [];
                 }
                 var marker = new mapboxgl.Marker()
                     .setLngLat(feature.center)
                     .setPopup(popup) // sets a popup on this marker
                     .addTo(map);
-                window["mapboxMapMarkers"].push({
+                window.MapBoxLibrary["mapboxMapMarkers"].push({
                     marker: marker,
                     markerPopup: popup,
                     markerID: markerID,
@@ -66,15 +67,15 @@ function performGeocoding(geocoderQuery, popupHtmlContent, markerID, zoom = 15, 
 }
 
 function removeMapMarker(markerID) {
-    if (window["mapboxMapMarkers"] === undefined) {
+    if (window.MapBoxLibrary["mapboxMapMarkers"] === undefined) {
         return -1;
     }
     var markerItemsToRemove = [];
     // Find items with given ID.
-    for (var i = 0; i < window["mapboxMapMarkers"].length; i++) {
-        if (window["mapboxMapMarkers"][i].markerID == markerID) {
+    for (var i = 0; i < window.MapBoxLibrary["mapboxMapMarkers"].length; i++) {
+        if (window.MapBoxLibrary["mapboxMapMarkers"][i].markerID == markerID) {
             markerItemsToRemove.push({
-                markerItem: window["mapboxMapMarkers"][i],
+                markerItem: window.MapBoxLibrary["mapboxMapMarkers"][i],
                 markerItemIndex: i,
             });
         }
@@ -86,11 +87,11 @@ function removeMapMarker(markerID) {
     for (var i = 0; i < markerItemsToRemove.length; i++) {
         markerItemsToRemove[i].markerItem.markerPopup.remove();
         markerItemsToRemove[i].markerItem.marker.remove();
-        window["mapboxMapMarkers"][markerItemsToRemove[i].markerItemIndex] = null;
+        window.MapBoxLibrary["mapboxMapMarkers"][markerItemsToRemove[i].markerItemIndex] = null;
     }
-    for (var i = 0; i < window["mapboxMapMarkers"].length; i++) {
-        if (window["mapboxMapMarkers"][i] == null) {
-            window["mapboxMapMarkers"].splice(i, 1);
+    for (var i = 0; i < window.MapBoxLibrary["mapboxMapMarkers"].length; i++) {
+        if (window.MapBoxLibrary["mapboxMapMarkers"][i] == null) {
+            window.MapBoxLibrary["mapboxMapMarkers"].splice(i, 1);
             i--;
         }
     }
