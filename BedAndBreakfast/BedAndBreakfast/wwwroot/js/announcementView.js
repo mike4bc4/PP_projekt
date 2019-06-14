@@ -172,8 +172,35 @@ function handleSubmitReservationsButton() {
 
 }
 
-function handleAskAboutAnnouncementButtonClick(announcementID) {
-
+function handleAskAboutAnnouncementButtonClick() {
+    var context = {};
+    context.announcementID = AnnouncementLibrary["announcementID"];
+    context.userNames = [];
+    context.title = "Question about announcement";
+    context.dateStarted = new Date();
+    // Schedule items IDs are returned with response.
+    context.scheduleItemsIDs = [];
+    context.readOnly = false;
+    context.content = MessageContentCreator.CreateAskAboutAnnouncementContent(context.announcementID);
+    context.dateSend = new Date();
+    // Get user names, create conversation and send message.
+    var messageSynchronizer = new RequestSynchronizer();
+    messageSynchronizer.requestQueue = [
+        function () {
+            getCurrentUserName(context, messageSynchronizer);
+        },
+        function () {
+            getAnnouncementOwnerUserName(context, messageSynchronizer);
+        },
+        function () {
+            createConversation(context, messageSynchronizer);
+        },
+        function () {
+            addMessage(context, messageSynchronizer);
+        },
+    ];
+    messageSynchronizer.run();
+    document.getElementById("ask-about-announcement-message-span").innerText = "Conversation has been created. Check out your conversations.";
 }
 
 function handlePostReviewButtonClick() {
@@ -476,9 +503,12 @@ function drawAnnouncementTimetable(timetableContainer) {
             p.innerText = "There is no reservations timetable for this announcement. Ask its owner about reservations!";
             var button = document.createElement("button");
             button.innerText = "Start conversation";
-            button.onclick = function () { handleAskAboutAnnouncementButtonClick(window.AnnouncementLibrary["announcementID"]) };
+            button.onclick = function () { handleAskAboutAnnouncementButtonClick() };
+            var span = document.createElement("span");
+            span.id = "ask-about-announcement-message-span";
             timetableContainer.appendChild(p);
             timetableContainer.appendChild(button);
+            timetableContainer.appendChild(span);
             break;
         case 1:     // Per day
             var table = document.createElement("table");
