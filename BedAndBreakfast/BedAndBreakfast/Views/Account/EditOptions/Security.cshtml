@@ -4,94 +4,35 @@
     ViewData["Title"] = "Security";
 }
 
-<style>
-    .edit-security-button {
-        float: right;
-        margin: 10px;
-        margin-right: 20px;
-        height: 40px;
-        width: 100px;
-        font-family: 'Lato', sans-serif;
-        background-color: transparent;
-        font-size: 22px;
-        color: rgba(26, 94, 178, 1);
-        border: none;
-        border-bottom: 1px solid rgba(26, 94, 178, 1);
-    }
 
-        .edit-security-button:hover {
-            cursor: pointer;
-            background-color: rgba(26, 94, 178, 0.5);
-        }
 
-    .edit-security-header {
-        font-family: 'Lato', sans-serif;
-        font-size: 16px;
-        color: rgba(26, 94, 178, 1);
-        margin: 20px;
-        background-color: rgba(26, 94, 178, 0.5);
-        height: 30px;
-        text-align: center;
-        padding-top: 12px;
-    }
 
-    .edit-security-box {
-        border-radius: 2px;
-        border: 1px solid rgba(0,0,0,0.33);
-        font-family: 'Lato', sans-serif;
-        font-size: 16px;
-        padding: 10px;
-        margin: 5px;
-        height: 20px;
-    }
-
-    .edit-security-input-box {
-        font-family: 'Lato', sans-serif;
-        font-size: 16px;
-        border: none;
-        height: 20px;
-        padding: 10px;
-        margin: -10px;
-    }
-
-    .edit-security-error-box {
-        padding: 10px;
-        color: rgb(200, 55, 55);
-        font-family: 'Lato', sans-serif;
-        font-size: 16px;
-    }
-
-    .edit-security-table {
-        margin: -6px;
-    }
-</style>
-
-<div class="edit-security-header">Security</div>
 <div>
+    <p class="indent-01 text-segue-18">Security</p>
+    <hr />
     <form asp-action="EditSecurity">
-        <div asp-validation-summary="ModelOnly"></div>
-        <div class="edit_box1">
-            <table class="edit-security-table">
+        <div class="">
+            <table class="">
                 <tr>
-                    <td><div class="edit-security-box"><label asp-for="CurrentPassword"></label></div></td>
-                    <td><div class="edit-security-box"><input asp-for="CurrentPassword" class="edit-security-input-box" /></div></td>
-                    <td><div class="edit-security-error-box"><span asp-validation-for="CurrentPassword"></span></div></td>
+                    <td><label asp-for="CurrentPassword" class="label-box-01 text-segue-16"></label></td>
+                    <td><input asp-for="CurrentPassword" class="input-box-01 text-segue-16" /></td>
+                    <td><span asp-validation-for="CurrentPassword" class="label-box-02 text-segue-16"></span></td>
                 </tr>
                 <tr>
-                    <td><div class="edit-security-box"><label asp-for="NewPassword"></label></div></td>
-                    <td><div class="edit-security-box"><input asp-for="NewPassword" class="edit-security-input-box" /></div></td>
-                    <td><div class="edit-security-error-box"><span asp-validation-for="NewPassword"></span></div></td>
+                    <td><label asp-for="NewPassword" class="label-box-01 text-segue-16"></label></td>
+                    <td><input asp-for="NewPassword" class="input-box-01 text-segue-16" /></td>
+                    <td><span asp-validation-for="NewPassword" class="label-box-02 text-segue-16"></span></td>
                 </tr>
                 <tr>
-                    <td><div class="edit-security-box"><label asp-for="RepeatNewPassword"></label></div></td>
-                    <td><div class="edit-security-box"><input asp-for="RepeatNewPassword" class="edit-security-input-box" /></div></td>
-                    <td><div class="edit-security-error-box"><span asp-validation-for="RepeatNewPassword"></span></div></td>
+                    <td><label asp-for="RepeatNewPassword" class="label-box-01 text-segue-16"></label></td>
+                    <td><input asp-for="RepeatNewPassword" class="input-box-01 text-segue-16" /></td>
+                    <td><span asp-validation-for="RepeatNewPassword" class="label-box-02 text-segue-16"></span></td>
                 </tr>
             </table>
         </div>
-        <div class="edit_box_pr">
-            <input type="submit" value="Change" class="edit-security-button" />
-        </div>
+
+        <input type="submit" value="Change" class="button-01" />
+
 
     </form>
 </div>

@@ -8,190 +8,135 @@
 
 }
 
-<style>
-    .edit-notifications-button {
-        float: right;
-        margin: 10px;
-        margin-right: 20px;
-        height: 40px;
-        width: 100px;
-        font-family: 'Lato', sans-serif;
-        background-color: transparent;
-        font-size: 22px;
-        color: rgba(26, 94, 178, 1);
-        border: none;
-        border-bottom: 1px solid rgba(26, 94, 178, 1);
-    }
-
-        .edit-notifications-button:hover {
-            cursor: pointer;
-            background-color: rgba(26, 94, 178, 0.5);
-        }
-
-    .edit-notifications-table {
-        width: 100%;
-    }
-
-    .edit-notifications-item-set-header {
-        font-family: 'Lato', sans-serif;
-        font-size: 16px;
-        color: rgba(26, 94, 178, 1);
-        border-bottom: 1px solid rgba(26, 94, 178, 1);
-        margin: 20px;
-        padding-bottom: 5px;
-        margin-bottom: 5px;
-    }
-
-    .edit-notifications-header {
-        font-family: 'Lato', sans-serif;
-        font-size: 16px;
-        color: rgba(26, 94, 178, 1);
-        margin: 20px;
-        background-color: rgba(26, 94, 178, 0.5);
-        height: 30px;
-        text-align: center;
-        padding-top: 12px;
-    }
-</style>
-
-<div class="edit-notifications-header">Notifications</div>
-
+<div class="indent-01 text-segue-18">Notifications</div>
+<hr />
 <form asp-controller="Account" asp-action="EditNotifications">
-    <div>
-        <div class="edit-notifications-item-set-header">General messages</div>
-        <div class="edit_expl">Receive messages from hosts and guests, including booking requests.</div>
-        <div class="edit_box">
-            <table class="edit-notifications-table">
-                <tr>
-                    <td>
-                        <label asp-for="GeneralByEmail" class="no-style-label-box"></label>
-                        <input asp-for="GeneralByEmail" value="true" checked="@notificationsSettings.GeneralByEmail" />
-                    </td>
-                    <td>
-                        <label asp-for="GeneralByMobileApp" class="no-style-label-box"></label>
-                        <input asp-for="GeneralByMobileApp" value="true" checked="@notificationsSettings.GeneralByMobileApp" />
-                    </td>
-                    <td>
-                        <label asp-for="GeneralBySMS" class="no-style-label-box"></label>
-                        <input asp-for="GeneralBySMS" value="true" checked="@notificationsSettings.GeneralBySMS" />
-                    </td>
-                    <td>
-                        <label asp-for="GeneralByPhone" class="no-style-label-box"></label>
-                        <input asp-for="GeneralByPhone" value="true" checked="@notificationsSettings.GeneralByPhone" />
-                    </td>
-                </tr>
-            </table>
-        </div>
 
-        <div>
-            <div class="edit-notifications-item-set-header">Reminds</div>
-            <div class="edit_expl">Receive booking reminds.</div>
-            <div class="edit_box">
-                <table class="edit-notifications-table">
-                    <tr>
-                        <td>
-                            <label asp-for="RemindByEmail" class="no-style-label-box"></label>
-                            <input asp-for="RemindByEmail" value="true" checked="@notificationsSettings.RemindByEmail" />
-                        </td>
-                        <td>
-                            <label asp-for="RemindByMobileApp" class="no-style-label-box"></label>
-                            <input asp-for="RemindByMobileApp" value="true" checked="@notificationsSettings.RemindByMobileApp" />
-                        </td>
-                        <td>
-                            <label asp-for="RemindBySMS" class="no-style-label-box"></label>
-                            <input asp-for="RemindBySMS" value="true" checked="@notificationsSettings.RemindBySMS" />
-                        </td>
-                        <td>
-                            <label asp-for="RemindByPhone" class="no-style-label-box"></label>
-                            <input asp-for="RemindByPhone" value="true" checked="@notificationsSettings.RemindByPhone" />
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div>
-            <div class="edit-notifications-item-set-header">Discounts and tips</div>
-            <div class="edit_expl">Receive messages with coupons, promotions and tips.</div>
-            <div class="edit_box">
-                <table class="edit-notifications-table">
-                    <tr>
-                        <td>
-                            <label asp-for="DiscountAnTipsByEmail" class="no-style-label-box"></label>
-                            <input asp-for="DiscountAnTipsByEmail" value="true" checked="@notificationsSettings.DiscountAnTipsByEmail" />
-                        </td>
-                        <td>
-                            <label asp-for="DiscountAnTipsMobileApp" class="no-style-label-box"></label>
-                            <input asp-for="DiscountAnTipsMobileApp" value="true" checked="@notificationsSettings.DiscountAnTipsMobileApp" />
-                        </td>
-                        <td>
-                            <label asp-for="DiscountAnTipsBySMS" class="no-style-label-box"></label>
-                            <input asp-for="DiscountAnTipsBySMS" value="true" checked="@notificationsSettings.DiscountAnTipsBySMS" />
-                        </td>
-                        <td>
-                            <label asp-for="DiscountAnTipsByPhone" class="no-style-label-box"></label>
-                            <input asp-for="DiscountAnTipsByPhone" value="true" checked="@notificationsSettings.DiscountAnTipsByPhone" />
-                        </td>
-                    </tr>
+    <div class="label-box-03 text-segue-16">General messages</div>
 
-                </table>
-            </div>
-        </div>
-        <div>
-            <div class="edit-notifications-item-set-header">Rules and community</div>
-            <div class="edit_expl">Receive updates about changes in law.</div>
-            <div class="edit_box">
-                <table class="edit-notifications-table">
-                    <tr>
-                        <td>
-                            <label asp-for="RulesAndCommunityByEmail" class="no-style-label-box"></label>
-                            <input asp-for="RulesAndCommunityByEmail" value="true" checked="@notificationsSettings.RulesAndCommunityByEmail" />
-                        </td>
-                        <td>
-                            <label asp-for="RulesAndCommunityByMobileApp" class="no-style-label-box"></label>
-                            <input asp-for="RulesAndCommunityByMobileApp" value="true" checked="@notificationsSettings.RulesAndCommunityByMobileApp" />
-                        </td>
-                        <td>
-                            <label asp-for="RulesAndCommunityBySMS" class="no-style-label-box"></label>
-                            <input asp-for="RulesAndCommunityBySMS" value="true" checked="@notificationsSettings.RulesAndCommunityBySMS" />
-                        </td>
-                        <td>
-                            <label asp-for="RulesAndCommunityByPhone" class="no-style-label-box"></label>
-                            <input asp-for="RulesAndCommunityByPhone" value="true" checked="@notificationsSettings.RulesAndCommunityByPhone" />
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div>
-            <div class="edit-notifications-item-set-header">Service</div>
-            <div class="edit_expl">Receive messages from support about your account.</div>
-            <div class="edit_box">
-                <table class="edit-notifications-table">
-                    <tr>
-                        <td>
-                            <label asp-for="ServiceByEmail" class="no-style-label-box"></label>
-                            <input asp-for="ServiceByEmail" value="true" checked="@notificationsSettings.ServiceByEmail" />
-                        </td>
-                        <td>
-                            <label asp-for="ServiceByMobileApp" class="no-style-label-box"></label>
-                            <input asp-for="ServiceByMobileApp" value="true" checked="@notificationsSettings.ServiceByMobileApp" />
-                        </td>
-                        <td>
-                            <label asp-for="ServiceBySMS" class="no-style-label-box"></label>
-                            <input asp-for="ServiceBySMS" value="true" checked="@notificationsSettings.ServiceBySMS" />
-                        </td>
-                        <td>
-                            <label asp-for="ServiceByPhone" class="no-style-label-box"></label>
-                            <input asp-for="ServiceByPhone" value="true" checked="@notificationsSettings.ServiceByPhone" />
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="edit_box_pr">
-                <input type="submit" value="Save" class="edit-notifications-button" />
-            </div>
-        </div>
+    <table class="table-01">
+        <tr>
+            <td>
+                <label asp-for="GeneralByEmail" class="text-segue-16"></label>
+                <input asp-for="GeneralByEmail" value="true" checked="@notificationsSettings.GeneralByEmail" />
+            </td>
+            <td>
+                <label asp-for="GeneralByMobileApp" class="text-segue-16"></label>
+                <input asp-for="GeneralByMobileApp" value="true" checked="@notificationsSettings.GeneralByMobileApp" />
+            </td>
+            <td>
+                <label asp-for="GeneralBySMS" class="text-segue-16"></label>
+                <input asp-for="GeneralBySMS" value="true" checked="@notificationsSettings.GeneralBySMS" />
+            </td>
+            <td>
+                <label asp-for="GeneralByPhone" class="text-segue-16"></label>
+                <input asp-for="GeneralByPhone" value="true" checked="@notificationsSettings.GeneralByPhone" />
+            </td>
+        </tr>
+    </table>
 
-    </div>
+
+
+    <div class="label-box-03 text-segue-16">Reminds</div>
+
+    <table class="table-01">
+        <tr>
+            <td>
+                <label asp-for="RemindByEmail" class="text-segue-16"></label>
+                <input asp-for="RemindByEmail" value="true" checked="@notificationsSettings.RemindByEmail" />
+            </td>
+            <td>
+                <label asp-for="RemindByMobileApp" class="text-segue-16"></label>
+                <input asp-for="RemindByMobileApp" value="true" checked="@notificationsSettings.RemindByMobileApp" />
+            </td>
+            <td>
+                <label asp-for="RemindBySMS" class="text-segue-16"></label>
+                <input asp-for="RemindBySMS" value="true" checked="@notificationsSettings.RemindBySMS" />
+            </td>
+            <td>
+                <label asp-for="RemindByPhone" class="text-segue-16"></label>
+                <input asp-for="RemindByPhone" value="true" checked="@notificationsSettings.RemindByPhone" />
+            </td>
+        </tr>
+    </table>
+
+
+
+    <div class="label-box-03 text-segue-16">Discounts and tips</div>
+
+    <table class="table-01">
+        <tr>
+            <td>
+                <label asp-for="DiscountAnTipsByEmail" class="text-segue-16"></label>
+                <input asp-for="DiscountAnTipsByEmail" value="true" checked="@notificationsSettings.DiscountAnTipsByEmail" />
+            </td>
+            <td>
+                <label asp-for="DiscountAnTipsMobileApp" class="text-segue-16"></label>
+                <input asp-for="DiscountAnTipsMobileApp" value="true" checked="@notificationsSettings.DiscountAnTipsMobileApp" />
+            </td>
+            <td>
+                <label asp-for="DiscountAnTipsBySMS" class="text-segue-16"></label>
+                <input asp-for="DiscountAnTipsBySMS" value="true" checked="@notificationsSettings.DiscountAnTipsBySMS" />
+            </td>
+            <td>
+                <label asp-for="DiscountAnTipsByPhone" class="text-segue-16"></label>
+                <input asp-for="DiscountAnTipsByPhone" value="true" checked="@notificationsSettings.DiscountAnTipsByPhone" />
+            </td>
+        </tr>
+
+    </table>
+
+
+    <div class="label-box-03 text-segue-16">Rules and community</div>
+
+    <table class="table-01">
+        <tr>
+            <td>
+                <label asp-for="RulesAndCommunityByEmail" class="text-segue-16"></label>
+                <input asp-for="RulesAndCommunityByEmail" value="true" checked="@notificationsSettings.RulesAndCommunityByEmail" />
+            </td>
+            <td>
+                <label asp-for="RulesAndCommunityByMobileApp" class="text-segue-16"></label>
+                <input asp-for="RulesAndCommunityByMobileApp" value="true" checked="@notificationsSettings.RulesAndCommunityByMobileApp" />
+            </td>
+            <td>
+                <label asp-for="RulesAndCommunityBySMS" class="text-segue-16"></label>
+                <input asp-for="RulesAndCommunityBySMS" value="true" checked="@notificationsSettings.RulesAndCommunityBySMS" />
+            </td>
+            <td>
+                <label asp-for="RulesAndCommunityByPhone" class="text-segue-16"></label>
+                <input asp-for="RulesAndCommunityByPhone" value="true" checked="@notificationsSettings.RulesAndCommunityByPhone" />
+            </td>
+        </tr>
+    </table>
+
+    <div class="label-box-03 text-segue-16">Service</div>
+
+    <table class="table-01">
+        <tr>
+            <td>
+                <label asp-for="ServiceByEmail" class="text-segue-16"></label>
+                <input asp-for="ServiceByEmail" value="true" checked="@notificationsSettings.ServiceByEmail" />
+            </td>
+            <td>
+                <label asp-for="ServiceByMobileApp" class="text-segue-16"></label>
+                <input asp-for="ServiceByMobileApp" value="true" checked="@notificationsSettings.ServiceByMobileApp" />
+            </td>
+            <td>
+                <label asp-for="ServiceBySMS" class="text-segue-16"></label>
+                <input asp-for="ServiceBySMS" value="true" checked="@notificationsSettings.ServiceBySMS" />
+            </td>
+            <td>
+                <label asp-for="ServiceByPhone" class="text-segue-16"></label>
+                <input asp-for="ServiceByPhone" value="true" checked="@notificationsSettings.ServiceByPhone" />
+            </td>
+        </tr>
+    </table>
+
+    <input type="submit" value="Save" class="button-01" />
+
+
+
+
 </form>
 

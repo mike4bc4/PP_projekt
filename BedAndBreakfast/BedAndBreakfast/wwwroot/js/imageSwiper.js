@@ -45,7 +45,8 @@ class ImageSwiper {
         swiperBox.style.height = height + "px";
         swiperBox.style.zIndex = 10;
         swiperBox.style.overflow = "hidden";
-        swiperBox.setAttribute("data-current-image", "0");
+		swiperBox.setAttribute("data-current-image", "0");
+		swiperBox.style.textAlign = "left";
 
         // Add buttons images and event listeners only if images are provided.
         if (imagesByteArrays.length != 0) {
@@ -129,7 +130,7 @@ class ImageSwiper {
             swiperBox.style.color = "white";
 
             swiperBox.className = "image-swiper-no-image-class";
-            swiperBox.innerText = "No image";
+			swiperBox.innerText = "No image";
         }
         container.appendChild(swiperBox);
     }

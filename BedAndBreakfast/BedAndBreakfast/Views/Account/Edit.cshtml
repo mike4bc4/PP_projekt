@@ -7,65 +7,28 @@
     string option = (string)ViewData["option"];
 }
 
-<style>
-    .edit-account-button {
-        float: left;
-        text-decoration: none;
-        width: auto;
-        text-align: center;
-        padding: 10px;
-        padding-left: 20px;
-        padding-right: 20px;
-        font-family: 'Lato', sans-serif;
-        font-size: 22px;
-        color: rgba(26, 94, 178, 1);
-        border-bottom: 1px solid rgba(26, 94, 178, 1);
-        margin: 4px;
-    }
-        .edit-account-button:hover {
-            background-color: rgba(26, 94, 178, 0.5);
+
+<div style="text-align: center;">
+    <div class="view-box-01">
+        <p class="indent-01 text-segue-18">Account settings</p>
+        <hr />
+        <div class="">
+            <a asp-action="Edit" class="button-04 text-segue-14" asp-route-option="Notifications">Notifications</a>
+            <a asp-action="Edit" class="button-04 text-segue-14" asp-route-option="Privacy">Privacy</a>
+            <a asp-action="Edit" class="button-04 text-segue-14" asp-route-option="Security">Security</a>
+        </div>
+        <div style="clear:both;"></div>
+
+        @if (option != null)
+        {
+            <partial name="EditOptions/@option" view-data="ViewData" />
         }
-    .edit-account-buttons-container {
-        margin: 20px;
-        margin-left: 14px;
-    }
-    .edit-account-header {
-        font-family: 'Lato', sans-serif;
-        font-size: 22px;
-        color: rgba(26, 94, 178, 1);
-        margin: 20px;
-        padding: 10px;
-        padding-top: 20px;
-        border-bottom: 1px solid rgba(26, 94, 178, 1);
-    }
-</style>
-<div id="edit_div" style="overflow-x:hidden; overflow-y:auto; height: 700px; width:700px;">
-    <div class="edit-account-header">Account settings</div>
-    <div class="edit-account-buttons-container">
-        <a asp-action="Edit" asp-route-option="Notifications">
-            <div class="edit-account-button">Notifications</div>
-        </a>
-        <a asp-action="Edit" asp-route-option="Privacy">
-            <div class="edit-account-button">Privacy</div>
-        </a>
-        <a asp-action="Edit" asp-route-option="Security">
-            <div class="edit-account-button">Security</div>
-        </a>
+        else
+        {
+            <partial name="EditOptions/Notifications" view-data="ViewData" />
+        }
+
+        <h4>@ViewBag.Message</h4>
+
     </div>
-    <div style="clear:both;"></div>
-
-
-
-    @if (option != null)
-    {
-        <partial name="EditOptions/@option" view-data="ViewData" />
-    }
-    else
-    {
-        <partial name="EditOptions/Notifications" view-data="ViewData" />
-    }
-    <h4>@ViewBag.Message</h4>
-
 </div>
-
-

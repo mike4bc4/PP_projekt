@@ -14,46 +14,22 @@
 }
 
 
+<form asp-action="Search">
+        <input class="input-box-01 text-segue-16" placeholder="e.g. How to make a resevation?" id="searchbar_help" type="search" name="query" value="@query" />
 
-@*
-    This form redirects to search action in help controller which returns
-    help pages based on search query.
-*@
-
-<div id="search_div">
-    <form asp-action="Search">
-        <div>
-
-
-
-            <div id="searchbar_help">
-                <input id="searchbar_help" type="search" name="query" value="@query" />
-            </div>
-
-            @if (User.IsInRole(Role.Admin))
-            {
-                <div>
-                    Display locked pages
-                    <input type="checkbox" name="isLocked" value="true" checked="@isLocked" />
-                </div>
-            }
-            else
-            {
-                <input type="hidden" name="isLocked" value="false" />
-            }
+        @if (User.IsInRole(Role.Admin))
+        {
             <div>
-                <button>
-                    <div id="help_button" class="my_button">
-                        Search
-                    </div>
-                </button>
+                Display locked pages
+                <input type="checkbox" name="isLocked" value="true" checked="@isLocked" />
             </div>
-        </div>
-
-
-    </form>
-
-</div>
+        }
+        else
+        {
+            <input type="hidden" name="isLocked" value="false" />
+        }
+        <button class="button-02 text-segue-14">Search</button>
+</form>
 
 
 

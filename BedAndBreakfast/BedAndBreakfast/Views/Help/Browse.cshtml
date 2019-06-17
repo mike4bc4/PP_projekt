@@ -7,74 +7,63 @@
 }
 
 
-<div id="browse_div">
-    <div id="edit_head_text">Browse help</div>
+<div style="text-align:center;">
+    <div class="view-box-01">
 
-    @if (User.IsInRole(Role.Admin))
-    {
-        <a asp-controller="Administration" asp-action="AddHelpPage">
-            <div class="edit_expl"> Add new help page.</div>
-        </a>
-    }
+        <p class="indent-01 text-segue-18">Help pages</p>
+        <hr />
 
-    @*
-        This line of code is responsible for injecting HTML code of different file.
-    *@
-
-    <partial name="SearchPartial" />
-
-    @*
-        This from returns set of pages (previously searched or not) as buttons.
-        If help page is selected page ID is returned to action which will display
-        whole content of page.
-    *@
-    @if (helpPages != null && helpPages.Count() != 0)
-    {
-        foreach (HelpPage helpPage in helpPages)
+        @if (User.IsInRole(Role.Admin))
         {
-            <div class="help_div">
-                @if (helpPage.IsLocked)
-                {
-                    <div class="help_link_div">
-                        <div class="help_link_div" style="color: lightcoral;">@helpPage.Title</div>
-                    </div>
-                }
-                else
-                {
-                    <div class="help_link_div">
-                        <a asp-action="Display" asp-route-hPage="@helpPage.ID">
-
-                            <div class="help_smaller_head">@helpPage.Title</div>
-                        </a>
-                    </div>
-
-                }
-                <div class="help_text_div">
-                    <p>TODO: Get some short description form help page content.</p>
-                </div>
-                @*If administrator uses help browser he can edit pages.*@
-                @if (User.IsInRole(Role.Admin))
-                {
-                    <div class="help_text_div">
-                        <a asp-controller="Administration" asp-action="EditHelpPage" asp-route-hPage="@helpPage.ID">
-                            <div class="edit_expl">  Edit this help page.</div>
-                        </a>
-                    </div>
-
-                }
-            </div>
+            <a asp-controller="Administration" asp-action="AddHelpPage">
+                <div class=""> Add new help page.</div>
+            </a>
         }
-    }
-    else
-    {
+
         <div>
-            <p>
-                <div class="help_smaller_head">No help pages found :(</div>
-            </p>
+            <partial name="SearchPartial" />
         </div>
-    }
-    <div id="search_div">
-        <h4>@ViewBag.Message</h4>
+        <div style="clear:both;"></div>
+        @if (helpPages != null && helpPages.Count() != 0)
+        {
+            foreach (HelpPage helpPage in helpPages)
+            {
+                <div class="help-page-preview-box">
+                    @if (helpPage.IsLocked)
+                    {
+                        <div class="">@helpPage.Title</div>
+                    }
+                    else
+                    {
+                        <a class="button-03 text-segue-14" asp-action="Display" asp-route-hPage="@helpPage.ID">
+                            @helpPage.Title
+                        </a>
+                    }
+                    <div class="text-segue-16">
+                        <p>TODO: Get some short description form help page content.</p>
+                    </div>
+                    @*If administrator uses help browser he can edit pages.*@
+                    @if (User.IsInRole(Role.Admin))
+                    {
+                        <div class="">
+                            <a asp-controller="Administration" asp-action="EditHelpPage" asp-route-hPage="@helpPage.ID">
+                                Edit this help page
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <p class="indent-01 text-segue-16">
+                No help pages found :(
+            </p>
+        }
+        <div id="search_div">
+            <h4>@ViewBag.Message</h4>
+        </div>
+
     </div>
 </div>
 

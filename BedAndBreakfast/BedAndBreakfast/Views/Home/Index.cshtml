@@ -4,15 +4,15 @@
 
 <body>
 
-    <div id="searchbar_div">
-        <div id="hello_text">WELCOME HOME</div>
-        <div id="under_text">Rent unique places to stay from local hosts!</div>
+    <div class="browser-box">
+        <p class="indent-01 text-segue-18">WELCOME HOME</p>
+        <p class="indent-01 text-segue-16">Rent unique places to stay from local hosts!</p>
 
-        @*Announcement browser*@
-        <div id="where_div">
+        <div>
             <form asp-controller="Announcement" class="where_div" asp-action="Browse">
-                <input type="text" name="announcementBrowserQuery" />
-                <input type="submit" value="Search" />
+                <input class="input-box-01 text-segue-16" type="text" name="announcementBrowserQuery" placeholder="Australia, Victoria Melbourne, Albert Park"/>
+                <br />
+                <input class="button-01 text-segue-14" type="submit" value="Search" />
             </form>
         </div>
     </div>

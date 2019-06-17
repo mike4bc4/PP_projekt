@@ -202,7 +202,9 @@ function handleToggleVisibleOnMapClick(announcementID, forceSwitchOff = false) {
         }
         else {
             toggleMapVisibleNode.setAttribute("data-selected", "false");
-            toggleMapVisibleNode.style.backgroundColor = "white";
+			toggleMapVisibleNode.style.backgroundColor = "rgba(255, 70, 50, 0.25)";
+			toggleMapVisibleNode.style.color = "rgb(50, 50, 50)";
+			
             removeMapMarker(announcementID)
             return;
         }
@@ -210,7 +212,8 @@ function handleToggleVisibleOnMapClick(announcementID, forceSwitchOff = false) {
 
     if (toggleMapVisibleNode.getAttribute("data-selected") == "false") {
         toggleMapVisibleNode.setAttribute("data-selected", "true");
-        toggleMapVisibleNode.style.backgroundColor = "lightgray";
+		toggleMapVisibleNode.style.backgroundColor = "rgb(255, 110, 90)";
+		toggleMapVisibleNode.style.color = "white";
 
         var address = announcementPreviewItem.getElementsByClassName("announcement-preview-address-container")[0].innerText;
         var popupContent = announcementPreviewItem.getElementsByClassName("announcement-preview-description-container")[0].innerText;
@@ -223,7 +226,8 @@ function handleToggleVisibleOnMapClick(announcementID, forceSwitchOff = false) {
     }
     else {
         toggleMapVisibleNode.setAttribute("data-selected", "false");
-        toggleMapVisibleNode.style.backgroundColor = "white";
+		toggleMapVisibleNode.style.backgroundColor = "rgba(255, 70, 50, 0.25)";
+		toggleMapVisibleNode.style.color = "rgb(50, 50, 50)";
         removeMapMarker(announcementID)
     }
 }
@@ -243,11 +247,13 @@ function handleFilterItemClick(clickedNode) {
     // Toggle filter item selection.
     if (clickedNode.getAttribute("data-selected") == "false") {
         clickedNode.setAttribute("data-selected", "true");
-        clickedNode.style.backgroundColor = "rgba(100,100,100)";
+		clickedNode.style.backgroundColor = "rgb(255, 110, 90)";
+		clickedNode.style.color = "white";
     }
     else {
         clickedNode.setAttribute("data-selected", "false");
-        clickedNode.style.backgroundColor = "rgba(255,255,255)";
+		clickedNode.style.backgroundColor = "rgba(255, 70, 50, 0.25)";
+		clickedNode.style.color = "rgb(50, 50, 50)";
     }
     // Get selected filter options.
     var filterOptions = document.getElementById("announcements-preview-filter-options-container").getElementsByTagName("div");
@@ -366,7 +372,7 @@ function drawAnnouncementList(announcements) {
 
         // Add preview image.
         var imageContainerNode = newNode.getElementsByClassName("announcement-preview-images-container")[0];
-        ImageSwiper.Add(imageContainerNode, 400, 255, announcements[i].imagesByteArrays, announcements[i].announcementID);
+        ImageSwiper.Add(imageContainerNode, 350, 190, announcements[i].imagesByteArrays, announcements[i].announcementID);
 
         // Update redirect form.
         newNode.getElementsByTagName("form")[0].getElementsByTagName("input")[0].value = announcements[i].announcementID;

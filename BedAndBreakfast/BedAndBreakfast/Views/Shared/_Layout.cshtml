@@ -16,10 +16,10 @@
     <title>BnB - Your dream vacation!</title>
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <!--<link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
-
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />-->
     <!--Basic site scripts, jQuery validation library, HERE maps library-->
     <script src="~/js/site.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
@@ -38,84 +38,72 @@
     <script src='https://unpkg.com/es6-promise@4.2.4/dist/es6-promise.auto.min.js'></script>
     <script src="https://unpkg.com/@@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
 
-
 </head>
 
 <body>
     @*User identity*@
     @{
-        if (User.Identity.IsAuthenticated)
-        {
-            <div class="welcome-bar-container">
-                <div class="welcome-bar">
-                    @if (userProfile != null)
-                    {
-                        @:Hello @userProfile.FirstName, how are you today?
-                    }
-                    else
-                    {
-                        @:Hello @currentUser?.UserName, how are you today?
-                    }
-                </div>
-            </div>
-        }
-    }
-
-    <!-------------------------------------------------------------------------------------------->
-    @*Navigation header*@
-    <div id="header">
-        <div id="nav">
-            @*Visible for everyone.*@
-            <a href="https://localhost:44318/">
-                <img src="https://localhost:44318/images/logo.png" id="logo" />
-            </a>
-            <a asp-area="" asp-controller="Help" class="tilelink" asp-action="Browse">Help</a>
-            <a asp-area="" asp-controller="Home" class="tilelink" asp-action="Index">Home</a>
-
-            @*If user is not an administrator.*@
-            @if (!User.IsInRole(Role.Admin))
+        <div class="text-segue-16 user-welcome-bar">
+            @if (User.Identity.IsAuthenticated)
             {
-                @if (!User.Identity.IsAuthenticated)
+                @if (userProfile != null)
                 {
-                    <a asp-area="" asp-controller="Account" class="tilelink" asp-action="Login">Log In</a>
-                    <a asp-area="" asp-controller="Account" class="tilelink" asp-action="Create">Create Account</a>
+                    @:Hello @userProfile.FirstName, how are you today?
                 }
                 else
                 {
-                    <a asp-controller="Announcement" class="tilelink" asp-action="ManageAnnouncements">My announcements</a>
-                    <a asp-controller="Announcement" class="tilelink" asp-action="ShowReservations">My reservations</a>
-                    <a asp-controller="Message" class="tilelink" asp-action="ShowConversations">My conversations</a>
-                    <a asp-area="" asp-controller="Profile" class="tilelink" asp-action="Edit">Profile</a>
-                    <a asp-area="" asp-controller="Account" class="tilelink" asp-action="Edit">Account</a>
-                    <a asp-area="" asp-controller="Account" class="tilelink" asp-action="Logout">Log Out</a>
+                    @:Hello @currentUser?.UserName, how are you today?
                 }
             }
+            else {
+                @:B&B - Your dream vacation!
+            }
+        </div>
+    }
 
-            @*If user is an administrator.*@
+    <hr />
+
+    <!-------------------------------------------------------------------------------------------->
+    @*Navigation header*@
+    <div class="menu-bar">
+        @*Visible for everyone.*@
+        <!--<a href="https://localhost:44318/">
+            <img src="https://localhost:44318/images/logo.png" id="logo" />
+        </a>-->
+        <a asp-area="" asp-controller="Help" class="menu-bar-button text-segue-14 " asp-action="Browse">Help</a>
+        <a asp-area="" asp-controller="Home" class="menu-bar-button text-segue-14 " asp-action="Index">Home</a>
+
+        @*If user is not an administrator.*@
+        @if (!User.IsInRole(Role.Admin))
+        {
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <a asp-area="" asp-controller="Account" class="menu-bar-button text-segue-14 " asp-action="Login">Log In</a>
+                <a asp-area="" asp-controller="Account" class="menu-bar-button text-segue-14 " asp-action="Create">Create Account</a>
+            }
             else
             {
-                <a asp-area="" asp-controller="Account" class="tilelink" asp-action="Logout">Log Out</a>
-                <a asp-area="" asp-controller="Administration" class="tilelink" asp-action="FindUser">Find User</a>
-                <a asp-controller="Administration" class="tilelink" asp-action="ManageConversations">Create conversation</a>
-                <a asp-controller="Message" class="tilelink" asp-action="ShowConversations">My conversations</a>
+                <a asp-controller="Announcement" class="menu-bar-button text-segue-14 " asp-action="ManageAnnouncements">My announcements</a>
+                <a asp-controller="Announcement" class="menu-bar-button text-segue-14 " asp-action="ShowReservations">My reservations</a>
+                <a asp-controller="Message" class="menu-bar-button text-segue-14 " asp-action="ShowConversations">My conversations</a>
+                <a asp-area="" asp-controller="Profile" class="menu-bar-button text-segue-14 " asp-action="Edit">Profile</a>
+                <a asp-area="" asp-controller="Account" class="menu-bar-button text-segue-14 " asp-action="Edit">Account</a>
+                <a asp-area="" asp-controller="Account" class="menu-bar-button text-segue-14 " asp-action="Logout">Log Out</a>
             }
+        }
 
-        </div>
+        @*If user is an administrator.*@
+        else
+        {
+            <a asp-area="" asp-controller="Account" class="menu-bar-button text-segue-14 " asp-action="Logout">Log Out</a>
+            <a asp-area="" asp-controller="Administration" class="menu-bar-button text-segue-14 " asp-action="FindUser">Find User</a>
+            <a asp-controller="Administration" class="menu-bar-button text-segue-14 " asp-action="ManageConversations">Create conversation</a>
+            <a asp-controller="Message" class="menu-bar-button text-segue-14 " asp-action="ShowConversations">My conversations</a>
+        }
     </div>
+    <span class="clear"></span>
 
     @RenderBody()
 
 </body>
 </html>
-
-<!--
-
-    @*Announcement browser*@
-<div>
-    <form asp-controller="Announcement" asp-action="Browse">
-        <label>Find announcement:</label>
-        <input id="ann-browser-qry-in-fld" type="text" name="annBrowserQuery" />
-        <input id="ann-browser-qry-button" type="submit" value="Find announcement" />
-    </form>
-</div>
-    -->

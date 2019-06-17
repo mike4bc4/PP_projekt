@@ -160,11 +160,11 @@ function getConversations(context, synchronizer) {
 function drawMessageCreator(conversationID, senderUserName) {
     var container = $('#' + MessageCreatorContainerId);
     container.empty();
-    html = '<textarea oninput="handleMessageTextarea();" id="message-textarea" style="resize: none;" rows="6" \
+	html = '<textarea class="textarea-style-01 text-segue-16" oninput="handleMessageTextarea();" id="message-textarea" style="resize: none;" rows="6" \
     cols="100" data-valid="false"></textarea>';
-    html += '<span id="message-textarea-counter">Characters: 0/' + MaxConversationMessageLength + '</span>';
-    html += '<span id="message-textarea-error"></span>';
-    html += '<br /><button onclick="handleSendMessageButton(' + conversationID + ',\'' + senderUserName + '\');">Send</button>';
+	html += '<span class="counter-style-01 text-segue-16" id="message-textarea-counter">Characters: 0/' + MaxConversationMessageLength + '</span>';
+	html += '<span class="counter-style-01 text-segue-16" id="message-textarea-error"></span>';
+    html += '<br /><button class="button-01" onclick="handleSendMessageButton(' + conversationID + ',\'' + senderUserName + '\');">Send</button>';
     container.append(html);
 }
 
@@ -177,24 +177,23 @@ function drawMessagesList(messages, currentUserName) {
     }
     var index = 0;
     for (var message of messages) {
-        var tempMessageStyle = 'width: 600px; margin: 5px; margin-left: 50px; border: 1px solid black;';
+		var className = 'message-style-01 text-segue-16';
         // Use different style for messages from currently logged in user.
         if (message.senderUserName == currentUserName) {
-            tempMessageStyle = 'width: 600px; margin: 5px; border: 1px solid black;';
+			className = 'message-style-01 text-segue-16';
         }
         var dateSend = new Date(message.dateSend);
-        html = '<div id="message-' + index + '" style="' + tempMessageStyle + '"><table border="1" \
-        style="width: 600px;"><tr><td>';
-        html += '<p>' + message.senderFirstName + ' ' + message.senderLastName +
+        html = '<div id="message-' + index + '" class="' + className + '"><table><tr><td>';
+		html += '<p class="message-header-style-01 text-segue-14">' + message.senderFirstName + ' ' + message.senderLastName +
             ' (' + message.senderUserName + ') ' + dateSend.toLocaleDateString('en-US') + ' '
             + dateSend.toLocaleTimeString('en-US') + '</p></td></tr>';
-        html += '<tr><td><p style="white-space: pre-wrap">' + message.content + '</p></td></tr></table></div>';
+		html += '<tr><td><p class="message-content-style-01">' + message.content + '</p></td></tr></table></div>';
         container.append(html);
     }
 }
 
 function drawConversationsList(conversations, hidden = false) {
-    var tempCellStyle = 'border: 1px solid black; padding: 3px;';     // Development option
+
     var container = $('#' + ShowConversationViewContainerId);
     var headerString = 'Current conversations';
     container.empty();
@@ -206,14 +205,15 @@ function drawConversationsList(conversations, hidden = false) {
     if (conversations == 0) {
         container.append('There are no conversations yet');
         return;
-    }
-    container.append('<table id="conversations-table" style="border-collapse:collapse;"></table>');
-    var html = '<tr><td style="' + tempCellStyle + '" colspan="3">' + headerString + '</td><td>&nbsp</td><td>&nbsp</td></tr>';
-    html += '<tr><td style="' + tempCellStyle + '">Conversation title</td>';
-    html += '<td style="' + tempCellStyle + '">Announcement info</td>';
-    html += '<td style="' + tempCellStyle + '">Started date</td>';
-    html += '<td style="">&nbsp</td>';
-    html += '<td style="">&nbsp</td></tr>';
+	}
+	container.append("<p class='indent-02 text-segue-18' >" + headerString + "<p><hr />");
+    container.append('<table class="text-segue-16 table-02" id="conversations-table"></table>');
+    var html = '';
+	html += '<tr class="text-segue-14"><td class="table-td-style-01">Conversation title</td>';
+	html += '<td class="table-td-style-01">Announcement info</td>';
+	html += '<td class="table-td-style-01">Started date</td>';
+	html += '<td class="table-td-style-01">&nbsp</td>';
+    html += '<td>&nbsp</td></tr>';
     $('#conversations-table').append(html);
     for (var conversation of conversations) {
         if (conversation.isHidden == !hidden) {
@@ -237,15 +237,15 @@ function drawConversationsList(conversations, hidden = false) {
             }
         }
 
-        html = '<tr><td style="' + tempCellStyle + '">' + conversation.title + '</td>';
-        html += '<td style="' + tempCellStyle + '">ID: ' + conversation.announcementID + scheduleItemsString + '</td>'
-        html += '<td style="' + tempCellStyle + '">' + dateStarted.toLocaleDateString() + ' ' + dateStarted.toLocaleTimeString() + '</td>';
-        html += '<td style=""><button onclick="handleShowMessagesButton(' + conversation.conversationID + ',' + conversation.readOnly + ');">Show messages</button></td>';
+		html = '<tr class="table-row-style-01"><td>' + conversation.title + '</td>';
+        html += '<td>ID: ' + conversation.announcementID + scheduleItemsString + '</td>'
+        html += '<td>' + dateStarted.toLocaleDateString() + ' ' + dateStarted.toLocaleTimeString() + '</td>';
+		html += '<td><button class="button-05 text-segue-14" onclick="handleShowMessagesButton(' + conversation.conversationID + ',' + conversation.readOnly + ');">Show</button></td>';
         if (hidden == false) {
-            html += '<td style=""><button onclick="handleHideRevertConversationButton(' + conversation.conversationID + ', true);">Hide</button></td></tr>';
+			html += '<td><button class="button-05 text-segue-14" onclick="handleHideRevertConversationButton(' + conversation.conversationID + ', true);">Hide</button></td></tr>';
         }
         else {
-            html += '<td style=""><button onclick="handleHideRevertConversationButton(' + conversation.conversationID + ', false);">Revert</button></td></tr>';
+			html += '<td><button class="button-05 text-segue-14" onclick="handleHideRevertConversationButton(' + conversation.conversationID + ', false);">Revert</button></td></tr>';
         }
         $('#conversations-table').append(html);
     }

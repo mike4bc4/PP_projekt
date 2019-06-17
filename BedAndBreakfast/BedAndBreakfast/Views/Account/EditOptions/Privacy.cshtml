@@ -6,58 +6,28 @@
     PrivacySetting privacySettings = (PrivacySetting)ViewData["privacySettings"];
 }
 
-<style>
-    .edit-privacy-button {
-        float: right;
-        margin: 10px;
-        margin-right: 20px;
-        height: 40px;
-        width: 100px;
-        font-family: 'Lato', sans-serif;
-        background-color: transparent;
-        font-size: 22px;
-        color: rgba(26, 94, 178, 1);
-        border: none;
-        border-bottom: 1px solid rgba(26, 94, 178, 1);
-    }
 
-        .edit-privacy-button:hover {
-            cursor: pointer;
-            background-color: rgba(26, 94, 178, 0.5);
-        }
-
-    .edit-privacy-header {
-        font-family: 'Lato', sans-serif;
-        font-size: 16px;
-        color: rgba(26, 94, 178, 1);
-        margin: 20px;
-        background-color: rgba(26, 94, 178, 0.5);
-        height: 30px;
-        text-align: center;
-        padding-top: 12px;
-    }
-</style>
-
-<div class="edit-privacy-header">Privacy</div>
+<p class="indent-01 text-segue-18">Privacy</p>
+<hr />
 
 <form asp-action="EditPrivacy">
-    <div class="edit_box">
+
         <table>
             <tr>
                 <td>
-                    <label asp-for="ShowProfileToFriends" class="no-style-label-box"></label>
+                    <label asp-for="ShowProfileToFriends" class="label-box-04 text-segue-16"></label>
                     <input asp-for="ShowProfileToFriends" value="true" checked="@privacySettings.ShowProfileToFriends" />
                 </td>
             </tr>
             <tr>
                 <td>
-                    <label asp-for="ShowProfileToWorld" class="no-style-label-box"></label>
+                    <label asp-for="ShowProfileToWorld" class="label-box-04 text-segue-16"></label>
                     <input asp-for="ShowProfileToWorld" value="true" checked="@privacySettings.ShowProfileToWorld" />
                 </td>
             </tr>
         </table>
-    </div>
-        <div class="edit_box_pr">
-            <input type="submit" value="Save" class="edit-privacy-button" />
-        </div>
+
+
+            <input type="submit" value="Save" class="button-01" />
+
 </form>

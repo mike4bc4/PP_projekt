@@ -4,45 +4,43 @@
     ViewData["Title"] = "Create";
 }
 
-<div id="create_div">
-    <form asp-action="Create">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div id="create_acc_text">Create account</div>
-        <div class="form-group">
-            <label asp-for="EmailAddress" class="create_text"></label>
-            <input asp-for="EmailAddress" class="create_bar" />
-            <span asp-validation-for="EmailAddress" class="create_text_danger"></span>
-            <div style="clear:both;"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="FirstName" class="create_text"></label>
-            <input asp-for="FirstName" class="create_bar" />
-            <span asp-validation-for="FirstName" class="create_text_danger"></span>
-            <div style="clear:both;"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="LastName" class="create_text"></label>
-            <input asp-for="LastName" class="create_bar" />
-            <span asp-validation-for="LastName" class="create_text_danger"></span>
-            <div style="clear:both;"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Password" class="create_text"></label>
-            <input asp-for="Password" class="create_bar" />
-            <span asp-validation-for="Password" class="create_text_danger"></span>
-            <div style="clear:both;"></div>
-        </div>
-        <div class="form-group">
-            <label asp-for="BirthDate" class="create_text"></label>
-            <input asp-for="BirthDate" class="create_bar" />
-            <span asp-validation-for="BirthDate" class="create_text_danger"></span>
-            <div style="clear:both;"></div>
-        </div>
-        <div class="form-group">
-            <input type="submit" value="Create" class="my_button" id="save_button" />
-            <div style="clear:both;"></div>
-        </div>
-        <h4>@ViewBag.Message</h4>
-    </form>
+<div style="text-align:center;">
+    <div class="view-box-01">
+        <form asp-action="Create">
+            <p class="indent-01 text-segue-18">Create account</p>
+            <hr />
+            <table>
+                <tr>
+                    <td><label asp-for="EmailAddress" class="label-box-01 text-segue-16"></label></td>
+                    <td><input asp-for="EmailAddress" class="input-box-01 text-segue-16" placeholder="dream@vacation.com" /></td>
+                    <td><span asp-validation-for="EmailAddress" class="label-box-02 text-segue-16"></span></td>
+                </tr>
+                <tr>
+                    <td><label asp-for="FirstName" class="label-box-01 text-segue-16"></label></td>
+                    <td><input asp-for="FirstName" class="input-box-01 text-segue-16" placeholder="John"/></td>
+                    <td><span asp-validation-for="FirstName" class="label-box-02 text-segue-16"></span></td>
+                </tr>
+                <tr>
+                    <td><label asp-for="LastName" class="label-box-01 text-segue-16"></label></td>
+                    <td><input asp-for="LastName" class="input-box-01 text-segue-16" placeholder="Smith"/></td>
+                    <td><span asp-validation-for="LastName" class="label-box-02 text-segue-16"></span></td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Password" class="label-box-01 text-segue-16"></label></td>
+                    <td><input asp-for="Password" class="input-box-01 text-segue-16"/></td>
+                    <td><span asp-validation-for="Password" class="label-box-02 text-segue-16"></span></td>
+                </tr>
+                <tr>
+                    <td><label asp-for="BirthDate" class="label-box-01 text-segue-16"></label></td>
+                    <td><input asp-for="BirthDate" class="input-box-01 text-segue-16" /></td>
+                    <td><span asp-validation-for="BirthDate" class="label-box-02 text-segue-16"></span></td>
+                </tr>
+                <tr>
+                    <td colspan="3"><div class="label-box-02 text-segue-16">@ViewBag.Message</div></td>
+                </tr>
+            </table>
+            <input type="submit" value="Create" class="button-01" id="save_button" />
+        </form>
+    </div>
 </div>
 
