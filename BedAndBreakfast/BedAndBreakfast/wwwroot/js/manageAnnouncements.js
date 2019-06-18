@@ -240,7 +240,7 @@ function handleAnnouncementEditButton(announcementID) {
 
 		// Change amount of available image inputs.
 		var imageInputsContainer = document.getElementById("images-container");
-		imageInputsContainer.children[0].getElementsByTagName("input")[0].setAttribute("onchange", "addInput(this, " + (5 - announcement.images.length) + ");");
+		imageInputsContainer.children[0].getElementsByTagName("input")[0].setAttribute("onchange", "addInput(this, " + (5 - announcement.images.length) + ",'images-container');");
 	}
 
 	var container = document.getElementById("manage-announcements-view-container");
@@ -340,8 +340,8 @@ function handleSelectAnnouncementCheckbox() {
 		return 0;
 	}
 	else {
-		buttonsContainer.innerHTML = "<button onclick='handleRemoveSelectedButton(" + JSON.stringify(selectedAnnouncementsIDs) + ");'>Remove selected</button>\
-        <button onclick='handleChangeStatusButton("+ JSON.stringify(selectedAnnouncementsIDs) + ");'>Change status</button>";
+		buttonsContainer.innerHTML = "<button class='button-10 text-segue-14' onclick='handleRemoveSelectedButton(" + JSON.stringify(selectedAnnouncementsIDs) + ");'>Remove selected</button>\
+        <button class='button-10 text-segue-14' onclick='handleChangeStatusButton("+ JSON.stringify(selectedAnnouncementsIDs) + ");'>Change status</button>";
 	}
 }
 
@@ -411,8 +411,8 @@ function drawUserAnnouncements(userAnnouncements) {
 		container.innerHTML += "<button onclick='handleCreateAnnouncementButton();'>Become a host</button>";
 		return;
 	}
-	container.innerHTML = "<table id='announcements-container' border='1'>\
-    <tr>\
+	container.innerHTML = "<table class='table-02 text-segue-16' id='announcements-container'>\
+    <tr class='table-box-row-01 text-segue-14'>\
         <td></td>\
         <td>ID</td>\
         <td>Type</td>\
@@ -428,8 +428,8 @@ function drawUserAnnouncements(userAnnouncements) {
     </table>";
 	container = document.getElementById("announcements-container");
 	for (var announcement of userAnnouncements) {
-		container.innerHTML += "<tr>\
-        <td><input onclick='handleSelectAnnouncementCheckbox();' type='checkbox' id='announcement-selected-"+ announcement.announcementID + "'/></td>\
+		container.innerHTML += "<tr class='table-box-row-02'>\
+        <td class='table-box-cell-07'><input onclick='handleSelectAnnouncementCheckbox();' type='checkbox' id='announcement-selected-"+ announcement.announcementID + "'/></td>\
         <td>"+ announcement.announcementID + "</td>\
         <td>"+ announcementTypeToString(announcement.type) + "</td>\
         <td>"+ announcementSubtypeToString(announcement.type, announcement.subtype) + "</td>\
@@ -439,8 +439,8 @@ function drawUserAnnouncements(userAnnouncements) {
         <td>"+ announcement.country + " " + announcement.region + " " + announcement.city + " \
             "+ announcement.street + " " + announcement.streetNumber + "</td>\
         <td>"+ announcementActiveToString(announcement.isActive) + "</td>\
-        <td><button onclick='handleAnnouncementEditButton("+ announcement.announcementID + ");'>Edit</button></td>\
-        <td><button onclick='handleTimetableButton("+ announcement.announcementID + "," + announcement.timetable + ");'>Timetable</button></td>\
+        <td><button class='button-05 text-segue-14' onclick='handleAnnouncementEditButton("+ announcement.announcementID + ");'>Edit</button></td>\
+        <td><button class='button-05 text-segue-14' onclick='handleTimetableButton("+ announcement.announcementID + "," + announcement.timetable + ");'>Timetable</button></td>\
         </tr>";
 	}
 }

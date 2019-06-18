@@ -11,7 +11,7 @@
     List<string> paymentMethods = Enum.GetNames(typeof(EnumeratedDbValues.PaymentMethod)).ToList();
 }
 
-<h2>ManageAnnouncements</h2>
+
 
 <script type="text/javascript" src="~/js/manageAnnouncements.js"></script>
 <script type="text/javascript" src="~/js/editAnnouncementPartialView.js"></script>
@@ -44,10 +44,17 @@
     }
 </script>
 
-<div id="option-header">
-    <button onclick="handleMyAnnouncementsButton();">My announcements</button>
-    <button onclick="handleCreateAnnouncementButton();">Create announcement</button>
-    <span id="additional-options"></span>
+<div style="text-align:center;">
+    <div class="view-box-03">
+        <p class="indent-01 text-segue-18">Manage announcements</p>
+        <hr />
+        <div id="option-header">
+            <button class="button-10 text-segue-14" onclick="handleMyAnnouncementsButton();">My announcements</button>
+            <button class="button-10 text-segue-14" onclick="handleCreateAnnouncementButton();">Create announcement</button>
+            <span id="additional-options"></span>
+        </div>
+        <div style="clear: both;"></div>
+        <div class="error-span-label-box-01 text-segue-16" id="message-container"></div>
+        <div id="manage-announcements-view-container"></div>
+    </div>
 </div>
-<div id="message-container"></div>
-<div id="manage-announcements-view-container"></div>

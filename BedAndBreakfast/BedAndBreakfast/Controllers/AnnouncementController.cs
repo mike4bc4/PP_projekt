@@ -308,8 +308,7 @@ namespace BedAndBreakfast.Controllers
                 return Json(null);
             }
             // Validate review
-            if (string.IsNullOrEmpty(reviewModel.Name) ||
-                reviewModel.Name.Count() > IoCContainer.DbSettings.Value.MaxReviewNameLength ||
+            if ((reviewModel.Name != null && reviewModel.Name.Count() > IoCContainer.DbSettings.Value.MaxReviewNameLength) ||
                 reviewModel.ReviewDate == null ||
                 string.IsNullOrEmpty(reviewModel.Content) ||
                 reviewModel.Content.Count() > IoCContainer.DbSettings.Value.MaxReviewContentLength)
@@ -326,7 +325,7 @@ namespace BedAndBreakfast.Controllers
             {
                 Announcement = announcement,
                 User = currentUser,
-                Name = reviewModel.Name,
+                Name = (string.IsNullOrEmpty(reviewModel.Name)) ? "Anonymous" : reviewModel.Name,
                 Rating = (byte)reviewModel.Rating,
                 Content = reviewModel.Content,
                 ReviewDate = reviewModel.ReviewDate
@@ -1117,7 +1116,8 @@ namespace BedAndBreakfast.Controllers
                     .Where(ats => ats.Announcement == announcement)
                     .Select(ats => ats.ScheduleItem)
                     .ToListAsync();
-                foreach (ScheduleItem item in scheduleItems) {
+                foreach (ScheduleItem item in scheduleItems)
+                {
                     scheduleItemModels.Add(new ScheduleItemModel()
                     {
                         From = item.From,

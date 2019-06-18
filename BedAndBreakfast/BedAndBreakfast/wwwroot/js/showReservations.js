@@ -17,7 +17,6 @@ function getReservations() {
 }
 
 function drawMakeReservationsResponse(reservations) {
-    var tempCellStyle = 'border: 1px solid black; padding: 3px;'; // Development option.
     var container = $('#' + showReservationsViewContainerId);
     if (reservations == null) {
         return;
@@ -27,42 +26,42 @@ function drawMakeReservationsResponse(reservations) {
         container.append('<p>You have no reservations yet.</p>');
         return;
     }
-    container.append('<table id="user-reservation-table" style="border-collapse:collapse;"></table>');
-    $('#user-reservation-table').append('<tr>' +
-        '<td style="' + tempCellStyle + '">Announcement ID</td>' +
-        '<td style="' + tempCellStyle + '">Type</td>' +
-        '<td style="' + tempCellStyle + '">Subtype</td>' +
-        '<td style="' + tempCellStyle + '">Additional</td>' +
-        '<td style="' + tempCellStyle + '">Address</td>' +
-        '<td style="' + tempCellStyle + '">Date</td>' +
-        '<td style="' + tempCellStyle + '">Time</td>' +
-        '<td style="' + tempCellStyle + '">Amount of reservations</td>' +
-        '<td style="">&nbsp</td>' +
+    container.append('<table id="user-reservation-table" class="table-02 text-segue-16"></table>');
+	$('#user-reservation-table').append('<tr class="table-box-row-01 text-segue-14">' +
+        '<td>Announcement ID</td>' +
+        '<td>Type</td>' +
+        '<td>Subtype</td>' +
+        '<td>Additional</td>' +
+        '<td>Address</td>' +
+        '<td>Date</td>' +
+        '<td>Time</td>' +
+        '<td>Amount of reservations</td>' +
+        '<td>&nbsp</td>' +
         '</tr>')
 
     for (var reservation of reservations) {
         var reservationDate = new Date(reservation.date);
         var todayDate = new Date();
         todayDate.setHours(0, 0, 0, 0);
-        var html = '<tr><td style="' + tempCellStyle + '">' + reservation.announcementID + '</td>';
-        html += '<td style="' + tempCellStyle + '">' + getAnnouncementTypes()[reservation.announcementType] + '</td>';
+		var html = '<tr class="table-box-row-02"><td class="table-box-cell-07"><a class="a-link-01" href="/Announcement/Announcement?announcementID=' + reservation.announcementID+'" >ID: ' + reservation.announcementID + '</a></td>';
+		html += '<td>' + getAnnouncementTypes()[reservation.announcementType] + '</td>';
         switch (reservation.announcementType) {
             case 0:     // House
-                html += '<td style="' + tempCellStyle + '">' + getHouseSubtypes()[reservation.announcementSubtype] + '</td>';
-                html += '<td style="' + tempCellStyle + '">' + getHouseSharedParts()[reservation.houseSharedPart] + '</td>';
+                html += '<td>' + getHouseSubtypes()[reservation.announcementSubtype] + '</td>';
+                html += '<td>' + getHouseSharedParts()[reservation.houseSharedPart] + '</td>';
                 break;
             case 1:     // Entertainment
-                html += '<td style="' + tempCellStyle + '">' + getEntertainmentSubtypes()[reservation.announcementSubtype] + '</td>';
-                html += '<td style="' + tempCellStyle + '">&nbsp</td>';
+                html += '<td>' + getEntertainmentSubtypes()[reservation.announcementSubtype] + '</td>';
+                html += '<td>&nbsp</td>';
                 break;
             case 2:     // Food
-                html += '<td style="' + tempCellStyle + '">' + getFoodSubtypes()[reservation.announcementSubtype] + '</td>';
-                html += '<td style="' + tempCellStyle + '">&nbsp</td>';
+                html += '<td>' + getFoodSubtypes()[reservation.announcementSubtype] + '</td>';
+                html += '<td>&nbsp</td>';
                 break;
         }
-        html += '<td style="' + tempCellStyle + '">' + reservation.country + ' ' + reservation.region + ' ' +
+        html += '<td>' + reservation.country + ' ' + reservation.region + ' ' +
             reservation.city + ' ' + reservation.street + ' ' + reservation.streetNumber + '</td>';
-        html += '<td style="' + tempCellStyle + '">' + reservationDate.toLocaleDateString('en-US') + '</td>';
+        html += '<td>' + reservationDate.toLocaleDateString('en-US') + '</td>';
         if (reservation.scheduleItem != null) {
             var from = reservation.scheduleItem.from.toString() + ':00';
             var to;
@@ -72,17 +71,20 @@ function drawMakeReservationsResponse(reservations) {
             else {
                 to = '23:59';
             }
-            html += '<td style="' + tempCellStyle + '">' + from + '-' + to + '</td>';
+            html += '<td>' + from + '-' + to + '</td>';
         }
         else {
-            html += '<td style="' + tempCellStyle + '">&nbsp</td>';
+            html += '<td>&nbsp</td>';
         }
-        html += '<td style="' + tempCellStyle + '">' + reservation.amount + '</td>';
-        if (reservationDate > todayDate) {
-            html += '<td><button onclick="requestRemoval(' + reservation.announcementID +
-                ',\'' + reservationDate.toLocaleDateString('en-US') +
-                '\',' + reservation.scheduleItemID + ');">Request removal</button></td></tr>';
-        }
+        html += '<td>' + reservation.amount + '</td>';
+		if (reservationDate > todayDate) {
+			html += '<td><button class="button-05 text-segue-14" onclick="requestRemoval(' + reservation.announcementID +
+				',\'' + reservationDate.toLocaleDateString('en-US') +
+				'\',' + reservation.scheduleItemID + ');">Request removal</button></td></tr>';
+		}
+		else {
+			html += "<td>&nbsp</td>";
+		}
         $('#user-reservation-table').append(html);
     }
 }

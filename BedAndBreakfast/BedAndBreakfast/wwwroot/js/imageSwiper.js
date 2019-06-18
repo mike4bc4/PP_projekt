@@ -41,12 +41,14 @@ class ImageSwiper {
         swiperBox.style.position = "relative";
         swiperBox.style.display = "block";
         swiperBox.style.backgroundColor = "rgba(10, 10, 10)";
-        swiperBox.style.width = width + "px";
+		swiperBox.style.width = width + "px";
         swiperBox.style.height = height + "px";
         swiperBox.style.zIndex = 10;
         swiperBox.style.overflow = "hidden";
 		swiperBox.setAttribute("data-current-image", "0");
 		swiperBox.style.textAlign = "left";
+		swiperBox.style.marginLeft = "auto";
+		swiperBox.style.marginRight = "auto";
 
         // Add buttons images and event listeners only if images are provided.
         if (imagesByteArrays.length != 0) {
@@ -65,7 +67,7 @@ class ImageSwiper {
                 swiperButtonLeft.style.left = "0px";
                 swiperButtonLeft.style.backgroundColor = "rgba(0, 0, 0, 0.25)";
                 swiperButtonLeft.style.height = height + "px";
-                swiperButtonLeft.style.width = width / 6 + "px";
+				swiperButtonLeft.style.width = "18%";
                 swiperButtonLeft.style.zIndex = 30;
                 swiperButtonLeft.style.borderTopLeftRadius = "4px";
                 swiperButtonLeft.style.borderBottomLeftRadius = "4px";
@@ -87,7 +89,7 @@ class ImageSwiper {
                 swiperButtonRight.style.right = "0px";
                 swiperButtonRight.style.backgroundColor = "rgba(0, 0, 0, 0.25)";
                 swiperButtonRight.style.height = height + "px";
-                swiperButtonRight.style.width = width / 6 + "px";
+				swiperButtonRight.style.width = "18%";
                 swiperButtonRight.style.zIndex = 30;
                 swiperButtonRight.style.borderTopRightRadius = "4px";
                 swiperButtonRight.style.borderBottomRightRadius = "4px";
@@ -106,7 +108,7 @@ class ImageSwiper {
             var swiperImage = document.createElement("img");
             swiperBox.appendChild(swiperImage);
             swiperImage.src = "data:image/png;base64," + window.ImageSwiperLibrary["imageSwiperByteArrays" + uniqueID][0];
-            swiperImage.style.width = width + "px";
+			swiperImage.style.width = width + "px";
             swiperImage.style.position = "absolute";
             swiperImage.style.zIndex = 20;
             swiperImage.style.userSelect = "none";
@@ -126,7 +128,7 @@ class ImageSwiper {
             swiperBox.style.backgroundColor = "rgb(10, 10, 10)";
             swiperBox.style.textAlign = "center";
             swiperBox.style.fontSize = "36px";
-            swiperBox.style.paddingTop = height / 2 - 36 + "px";
+            swiperBox.style.paddingTop = height / 2 - 30 + "px";
             swiperBox.style.color = "white";
 
             swiperBox.className = "image-swiper-no-image-class";

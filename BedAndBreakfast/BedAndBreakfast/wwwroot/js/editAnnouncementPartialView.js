@@ -621,10 +621,27 @@ function addTimeTableInput(item, maxInputCount) {
     }
 }
 
-function addInput(item, maxInputCount) {
-    var container = item.parentNode.parentNode; //  Div collection container.
+
+function addInput(item, maxInputCount, parentID) {
+	var container;
+	if (parentID) {
+		container = document.getElementById(parentID);
+	}
+	else {
+		var container = item.parentNode.parentNode; //  Div collection container.
+	}
+    
     var items = container.children;         // Collection of div nodes.
-    var itemInnerHTML = items[0].innerHTML; // Inner html of first div node.
+	var itemInnerHTML = items[0].innerHTML; // Inner html of first div node.
+
+	// If input is an image input.
+	// Get for label.
+	if (item.files && item.files.length != 0) {
+		var span = item.parentNode.getElementsByClassName("image-input-span")[0];
+		span.innerText = item.files[0].name;
+	}
+
+
     // Mark all nodes that should be removed.
     var nodesToRemove = [];
     for (var i = 0; i < items.length; i++) {
@@ -644,9 +661,18 @@ function addInput(item, maxInputCount) {
 
     // Add empty input at the end if possible.
     if (items.length < maxInputCount) {
-        var newItem = document.createElement("div");
+		var newItem = document.createElement("div");
+		newItem.className = item.parentNode.className;
         container.appendChild(newItem);
-        newItem.innerHTML = itemInnerHTML;
+		newItem.innerHTML = itemInnerHTML;
+
+		// For image input only
+		var span = newItem.getElementsByClassName("image-input-span")[0];
+		if (span) {
+			span.innerText = "[Upload image...]";
+			newItem.className = item.parentNode.parentNode.className;
+		}
+
     }
 }
 
@@ -685,26 +711,66 @@ function handleTypeVisibility() {
     var sharedPartElement = document.getElementById("house-shared-part-drop-down-list");
     var sharedPartLabelElement = document.getElementById("house-shared-part-label");
     switch (parseInt(typeElement.value)) {
-        case 0:
-            houseSubtypeElement.hidden = false;
-            entertainmentSubtypeElement.hidden = true;
-            foodSubtypeElement.hidden = true;
-            sharedPartElement.hidden = false;
-            sharedPartLabelElement.hidden = false;
-            break;
-        case 1:
-            houseSubtypeElement.hidden = true;
-            entertainmentSubtypeElement.hidden = false;
-            foodSubtypeElement.hidden = true;
-            sharedPartElement.hidden = true;
-            sharedPartLabelElement.hidden = true;
-            break;
-        case 2:
-            houseSubtypeElement.hidden = true;
-            entertainmentSubtypeElement.hidden = true;
-            foodSubtypeElement.hidden = false;
-            sharedPartElement.hidden = true;
-            sharedPartLabelElement.hidden = true;
-            break;
+   //     case 0:
+   //         houseSubtypeElement.hidden = false;
+   //         entertainmentSubtypeElement.hidden = true;
+   //         foodSubtypeElement.hidden = true;
+   //         sharedPartElement.hidden = false;
+   //         sharedPartLabelElement.hidden = false;
+   //         break;
+   //     case 1:
+   //         houseSubtypeElement.hidden = true;
+   //         entertainmentSubtypeElement.hidden = false;
+   //         foodSubtypeElement.hidden = true;
+   //         sharedPartElement.hidden = true;
+   //         sharedPartLabelElement.hidden = true;
+   //         break;
+   //     case 2:
+   //         houseSubtypeElement.hidden = true;
+   //         entertainmentSubtypeElement.hidden = true;
+   //         foodSubtypeElement.hidden = false;
+   //         sharedPartElement.hidden = true;
+   //         sharedPartLabelElement.hidden = true;
+			//break;
+		case 0:
+			houseSubtypeElement.style.visibility = "visible";
+			entertainmentSubtypeElement.style.visibility = "hidden";
+			foodSubtypeElement.style.visibility = "hidden";
+			sharedPartElement.style.visibility = "visible";
+			sharedPartLabelElement.style.visibility = "visible";
+
+			houseSubtypeElement.style.position = "static";
+			entertainmentSubtypeElement.style.position = "absolute";
+			foodSubtypeElement.style.position = "absolute";
+			sharedPartElement.style.position = "static";
+			sharedPartLabelElement.style.position = "static";
+
+			break;
+		case 1:
+			houseSubtypeElement.style.visibility = "hidden";
+			entertainmentSubtypeElement.style.visibility = "visible";
+			foodSubtypeElement.style.visibility = "hidden";
+			sharedPartElement.style.visibility = "hidden";
+			sharedPartLabelElement.style.visibility = "hidden";
+
+			houseSubtypeElement.style.position = "absolute";
+			entertainmentSubtypeElement.style.position = "static";
+			foodSubtypeElement.style.position = "absolute";
+			sharedPartElement.style.position = "absolute";
+			sharedPartLabelElement.style.position = "absolute";
+			break;
+		case 2:
+			houseSubtypeElement.style.visibility = "hidden";
+			entertainmentSubtypeElement.style.visibility = "hidden";
+			foodSubtypeElement.style.visibility = "visible";
+			sharedPartElement.style.visibility = "hidden";
+			sharedPartLabelElement.style.visibility = "hidden";
+
+			houseSubtypeElement.style.position = "absolute";
+			entertainmentSubtypeElement.style.position = "absolute";
+			foodSubtypeElement.style.position = "static";
+			sharedPartElement.style.position = "absolute";
+			sharedPartLabelElement.style.position = "absolute";
+			break;
     }
 }

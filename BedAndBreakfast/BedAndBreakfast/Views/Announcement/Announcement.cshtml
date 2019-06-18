@@ -1,4 +1,4 @@
-﻿@model BedAndBreakfast.Models.AnnouncementViewModel
+@model BedAndBreakfast.Models.AnnouncementViewModel
 @using BedAndBreakfast.Data
 @{
     ViewData["Title"] = "DisplaySingle";
@@ -25,164 +25,195 @@
     function getAnnouncementViewModel() {
         return @Html.Raw(Json.Serialize(Model));
     }
-    
+
 </script>
+<div style="text-align: center;">
+    <div class="view-box-03">
+        <div>
+            @if (Model == null)
+            {
+                <p>An error occurred while retrieving announcement data.</p>
+            }
+            else
+            {
+                <table class="table-box-01">
+                    <tr>
+                        <td class="table-box-cell-03" colspan="2" id="announcement-images-container"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <hr />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="table-box-cell-04 text-segue-16">
+                            @if (Model.AnnouncementPreviewModel.AverageRating != null)
+                            {
+                                <p class="indent-03 text-segue-14">Rating: </p>
+                                <p class="indent-04">
+                                    @{
+                                        double rating = (double)Model.AnnouncementPreviewModel.AverageRating;
 
-<div>
-    @if (Model == null)
-    {
-        <p>An error occurred while retrieving announcement data.</p>
-    }
-    else
-    {
-        <table border="1">
-            <tr>
-                <td colspan="2" id="announcement-images-container"></td>
-            </tr>
-            <tr>
-                <td>
-                    @if (Model.AnnouncementPreviewModel.AverageRating != null)
-                    {
-                        <p>Rating: </p>
-                        <p>@Model.AnnouncementPreviewModel.AverageRating/10</p>
-                        <p>Reviews amount: </p>
-                        <p>@Model.AnnouncementPreviewModel.ReviewsCount</p>
-                    }
-                    else
-                    {
-                        <p>This announcement still do not have any reviews.</p>
-                    }
-                </td>
-                <td rowspan="6">
-                    <div id="announcement-map-container"></div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <p>
-                        @announcementTypes[Model.AnnouncementPreviewModel.Type]
-                        @switch (Model.AnnouncementPreviewModel.Type)
-                        {
-                            case 0:
-                                @houseSubtypes[Model.AnnouncementPreviewModel.Subtype]
-                                @: @houseSharedParts[(int)Model.AnnouncementPreviewModel.SharedPart]
-                                break;
-                            case 1:
-                                @entertainmentSubtypes[Model.AnnouncementPreviewModel.Subtype]
-                                break;
-                            case 2:
-                                @foodSubtypes[Model.AnnouncementPreviewModel.Subtype]
-                                break;
-                        }
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <p id="announcement-address-container">
-                        @Model.AnnouncementPreviewModel.Country
-                        @Model.AnnouncementPreviewModel.Region
-                        @Model.AnnouncementPreviewModel.City
-                        @Model.AnnouncementPreviewModel.Street
-                        @Model.AnnouncementPreviewModel.StreetNumber
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <p>
-                        @Model.AnnouncementPreviewModel.Description
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <p>Contact info:</p>
-                    @foreach (var item in Model.Contacts)
-                    {
-                        <p>
-                            @contactTypes[@item.Type]:
-                            @item.Value
-                        </p>
-                    }
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <p>Payment info:</p>
-                    @foreach (var item in Model.Payments)
-                    {
-                        <p>
-                            @paymentMethods[@item.Type]:
-                            @item.Value
-                        </p>
-                    }
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" id="announcement-timetable-container"></td>
-            </tr>
-            <tr>
-                <td colspan="2" id="announcement-reservations-container">
-                    <div id="announcement-reservation-prototype" hidden>
-                        <label>Reservation for: </label>
-                        <label class="announcement-reservation-date-container"></label>
-                        <label>Amount: </label>
-                        <button class="announcement-reservation-decrease-10-button">-10</button>
-                        <button class="announcement-reservation-decrease-1-button">-1</button>
-                        <input class="announcement-reservation-input-field" type="text" readonly />
-                        <button class="announcement-reservation-increase-1-button">+1</button>
-                        <button class="announcement-reservation-increase-10-button">+10</button>
-                        <button class="announcement-reservation-remove-button">Remove</button>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <button onclick="handleSubmitReservationsButton();">Make reservation</button><span id="announcement-reservation-error-span"></span>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" id="review-creator-container">
-                    <p>
-                        <label>Rate: </label>
-                        <input size="2" maxlength="2" onchange="handleRateValidation();" id="review-creator-rating-input" type="text" /><span>/10</span>
-                        <span id="review-creator-rating-error-span" ></span>
+                                    }
+                                    @rating.ToString("#.#")/10 based on @Model.AnnouncementPreviewModel.ReviewsCount review(s).
+                                </p>
+                            }
+                            else
+                            {
+                                <p class="indent-04">This announcement still do not have any reviews.</p>
+                            }
+                        </td>
+                        <td rowspan="6" class="table-box-cell-04">
+                            <div id="announcement-map-container"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="table-box-cell-04 text-segue-16">
+                            <p class="indent-03 text-segue-14">
+                                Announcement type:
+                            </p>
+                            <p class="indent-04">
+                                @announcementTypes[Model.AnnouncementPreviewModel.Type]
+                                @switch (Model.AnnouncementPreviewModel.Type)
+                                {
+                                    case 0:
+                                        @houseSubtypes[Model.AnnouncementPreviewModel.Subtype]
+                                        @: @houseSharedParts[(int)Model.AnnouncementPreviewModel.SharedPart]
+                                        break;
+                                    case 1:
+                                        @entertainmentSubtypes[Model.AnnouncementPreviewModel.Subtype]
+                                        break;
+                                    case 2:
+                                        @foodSubtypes[Model.AnnouncementPreviewModel.Subtype]
+                                        break;
+                                }
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="table-box-cell-04 text-segue-16">
+                            <p class="indent-03 text-segue-14">
+                                Address:
+                            </p>
+                            <p class="indent-04" id="announcement-address-container">
+                                @Model.AnnouncementPreviewModel.Country
+                                @Model.AnnouncementPreviewModel.Region
+                                @Model.AnnouncementPreviewModel.City
+                                @Model.AnnouncementPreviewModel.Street
+                                @Model.AnnouncementPreviewModel.StreetNumber
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="table-box-cell-04 text-segue-16">
+                            <p class="indent-03 text-segue-14">
+                                Description:
+                            </p>
+                            <p class="indent-04">
+                                @Model.AnnouncementPreviewModel.Description
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="table-box-cell-04 text-segue-16">
+                            <p class="indent-03 text-segue-14">Contact info:</p>
+                            @foreach (var item in Model.Contacts)
+                            {
+                                <p class="indent-04">
+                                    <b>@contactTypes[@item.Type]:</b>
+                                    @item.Value
+                                </p>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="table-box-cell-04 text-segue-16">
+                            <p class="indent-03 text-segue-14">Payment info:</p>
+                            @foreach (var item in Model.Payments)
+                            {
+                                <p class="indent-04">
+                                    <b>@paymentMethods[@item.Type]:</b>
+                                    @item.Value
+                                </p>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <hr />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" id="announcement-timetable-container"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <hr />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" id="announcement-reservations-container">
+                            <div id="announcement-reservation-prototype" class="announcement-reservation-item" hidden>
+                                <label class="label-box-05">Reservation for: </label>
+                                <label class="announcement-reservation-date-container"></label>
+                                <label class="label-box-05">Amount: </label>
+                                <button class="announcement-reservation-decrease-10-button">-10</button>
+                                <button class="announcement-reservation-decrease-1-button">-1</button>
+                                <input class="announcement-reservation-input-field" type="text" readonly />
+                                <button class="announcement-reservation-increase-1-button">+1</button>
+                                <button class="announcement-reservation-increase-10-button">+10</button>
+                                <button class="announcement-reservation-remove-button">Remove</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <button class="button-02 text-segue-14" onclick="handleSubmitReservationsButton();">Make reservation</button><span class="text-segue-16" id="announcement-reservation-error-span"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" id="review-creator-container">
+                            <hr />
+                            <p>
+                                <label class="label-box-06 text-segue-16">Rate: </label>
+                                <input class="input-box-03 text-segue-16" size="2" maxlength="2" onchange="handleRateValidation();" id="review-creator-rating-input" type="text" /><span class="text-segue-16"> /10</span>
+                                <span class="error-span-label-box-01 text-segue-16" id="review-creator-rating-error-span"></span>
 
-                    </p>
-                    <p>
-                        <label>Your name: </label>
-                        <input maxlength="50" id="review-creator-nickname-input" type="text" /><span id="review-creator-nickname-error-span"></span>
-                    </p>
-                    <p>
-                        <label>Review content: </label><br />
-                        <textarea oninput="handleReviewTextareaInput();" cols="100" rows="12" id="review-creator-textarea"></textarea>
-                    </p>
-                        <p id="review-creator-textarea-counter"></p><span id="review-creator-textarea-error-span"></span>
-                    <p>
-                        <button onclick="handlePostReviewButtonClick(this);">Post review</button><span id="review-creator-error-span"></span>
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" id="announcement-reviews-container">
-                    <div id="announcement-review-prototype" hidden>
-                        <p>
-                            <label>Rate: </label>
-                            <label class="announcement-review-rating-container"></label>
-                            <label>Written on: </label>
-                            <label class="announcement-review-date-container"></label>
-                            <label> by: </label>
-                            <label class="announcement-review-name-container"></label>
-                        </p>
-                        <p class="announcement-review-message-container"></p>
-                    </div>
-                </td>
-            </tr>
-        </table>
+                            </p>
+                            <p>
+                                <label class="label-box-06 text-segue-16">Your name: </label>
+                                <input class="input-box-02 text-segue-16" maxlength="50" id="review-creator-nickname-input" type="text" /><span id="review-creator-nickname-error-span"></span>
+                            </p>
+                            <p>
+                                <label class="label-box-07 text-segue-16">Review content: </label><br />
+                                <textarea spellcheck="false" class="textarea-style-01 text-segue-16" oninput="handleReviewTextareaInput();" cols="100" rows="12" id="review-creator-textarea"></textarea>
+                            </p>
+                            <span class="text-segue-16" id="review-creator-textarea-counter"></span><span class="error-span-label-box-01 text-segue-16" id="review-creator-textarea-error-span"></span>
+                            <p>
+                                <button class="button-09 text-segue-14" onclick="handlePostReviewButtonClick(this);">Post review</button><span class="error-span-label-box-01 text-segue-16" id="review-creator-error-span"></span>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" id="announcement-reviews-container">
+                            <div id="announcement-review-prototype" class="announcement-review-style text-segue-16" hidden>
+                                <p>
+                                    <label class="label-box-08">Rate: </label>
+                                    <label class="announcement-review-rating-container"></label>
+                                    <label class="label-box-08">Written on: </label>
+                                    <label class="announcement-review-date-container"></label>
+                                    <label class="label-box-08"> by: </label>
+                                    <label class="announcement-review-name-container"></label>
+                                </p>
+                                <p class="announcement-review-message-container"></p>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
 
-    }
+            }
+        </div>
+    </div>
 </div>
-
 
 

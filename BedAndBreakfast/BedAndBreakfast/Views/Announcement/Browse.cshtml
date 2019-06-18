@@ -45,60 +45,74 @@
 <!--Sorting and filtering options header-->
 <div style="text-align:center" ;>
     <div class="view-box-02">
-        <label class="indent-02 text-segue-16 float-left-style">Sort by: </label>
-        <select class="input-box-02 text-segue-16 float-left-style" onchange="handleSortOptionChange(this);" id="announcements-preview-sort-option">
-            @for (int i = 0; i < announcementPreviewSortOptions.Count(); i++)
-            {
-                <option value="@i">@announcementPreviewSortOptions[i]</option>
-            }
-        </select>
-        <label class="indent-02 text-segue-16 float-left-style">Filter options: </label>
-        <table class="table-03 float-left-style">
-            <tr id="announcements-preview-filter-options-container">
-                @for (var i = 0; i < announcementTypes.Count(); i++)
+        <div id="sort-filter-options-container">
+            <label class="indent-02 text-segue-16 float-left-style">Sort by: </label>
+            <select class="input-box-02 text-segue-16 float-left-style" onchange="handleSortOptionChange(this);" id="announcements-preview-sort-option">
+                @for (int i = 0; i < announcementPreviewSortOptions.Count(); i++)
                 {
-                    <td class="no-padding-style">
-                        <div class="toggle-button-class-01-off text-segue-14" id="announcements-preview-filter-option-@i" onclick="handleFilterItemClick(this);" data-selected="false">@announcementTypes[i]</div>
-                    </td>
+                    <option value="@i">@announcementPreviewSortOptions[i]</option>
                 }
-            </tr>
-        </table>
+            </select>
+            <label class="indent-02 text-segue-16 float-left-style">Filter options: </label>
+            <table class="table-03 float-left-style">
+                <tr id="announcements-preview-filter-options-container">
+                    @for (var i = 0; i < announcementTypes.Count(); i++)
+                    {
+                        <td class="no-padding-style">
+                            <div class="toggle-button-class-01-off text-segue-14" id="announcements-preview-filter-option-@i" onclick="handleFilterItemClick(this);" data-selected="false">@announcementTypes[i]</div>
+                        </td>
+                    }
+                </tr>
+            </table>
+        </div>
         <hr />
 
-        <div id="global-message-container"></div>
-        <!--Scrollable container with announcement previews-->
-        <div id="announcement-previews-container">
-            <div id="announcement-preview-prototype" hidden>
-                <table class="text-segue-16 table-04">
-                    <tr>
-                        <td rowspan="4" class="announcement-preview-images-container"></td>
-                        <td class="announcement-preview-type-data-container"></td>
-                    </tr>
-                    <tr>
-                        <td class="announcement-preview-address-container"></td>
-                    </tr>
-                    <tr>
-                        <td class="announcement-preview-description-container"></td>
-                    </tr>
-                    <tr>
-                        <td class="announcement-preview-rating-container"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <form asp-action="Announcement" asp-controller="Announcement">
-                                <input type="hidden" name="announcementID" value="" />
-                                <button type="submit" class="button-06 text-segue-14">Display announcement details</button>
-                            </form>
-                            <div class="announcement-preview-toggle-map-visible" onclick="" data-selected="false">Toggle visible on map</div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div id="announcement-previews-message-container" hidden></div>
-        </div>
-        <!--Static map container-->
-        <div>
-            <div id="announcement-previews-map-container"></div>
-        </div>
+        <table class="table-box-01">
+            <tr>
+                <td colspan="2">
+                    <div id="global-message-container"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="table-box-cell-02">
+                    <div id="announcement-previews-container">
+                        <div id="announcement-preview-prototype" hidden>
+                            <table class="text-segue-16 table-box-02">
+                                <tr>
+                                    <td rowspan="4" class="announcement-preview-images-container"></td>
+                                    <td class="announcement-preview-type-data-container"></td>
+                                </tr>
+                                <tr>
+                                    <td class="announcement-preview-address-container"></td>
+                                </tr>
+                                <tr>
+                                    <td class="announcement-preview-description-container"></td>
+                                </tr>
+                                <tr>
+                                    <td class="announcement-preview-rating-container"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <form asp-action="Announcement" asp-controller="Announcement">
+                                            <input type="hidden" name="announcementID" value="" />
+                                            <button type="submit" class="button-06 text-segue-14">Display announcement details</button>
+                                        </form>
+                                        <div class="announcement-preview-toggle-map-visible" onclick="" data-selected="false">Toggle visible on map</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div id="announcement-previews-message-container" hidden></div>
+                    </div>
+                </td>
+                <td class="table-box-cell-01">
+                    <div>
+                        <div id="announcement-previews-map-container"></div>
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+
     </div>
 </div>

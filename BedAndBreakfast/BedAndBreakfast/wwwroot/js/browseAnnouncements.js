@@ -366,13 +366,13 @@ function drawAnnouncementList(announcements) {
         // Set rating.
         var ratingString = "No rates yet.";
         if (announcements[i].averageRating != null) {
-            ratingString = "Rate: " + announcements[i].averageRating + "/10, based on: " + announcements[i].reviewsCount + " review(s).";
+			ratingString = "Rate: " + announcements[i].averageRating.toFixed(1); + "/10, based on: " + announcements[i].reviewsCount + " review(s).";
         }
         ratingContainer.innerText = ratingString;
 
         // Add preview image.
         var imageContainerNode = newNode.getElementsByClassName("announcement-preview-images-container")[0];
-        ImageSwiper.Add(imageContainerNode, 350, 190, announcements[i].imagesByteArrays, announcements[i].announcementID);
+        ImageSwiper.Add(imageContainerNode, 300, 170, announcements[i].imagesByteArrays, announcements[i].announcementID);
 
         // Update redirect form.
         newNode.getElementsByTagName("form")[0].getElementsByTagName("input")[0].value = announcements[i].announcementID;

@@ -20,8 +20,6 @@ function announcementViewInit() {
     drawAnnouncementImage(announcementViewModel.announcementPreviewModel.imagesByteArrays, parseInt(AnnouncementLibrary["announcementID"]));
     // Draw announcement map.
     var mapContainer = document.getElementById("announcement-map-container");
-    mapContainer.style.width = "500px";
-    mapContainer.style.height = "500px";
     var shortDescription = announcementViewModel.announcementPreviewModel.description;
     if (shortDescription.length > 100) {
         shortDescription = shortDescription.substr(0, 100) + "...";
@@ -337,7 +335,14 @@ function handleTimetableNextButtonClick() {
 }
 
 function handleAddReservationButtonClick(itemClickedIndex) {
-    if (AnnouncementLibrary["announcementTimetable"] == 1) {
+	if (AnnouncementLibrary["announcementTimetable"] == 1) {
+
+		var availableReservations = window.AnnouncementLibrary["perDayReservations"] -
+			window.RequestLibrary["getAnnouncementReservationsResponse"].reservations[itemClickedIndex];
+		if (availableReservations < 1) {
+			return;
+		}
+		
         var dateString = document.getElementById("timetable-date-container-" + itemClickedIndex).innerText;
         var reservationItem = document.getElementById("reservation-item-" + dateString);
         if (reservationItem == null) {
@@ -348,7 +353,15 @@ function handleAddReservationButtonClick(itemClickedIndex) {
             handleReservationsItemIncreaseButtonClick("reservation-item-" + dateString, itemClickedIndex, 1);
         }
     }
-    else if (AnnouncementLibrary["announcementTimetable"] == 2) {
+	else if (AnnouncementLibrary["announcementTimetable"] == 2) {
+
+		var availableReservations = window.AnnouncementLibrary["scheduleItems"][itemClickedIndex].maxReservations -
+			window.RequestLibrary["getAnnouncementReservationsResponse"].reservations[itemClickedIndex];
+
+		if (availableReservations < 1) {
+			return;
+		}
+
         var dateString = document.getElementById("timetable-date-container").innerText + ", " +
             document.getElementById("timetable-schedule-item-container-" + itemClickedIndex).innerText;
         var reservationItem = document.getElementById("reservation-item-" + dateString);
@@ -453,7 +466,8 @@ function drawAnnouncementReviews() {
     reviewsContainer.appendChild(reviewPrototype);
 
     if (RequestLibrary["getReviewsResponse"].length == 0) {
-        var p = document.createElement("p");
+		var p = document.createElement("p");
+		p.className = "text-segue-16";
         p.innerText = "This announcement has no reviews. Consider adding one.";
         reviewsContainer.appendChild(p);
         return;
@@ -475,7 +489,7 @@ function drawAnnouncementReviews() {
     }
 }
 
-function drawAnnouncementImage(imagesByteArrays, announcementID, width = 800) {
+function drawAnnouncementImage(imagesByteArrays, announcementID, width = 1000) {
     var imageContainerNode = document.getElementById("announcement-images-container");
     ImageSwiper.Add(imageContainerNode, width, Math.ceil((width / 16) * 9), imagesByteArrays, announcementID);
 }
@@ -499,29 +513,34 @@ function drawAnnouncementTimetable(timetableContainer) {
     timetableContainer.innerHTML = "";
     switch (parseInt(AnnouncementLibrary["announcementTimetable"])) {
         case 0:     // Off
-            var p = document.createElement("p");
+			var p = document.createElement("p");
+			p.className = "text-segue-16";
             p.innerText = "There is no reservations timetable for this announcement. Ask its owner about reservations!";
-            var button = document.createElement("button");
+			var button = document.createElement("button");
+			button.className = "button-09 text-segue-14";
             button.innerText = "Start conversation";
             button.onclick = function () { handleAskAboutAnnouncementButtonClick() };
             var span = document.createElement("span");
-            span.id = "ask-about-announcement-message-span";
+			span.id = "ask-about-announcement-message-span";
+			span.className = "error-span-label-box-01 text-segue-16";
             timetableContainer.appendChild(p);
             timetableContainer.appendChild(button);
             timetableContainer.appendChild(span);
             break;
         case 1:     // Per day
             var table = document.createElement("table");
-            table.border = 1;
+			table.className = "table-box-03 text-segue-16";
             var tr1 = document.createElement("tr");
             var tr2 = document.createElement("tr");
             // Create first row content.
             for (var i = 0; i < 9; i++) {
-                var td = document.createElement("td");
+				var td = document.createElement("td");
+				td.className = "table-box-cell-05";
                 switch (i) {
                     case 0:
                         var button = document.createElement("button");
-                        button.onclick = function () { handleTimetablePreviousButtonClick() };
+						button.onclick = function () { handleTimetablePreviousButtonClick() };
+						button.className = "button-07 text-segue-14";
                         button.innerText = "<"
                         td.appendChild(button);
                         td.rowSpan = 2;
@@ -529,14 +548,16 @@ function drawAnnouncementTimetable(timetableContainer) {
                         break;
                     case 8:
                         var button = document.createElement("button");
-                        button.onclick = function () { handleTimetableNextButtonClick() };
+						button.onclick = function () { handleTimetableNextButtonClick() };
+						button.className = "button-07 text-segue-14";
                         button.innerText = ">";
                         td.appendChild(button);
                         td.rowSpan = 2;
                         tr1.appendChild(td);
                         break;
                     default:
-                        var p = document.createElement("p");
+						var p = document.createElement("p");
+						p.className = "indent-05";
                         var date = new Date(AnnouncementLibrary["middleDate"].getTime() - 24 * 60 * 60 * 1000 * 3);
                         var correctedDate = new Date(date.getTime() + 24 * 60 * 60 * 1000 * (i - 1));
                         correctedDate.setHours(0, 0, 0, 0);
@@ -550,8 +571,8 @@ function drawAnnouncementTimetable(timetableContainer) {
                         var today = new Date();
                         today.setHours(0, 0, 0, 0);
                         if (correctedDate.getTime() < today.getTime() ||
-                            correctedDate.getTime() > AnnouncementLibrary["announcementTo"].getTime()) {
-                            p.style.backgroundColor = "lightgray";
+							correctedDate.getTime() > AnnouncementLibrary["announcementTo"].getTime()) {
+							p.className = "indent-05-disabled";
                         }
 
                         break;
@@ -560,13 +581,15 @@ function drawAnnouncementTimetable(timetableContainer) {
             // Create second row content.
             for (var i = 0; i < 7; i++) {
                 var td = document.createElement("td");
-
+				td.className = "table-box-cell-05";
                 td.setAttribute("data-day", i);
 
-                var button = document.createElement("button");
+				var button = document.createElement("button");
+				button.className = "button-08 text-segue-14";
                 button.innerText = "Add reservation";
                 button.setAttribute("onclick", "handleAddReservationButtonClick(" + i + ")");
                 var p = document.createElement("p");
+
 
                 var reservationString = "0/" + window.AnnouncementLibrary["perDayReservations"];
                 if (window.RequestLibrary["getAnnouncementReservationsResponse"].reservations[i] != null) {
@@ -574,7 +597,8 @@ function drawAnnouncementTimetable(timetableContainer) {
                         "/" + window.AnnouncementLibrary["perDayReservations"];
                 }
 
-                p.innerText = "Current reservations: " + reservationString;
+				p.innerText = "Current reservations: " + reservationString;
+				p.className = "indent-06";
                 td.appendChild(p);
                 td.appendChild(button);
                 tr2.appendChild(td);
@@ -596,21 +620,23 @@ function drawAnnouncementTimetable(timetableContainer) {
             break;
         case 2:     // Per hour
             var table = document.createElement("table");
-            table.border = 1;
+			table.className = "table-box-03 text-segue-16";
             // Create first row.
             var tr1 = document.createElement("tr");
             for (var i = 0; i < 3; i++) {
                 var td = document.createElement("td");
                 switch (i) {
                     case 0:
-                        var button = document.createElement("button");
+						var button = document.createElement("button");
+						button.className = "button-07 text-segue-14";
                         button.innerText = "<";
                         button.onclick = function () { handleTimetablePreviousButtonClick() };
                         td.appendChild(button);
                         td.rowSpan = window.AnnouncementLibrary["scheduleItems"].length + 1;
                         break;
                     case 2:
-                        var button = document.createElement("button");
+						var button = document.createElement("button");
+						button.className = "button-07 text-segue-14";
                         button.innerText = ">";
                         button.onclick = function () { handleTimetableNextButtonClick() };
                         td.appendChild(button);
@@ -620,7 +646,8 @@ function drawAnnouncementTimetable(timetableContainer) {
                         var correctedDate = AnnouncementLibrary["middleDate"];
                         correctedDate.setHours(0, 0, 0, 0);
 
-                        var p = document.createElement("p");
+						var p = document.createElement("p");
+						p.className = "indent-05";
                         td.appendChild(p);
                         p.innerText = correctedDate.toLocaleDateString("en-US");
                         p.id = "timetable-date-container";
@@ -630,7 +657,7 @@ function drawAnnouncementTimetable(timetableContainer) {
                         today.setHours(0, 0, 0, 0);
                         if (correctedDate.getTime() < today.getTime() ||
                             correctedDate.getTime() > AnnouncementLibrary["announcementTo"].getTime()) {
-                            p.style.backgroundColor = "lightgray";
+							p.className = "indent-05-disabled";
                         }
 
                         break;
@@ -644,15 +671,16 @@ function drawAnnouncementTimetable(timetableContainer) {
                 var tr = document.createElement("tr");
                 var td = document.createElement("td");
                 tr.appendChild(td);
-                var button = document.createElement("button");
+				var button = document.createElement("button");
+				button.className = "button-08 text-segue-14";
                 button.innerText = "Add reservation";
                 button.setAttribute("onclick", "handleAddReservationButtonClick(" + i + ")");
 
                 var p1 = document.createElement("p");
                 p1.id = "timetable-schedule-item-container-" + i;
                 p1.innerText = parseIntToTimeString(AnnouncementLibrary["scheduleItems"][i].from) + " - " +
-                    parseIntToTimeString(AnnouncementLibrary["scheduleItems"][i].to);
-
+					parseIntToTimeString(AnnouncementLibrary["scheduleItems"][i].to);
+				p1.className = "indent-06";
 
                 var p2 = document.createElement("p");
                 var reservationString = "0/" + window.AnnouncementLibrary["scheduleItems"][i].maxReservations;
@@ -661,6 +689,7 @@ function drawAnnouncementTimetable(timetableContainer) {
                         "/" + window.AnnouncementLibrary["scheduleItems"][i].maxReservations;
                 }
                 p2.innerText = "Current reservations: " + reservationString;
+				p2.className = "indent-06";
 
                 // Disable buttons out of time range.
                 var itemDate = new Date(AnnouncementLibrary["middleDate"].getTime());
@@ -692,9 +721,9 @@ function handleReservationsItemIncreaseButtonClick(reservationItemID, itemClicke
     // Calculate available reservations amount.
     if (window.AnnouncementLibrary["announcementTimetable"] == 1) {
         // For per day schedule.
-        if (window.RequestLibrary["getAnnouncementReservationsResponse"][itemClickedIndex] != null) {
-            availableReservations = window.AnnouncementLibrary["perDayReservations"] -
-                window.RequestLibrary["getAnnouncementReservationsResponse"][itemClickedIndex];
+		if (window.RequestLibrary["getAnnouncementReservationsResponse"].reservations[itemClickedIndex] != null) {
+			availableReservations = window.AnnouncementLibrary["perDayReservations"] -
+				window.RequestLibrary["getAnnouncementReservationsResponse"].reservations[itemClickedIndex];
         }
         else {
             availableReservations = window.AnnouncementLibrary["perDayReservations"];
@@ -702,9 +731,9 @@ function handleReservationsItemIncreaseButtonClick(reservationItemID, itemClicke
     }
     else if (window.AnnouncementLibrary["announcementTimetable"] == 2) {
         // For per hour schedule.
-        if (window.RequestLibrary["getAnnouncementReservationsResponse"][itemClickedIndex] != null) {
+		if (window.RequestLibrary["getAnnouncementReservationsResponse"].reservations[itemClickedIndex] != null) {
             availableReservations = window.AnnouncementLibrary["scheduleItems"][itemClickedIndex].maxReservations -
-                window.RequestLibrary["getAnnouncementReservationsResponse"][itemClickedIndex];
+				window.RequestLibrary["getAnnouncementReservationsResponse"].reservations[itemClickedIndex];
         }
         else {
             availableReservations = window.AnnouncementLibrary["scheduleItems"][itemClickedIndex].maxReservations;

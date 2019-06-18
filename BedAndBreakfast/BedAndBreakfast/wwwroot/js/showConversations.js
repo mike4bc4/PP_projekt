@@ -160,7 +160,7 @@ function getConversations(context, synchronizer) {
 function drawMessageCreator(conversationID, senderUserName) {
     var container = $('#' + MessageCreatorContainerId);
     container.empty();
-	html = '<textarea class="textarea-style-01 text-segue-16" oninput="handleMessageTextarea();" id="message-textarea" style="resize: none;" rows="6" \
+	html = '<textarea spellcheck="false" class="textarea-style-01 text-segue-16" oninput="handleMessageTextarea();" id="message-textarea" style="resize: none;" rows="6" \
     cols="100" data-valid="false"></textarea>';
 	html += '<span class="counter-style-01 text-segue-16" id="message-textarea-counter">Characters: 0/' + MaxConversationMessageLength + '</span>';
 	html += '<span class="counter-style-01 text-segue-16" id="message-textarea-error"></span>';
@@ -177,7 +177,7 @@ function drawMessagesList(messages, currentUserName) {
     }
     var index = 0;
     for (var message of messages) {
-		var className = 'message-style-01 text-segue-16';
+		var className = 'message-style-02 text-segue-16';
         // Use different style for messages from currently logged in user.
         if (message.senderUserName == currentUserName) {
 			className = 'message-style-01 text-segue-16';
@@ -209,7 +209,7 @@ function drawConversationsList(conversations, hidden = false) {
 	container.append("<p class='indent-02 text-segue-18' >" + headerString + "<p><hr />");
     container.append('<table class="text-segue-16 table-02" id="conversations-table"></table>');
     var html = '';
-	html += '<tr class="text-segue-14"><td class="table-td-style-01">Conversation title</td>';
+	html += '<tr class="text-segue-14 table-box-row-01 "><td class="table-td-style-01">Conversation title</td>';
 	html += '<td class="table-td-style-01">Announcement info</td>';
 	html += '<td class="table-td-style-01">Started date</td>';
 	html += '<td class="table-td-style-01">&nbsp</td>';
@@ -237,8 +237,8 @@ function drawConversationsList(conversations, hidden = false) {
             }
         }
 
-		html = '<tr class="table-row-style-01"><td>' + conversation.title + '</td>';
-        html += '<td>ID: ' + conversation.announcementID + scheduleItemsString + '</td>'
+		html = '<tr class="table-box-row-02"><td class="table-box-cell-07">' + conversation.title + '</td>';
+		html += '<td><a class="a-link-01" href="/Announcement/Announcement?announcementID=' + conversation.announcementID + '" > ID: ' + conversation.announcementID + scheduleItemsString + '</a></td>'
         html += '<td>' + dateStarted.toLocaleDateString() + ' ' + dateStarted.toLocaleTimeString() + '</td>';
 		html += '<td><button class="button-05 text-segue-14" onclick="handleShowMessagesButton(' + conversation.conversationID + ',' + conversation.readOnly + ');">Show</button></td>';
         if (hidden == false) {
