@@ -301,7 +301,8 @@ namespace BedAndBreakfast.Models.ServicesLogic
                     .Where(r => r.Announcement == announcement)
                     .Where(r => r.Date.Date == date.Date)
                     .GroupBy(r => r.ScheduleItem)
-                    .Select(grp => new { scheduleItemFromDate = grp.Key.From, reservations = grp.Count() });
+                    .Select(grp => new { scheduleItemFromDate = grp.Key.From, reservations = grp.Count() })
+                    .ToList();
                 int index = 0;
                 foreach (int from in scheduleItemsFromList)
                 {

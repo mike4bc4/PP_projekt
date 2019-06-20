@@ -19,10 +19,10 @@
 
         @if (User.IsInRole(Role.Admin))
         {
-            <div>
+            <p class="indent-01 text-segue-16">
                 Display locked pages
                 <input type="checkbox" name="isLocked" value="true" checked="@isLocked" />
-            </div>
+            </p>
         }
         else
         {

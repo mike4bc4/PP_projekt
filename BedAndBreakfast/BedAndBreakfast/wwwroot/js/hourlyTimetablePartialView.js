@@ -52,11 +52,13 @@ function reloadHourlyTimetable() {
         timetableDayContainer.innerText = timetableContext.middleDate.toLocaleDateString("en-US");
         // Mark day date if outside announcement active time range.
         if (timetableContext.middleDate.getTime() < timetableContext.from.getTime() ||
-            timetableContext.middleDate.getTime() > timetableContext.to.getTime()) {
-            timetableDayContainer.setAttribute("style", "background-color:lightgray;");
+			timetableContext.middleDate.getTime() > timetableContext.to.getTime()) {
+			timetableDayContainer.className = "indent-05-disabled";
+            //timetableDayContainer.setAttribute("style", "background-color:lightgray;");
         }
-        else {
-            timetableDayContainer.removeAttribute("style");
+		else {
+			timetableDayContainer.className = "indent-05";
+            //timetableDayContainer.removeAttribute("style");
         }
 
         var scheduleItemsContainer = document.getElementById("hourly-timetable-schedule-item-container");
@@ -82,9 +84,9 @@ function reloadHourlyTimetable() {
                 toDateString = "23:59";
             }
             // Fill new node with data.
-            newNode.getElementsByClassName("hourly-timetable-schedule-item-from")[0].innerText = scheduleItems[i].from + ":00";
-            newNode.getElementsByClassName("hourly-timetable-schedule-item-to")[0].innerText = toDateString;
-            newNode.getElementsByClassName("hourly-timetable-schedule-item-reservations")[0].innerText = reservationsString;
+            newNode.getElementsByClassName("hourly-timetable-schedule-item-from")[0].innerText = "From: " + scheduleItems[i].from + ":00";
+            newNode.getElementsByClassName("hourly-timetable-schedule-item-to")[0].innerText = "To: " + toDateString;
+            newNode.getElementsByClassName("hourly-timetable-schedule-item-reservations")[0].innerText = "Reservations: " + reservationsString;
             newNode.getElementsByTagName("button")[0].setAttribute("onclick", "handleDetailsButton(" + i + ");");
             // Append new node.
             scheduleItemsContainer.appendChild(newNode);

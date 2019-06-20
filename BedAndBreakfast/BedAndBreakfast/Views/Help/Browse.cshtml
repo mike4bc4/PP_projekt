@@ -15,8 +15,8 @@
 
         @if (User.IsInRole(Role.Admin))
         {
-            <a asp-controller="Administration" asp-action="AddHelpPage">
-                <div class=""> Add new help page.</div>
+            <a class="button-04 text-segue-14" asp-controller="Administration" asp-action="AddHelpPage">
+                Add new help page
             </a>
         }
 
@@ -31,7 +31,7 @@
                 <div class="help-page-preview-box">
                     @if (helpPage.IsLocked)
                     {
-                        <div class="">@helpPage.Title</div>
+                        <div class="label-box-11 text-segue-14">@helpPage.Title</div>
                     }
                     else
                     {
@@ -40,16 +40,16 @@
                         </a>
                     }
                     <div class="text-segue-16">
-                        <p>TODO: Get some short description form help page content.</p>
+                        <p>@(helpPage.Content.Substring(0,200) + "...")</p>
                     </div>
                     @*If administrator uses help browser he can edit pages.*@
                     @if (User.IsInRole(Role.Admin))
                     {
-                        <div class="">
-                            <a asp-controller="Administration" asp-action="EditHelpPage" asp-route-hPage="@helpPage.ID">
-                                Edit this help page
-                            </a>
-                        </div>
+                    <div class="block-04">
+                        <a class="button-11 text-segue-14" asp-controller="Administration" asp-action="EditHelpPage" asp-route-hPage="@helpPage.ID">
+                            Edit this help page
+                        </a>
+                    </div>
                     }
                 </div>
             }

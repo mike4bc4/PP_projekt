@@ -27,9 +27,9 @@ class ImageSwiper {
         newImageNode.style.opacity = 0;
         newImageNode.src = "data:image/png;base64," + window.ImageSwiperLibrary[imagesArrayName][currentImageIndex];
         // Position image asynchronously as it may have different size.
-        setTimeout(function () {
-            newImageNode.style.top = (buttonNode.parentNode.clientHeight - newImageNode.clientHeight) / 2 + "px";
-        }, 0);
+        //setTimeout(function () {
+        //    newImageNode.style.top = (buttonNode.parentNode.clientHeight - newImageNode.clientHeight) / 2 + "px";
+        //}, 0);
         Effects.OpacityFade(oldImageNode, 0.05, 0, uniqueID + "old", true);
         Effects.OpacityFade(newImageNode, 0.05, 1, uniqueID + "new");
     }
@@ -112,26 +112,29 @@ class ImageSwiper {
             swiperImage.style.position = "absolute";
             swiperImage.style.zIndex = 20;
             swiperImage.style.userSelect = "none";
-            swiperImage.style.opacity = 1;
-            // Position image asynchronously.
-            setTimeout(function () {
-                swiperImage.style.top = (height - swiperImage.clientHeight) / 2 + "px";
-            }, 0);
+			swiperImage.style.opacity = 1;
+			swiperImage.style.height = "100%";
+			// Position image asynchronously.
+
+            //setTimeout(function () {
+            //    swiperImage.style.top = (height - swiperImage.clientHeight) / 2 + "px";
+            //}, 0);
         }
         else {
             // Setup style for no image display.
             swiperBox.style.boxSizing = "border-box";
-            swiperBox.style.position = "auto";
-            swiperBox.style.display = "auto";
+            // swiperBox.style.display = "auto";
             swiperBox.style.fontFamily = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
-            swiperBox.style.display = "inline-block";
+           //  swiperBox.style.display = "inline-block";
             swiperBox.style.backgroundColor = "rgb(10, 10, 10)";
             swiperBox.style.textAlign = "center";
             swiperBox.style.fontSize = "36px";
             swiperBox.style.paddingTop = height / 2 - 30 + "px";
-            swiperBox.style.color = "white";
+			swiperBox.style.color = "white";
+			swiperBox.style.marginLeft = "auto";
+			swiperBox.style.marginRight = "auto";
 
-            swiperBox.className = "image-swiper-no-image-class";
+            // swiperBox.className = "image-swiper-no-image-class";
 			swiperBox.innerText = "No image";
         }
         container.appendChild(swiperBox);

@@ -110,18 +110,20 @@
 
 <div>
     <!-- By default this item is hidden (only while announcement is being edited it should be visible) -->
-    <table id="images-preview-table" hidden>
-        <tr>
-            <!-- Content of container below is being copied -->
-            <td id="image-preview-prototype" hidden>
-                <label></label>
-                <br />
-                <img style="width: 300px;" />
-                <br />
-                <button onclick="handlePreviewImageRemoval(this);">Remove</button>
-            </td>
-        </tr>
-    </table>
+    <div class="block-03">
+        <table id="images-preview-table" hidden>
+            <tr>
+                <!-- Content of container below is being copied -->
+                <td class="table-box-cell-09" id="image-preview-prototype" hidden>
+                    <label class="text-segue-16"></label>
+                    <br />
+                    <img class="image-preview-01" style="width: 300px;" />
+                    <br />
+                    <button class="button-05 text-segue-14" onclick="handlePreviewImageRemoval(this);">Remove</button>
+                </td>
+            </tr>
+        </table>
+    </div>
     <div id="images-container" class="images-container-01">
         <!-- Content of container below is being cloned -->
         <div>
@@ -190,28 +192,28 @@
 <hr />
 
 <div>
-    <label>Timetable options:</label>
+    <label class="label-box-01 text-segue-16">Timetable options:</label>
     <select class="input-box-02 text-segue-16" onchange="handleTimetableVisibility();" id="timetable-drop-down-list">
         @for (int i = 0; i < timetableOptions.Count(); i++)
         {
             <option value="@i">@timetableOptions[i]</option>
         }
     </select>
-    <div id="per-day-timetable-container">
-        <label>Reservations: </label>
-        <input onchange="handleTimetableValidation();" type="text" value="10" />
+    <div class="block-01" id="per-day-timetable-container">
+        <label class="label-box-01 text-segue-16" >Reservations: </label>
+        <input class="input-box-02 text-segue-16" onchange="handleTimetableValidation();" type="text" value="10" />
     </div>
     <div id="per-hour-timetable-container">
-        <div id="schedule-item-container">
-            <label>Form: </label>
-            <input onchange="addTimeTableInput(this, 12); handleTimetableValidation();" type="time" />
-            <label>To: </label>
-            <input onchange="addTimeTableInput(this, 12); handleTimetableValidation();" type="time" />
-            <label>Reservations: </label>
-            <input onchange="addTimeTableInput(this, 12); handleTimetableValidation();" type="text" />
+        <div class="block-01" id="schedule-item-container">
+            <label class="label-box-09 text-segue-16">Form: </label>
+            <input class="input-box-04 text-segue-16" onchange="addTimeTableInput(this, 12); handleTimetableValidation();" type="time" />
+            <label class="label-box-09 text-segue-16">To: </label>
+            <input class="input-box-04 text-segue-16" onchange="addTimeTableInput(this, 12); handleTimetableValidation();" type="time" />
+            <label class="label-box-09 text-segue-16">Reservations: </label>
+            <input class="input-box-04 text-segue-16" onchange="addTimeTableInput(this, 12); handleTimetableValidation();" type="text" />
         </div>
     </div>
-    <span id="timetable-error-span" data-valid="false"></span>
+    <span class="error-span-label-box-01 text-segue-16" id="timetable-error-span" data-valid="false"></span>
 </div>
 
 <div>

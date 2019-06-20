@@ -9,57 +9,49 @@
         handleSearchClicked();
     }
 </script>
-<style>
-    .user-select-box {
-        border: 1px solid black;
-        margin: 3px;
-        padding: 3px;
-    }
-
-        .user-select-box:hover {
-            background-color: lightgray;
-            cursor: pointer;
-        }
-
-
-</style>
 
 
 
-<div id="edit_ann_create">
-    <div id="edit_head_text" style="margin-top: 20px; margin-bottom: 20px">Create Conversation</div>
+<div style="text-align: center;">
+    <div class="view-box-03">
+        <p class="indent-01 text-segue-18">Conversation creator</p>
+        <hr />
 
-    <div id="global-message-container"  class="edit_expl"></div>
-    <table>
-        <tr>
-            <td style="width: 300px;">
-                <div style="margin-top: 42px;" class="edit_expl">Receivers</div>
-                <div id="receivers-list-container" style="height: 300px; border: 1px solid black; overflow-x: hidden; overflow-y: auto;"></div>
-            </td>
-            <td style="width: 300px;">
-                <input id="search-query-input-field" class="create_bar_con2" type="text" />
-                <button class="my_button" id="save_button" onclick="handleSearchClicked();">Search</button>
-                <div style="clear:both;"></div>
+        <div id="global-message-container" class="error-span-label-box-01 text-segue-16"></div>
+        <table class="table-box-05">
+            <tr>
+                <td class="table-box-cell-10">
+                    <p class="indent-07 text-segue-16">Receivers</p>
 
-                <div class="edit_expl">Receivers browser</div>
-                <div id="users-list-container" style="height: 300px; border: 1px solid black; overflow-x: hidden; overflow-y: auto;"></div>
-            </td>
-        </tr>
-        <tr>
-            <td id="message-creator-container" colspan="2">
-                <label class="edit_expl">Conversation title</label>
-                <br />
-                <input id="title-input-field" type="text" size="50" />
-                <br />
-                <label class="edit_expl">Message contnet</label>
-                <br />
-                <textarea id="message-textarea" style="resize: none;" rows="6" cols="100" data-valid="false"></textarea>
-                <br />
-                <label class="edit_expl">Message read only</label>
-                <input id="readonly-checkbox" type="checkbox" checked>
-                <br />
-                <button class="my_button" id="save_button" onclick="handleSendClicked();">Send</button>
-            </td>
-        </tr>
-    </table>
+                    <div class="block-06" id="receivers-list-container"></div>
+                </td>
+                <td class="table-box-cell-10">
+
+                    <p class="indent-07 text-segue-16">Receivers browser</p>
+                    <div class="block-01">
+                        <input class="input-box-02 text-segue-16" id="search-query-input-field" type="text" />
+                        <button class="button-12 text-segue-14" onclick="handleSearchClicked();">Search</button>
+                    </div>
+                    <div class="block-06" id="users-list-container"></div>
+                </td>
+            </tr>
+            <tr>
+                <td id="message-creator-container" style="text-align:left;" colspan="2">
+                    <div class="block-01">
+                        <label class="label-box-01 text-segue-16">Conversation title: </label>
+                        <input class="input-box-02 text-segue-16" id="title-input-field" type="text" size="50" />
+                    </div>
+                    <div class="block-01">
+                        <label class="label-box-01 text-segue-16">Message content: </label>
+                    </div>
+                    <textarea class="textarea-style-01 text-segue-16" spellcheck="false" id="message-textarea"></textarea>
+                    <div class="block-01">
+                        <label class="label-box-01 text-segue-16">Message read only: </label>
+                        <input id="readonly-checkbox" type="checkbox" checked>
+                    </div>
+                    <button class="text-segue-14 button-01" onclick="handleSendClicked();">Send</button>
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>

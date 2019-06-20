@@ -125,8 +125,8 @@ function handleUserClicked(user) {
         return;
     }
 
-    // Change style attribute to display as selected.
-    userClickedBox.setAttribute("style", "background-color: gray;");
+	// Change style attribute to display as selected.
+	userClickedBox.className = "block-05-disabled text-segue-16";
     userClickedBox.setAttribute("data-selected", "true");
     drawReceiver(user);
 }
@@ -137,8 +137,8 @@ function handleReceiverClicked(userName) {
     receiver.remove();
     // Recover user from users tab.
     var user = document.getElementById("user-" + userName);
-    // Change item style to mark as not selected.
-    user.setAttribute("style", "background-color: white;");
+	// Change item style to mark as not selected.
+	user.className = "block-05 text-segue-16";
     user.setAttribute("data-selected", "false");
 }
 
@@ -168,7 +168,7 @@ function drawReceiver(user) {
     if (user.isLocked == true) {
         lockedString == 'Locked';
     }
-    container.append('<div id="receiver-' + user.userName + '" class="user-select-box" onclick="handleReceiverClicked(\'' + user.userName + '\');">' +
+	container.append('<div class="block-05 text-segue-16" id="receiver-' + user.userName + '" class="user-select-box" onclick="handleReceiverClicked(\'' + user.userName + '\');">' +
         user.userName + ' ' + user.firstName + ' ' + user.lastName + ' ' + lockedString + '</div>');
 }
 
@@ -180,15 +180,15 @@ function drawUsers(users) {
         if (user.isLocked == true) {
             lockedString == 'Locked';
         }
-        container.append("<div id='user-" + user.userName + "' onclick='handleUserClicked(" + JSON.stringify(user) + ");' \
+		container.append("<div class='block-05 text-segue-16' id='user-" + user.userName + "' onclick='handleUserClicked(" + JSON.stringify(user) + ");' \
         class='user-select-box' data-selected='false'>"+ user.userName + " " + user.firstName + " " + user.lastName +
             " " + lockedString + "</div>");
         var receiver = document.getElementById("receiver-" + user.userName);
         if (receiver != null) {
             // Drawn user already in receivers box.
             // Mark it as clicked.
-            var addedUser = document.getElementById("user-" + user.userName);
-            addedUser.setAttribute("style", "background-color:gray;");
+			var addedUser = document.getElementById("user-" + user.userName);
+			addedUser.className = "block-05-disabled text-segue-16";
             addedUser.setAttribute("data-selected", "true");
         }
     }

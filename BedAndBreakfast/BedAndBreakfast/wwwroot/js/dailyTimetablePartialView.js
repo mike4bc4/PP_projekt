@@ -303,10 +303,12 @@ function drawDailyTimetableContent() {
         // Mark date if it is not in announcement active time range.
         if (timetableWeekDates[i].getTime() < timetableContext.from.getTime() ||
             timetableWeekDates[i].getTime() > timetableContext.to.getTime()) {
-            timetableDayDateContainers[i].setAttribute("style", "background-color:lightgray;");
+            //timetableDayDateContainers[i].setAttribute("style", "background-color:lightgray;");
+			timetableDayDateContainers[i].className = "indent-05-disabled";
         }
-        else {
-            timetableDayDateContainers[i].removeAttribute("style");
+		else {
+			timetableDayDateContainers[i].className = "indent-05";
+            //timetableDayDateContainers[i].removeAttribute("style");
         }
         timetableDayDateContainers[i].innerText = timetableWeekDates[i].toLocaleDateString("en-US");
     }
@@ -317,9 +319,9 @@ function drawDailyTimetableContent() {
     }
     // Fill reservations containers.
     for (var i = 0; i < reservationsContainers.length; i++) {
-        var reservationsString = "0/" + maxReservations;
+        var reservationsString = "Reservations: 0/" + maxReservations;
         if (reservations[i] != null) {
-            reservationsString = reservations[i] + "/" + maxReservations;
+			reservationsString = "Reservations: " + reservations[i] + "/" + maxReservations;
         }
         reservationsContainers[i].innerText = reservationsString;
     }

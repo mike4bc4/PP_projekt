@@ -238,8 +238,13 @@ function drawConversationsList(conversations, hidden = false) {
         }
 
 		html = '<tr class="table-box-row-02"><td class="table-box-cell-07">' + conversation.title + '</td>';
-		html += '<td><a class="a-link-01" href="/Announcement/Announcement?announcementID=' + conversation.announcementID + '" > ID: ' + conversation.announcementID + scheduleItemsString + '</a></td>'
-        html += '<td>' + dateStarted.toLocaleDateString() + ' ' + dateStarted.toLocaleTimeString() + '</td>';
+		if (conversation.announcementID != null) {
+			html += '<td><a class="a-link-01" href="/Announcement/Announcement?announcementID=' + conversation.announcementID + '" >' + conversation.announcementID + scheduleItemsString + '</a></td>'
+		}
+		else {
+			html += '<td>None</td>'
+		}
+		html += '<td>' + dateStarted.toLocaleDateString() + ' ' + dateStarted.toLocaleTimeString() + '</td>';
 		html += '<td><button class="button-05 text-segue-14" onclick="handleShowMessagesButton(' + conversation.conversationID + ',' + conversation.readOnly + ');">Show</button></td>';
         if (hidden == false) {
 			html += '<td><button class="button-05 text-segue-14" onclick="handleHideRevertConversationButton(' + conversation.conversationID + ', true);">Hide</button></td></tr>';

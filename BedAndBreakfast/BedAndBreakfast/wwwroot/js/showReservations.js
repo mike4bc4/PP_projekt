@@ -43,7 +43,7 @@ function drawMakeReservationsResponse(reservations) {
         var reservationDate = new Date(reservation.date);
         var todayDate = new Date();
         todayDate.setHours(0, 0, 0, 0);
-		var html = '<tr class="table-box-row-02"><td class="table-box-cell-07"><a class="a-link-01" href="/Announcement/Announcement?announcementID=' + reservation.announcementID+'" >ID: ' + reservation.announcementID + '</a></td>';
+		var html = '<tr class="table-box-row-02"><td class="table-box-cell-07"><a class="a-link-01" href="/Announcement/Announcement?announcementID=' + reservation.announcementID+'" >' + reservation.announcementID + '</a></td>';
 		html += '<td>' + getAnnouncementTypes()[reservation.announcementType] + '</td>';
         switch (reservation.announcementType) {
             case 0:     // House

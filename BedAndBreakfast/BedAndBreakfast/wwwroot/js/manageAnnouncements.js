@@ -238,9 +238,14 @@ function handleAnnouncementEditButton(announcementID) {
 			imagesPreviewTableRow.appendChild(newNode);
 		}
 
-		// Change amount of available image inputs.
+		// Change amount of available image inputs/
 		var imageInputsContainer = document.getElementById("images-container");
+		if (5 - announcement.images.length < 1) {
+			// Hide images input container if no images can be added.
+			imageInputsContainer.hidden = true;
+		}
 		imageInputsContainer.children[0].getElementsByTagName("input")[0].setAttribute("onchange", "addInput(this, " + (5 - announcement.images.length) + ",'images-container');");
+
 	}
 
 	var container = document.getElementById("manage-announcements-view-container");
@@ -430,7 +435,7 @@ function drawUserAnnouncements(userAnnouncements) {
 	for (var announcement of userAnnouncements) {
 		container.innerHTML += "<tr class='table-box-row-02'>\
         <td class='table-box-cell-07'><input onclick='handleSelectAnnouncementCheckbox();' type='checkbox' id='announcement-selected-"+ announcement.announcementID + "'/></td>\
-        <td>"+ announcement.announcementID + "</td>\
+        <td><a class='a-link-01' href='/Announcement/Announcement?announcementID=" + announcement.announcementID + "'>"+ announcement.announcementID + "</a></td>\
         <td>"+ announcementTypeToString(announcement.type) + "</td>\
         <td>"+ announcementSubtypeToString(announcement.type, announcement.subtype) + "</td>\
         <td>"+ announcementSharedPartToString(announcement.type, announcement.sharedPart) + "</td>\

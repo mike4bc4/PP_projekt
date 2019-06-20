@@ -10,7 +10,7 @@ td {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 16px;
     color: rgb(50, 50, 50);
-    font-weight: 500;
+    font-weight: 600;
 }
 
     .a-link-01:visited {
@@ -27,7 +27,7 @@ td {
 .text-segue-14 {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     color: rgb(50, 50, 50);
     text-decoration: none;
 }
@@ -44,6 +44,7 @@ hr {
     display: block;
     box-sizing: border-box;
     width: 100%;
+    border: none;
     border-top: 1px solid rgb(255, 70, 50);
 }
 
@@ -160,6 +161,14 @@ hr {
     text-align: center;
     border-bottom: 1px solid rgba(255, 70, 50, 1);
 }
+
+.indent-07 {
+    margin: 0px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(255, 70, 50, 1);
+}
+
 
 .button-01 {
     -webkit-transition: all 0.20s ease-in-out;
@@ -384,6 +393,63 @@ hr {
         cursor: pointer;
     }
 
+    .button-10:visited {
+        outline: none;
+    }
+
+.button-11 {
+    -webkit-transition: all 0.20s ease-in-out;
+    -moz-transition: all 0.20s ease-in-out;
+    -ms-transition: all 0.20s ease-in-out;
+    -o-transition: all 0.20s ease-in-out;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    width: auto;
+    box-sizing: border-box;
+    height: 40px;
+    text-align: center;
+    padding: 15px;
+    padding-top: 8px;
+    border: 1px solid rgb(255, 70, 50);
+    border-radius: 4px;
+    background-color: white;
+}
+
+    .button-11:hover {
+        background-color: rgb(255, 110, 90);
+        color: white;
+        cursor: pointer;
+    }
+
+
+.button-12 {
+    -webkit-transition: all 0.20s ease-in-out;
+    -moz-transition: all 0.20s ease-in-out;
+    -ms-transition: all 0.20s ease-in-out;
+    -o-transition: all 0.20s ease-in-out;
+    display: inline-block;
+    height: 45px;
+    border: 1px solid rgb(255, 70, 50);
+    background-color: rgba(255, 70, 50, 0.25);
+    border-radius: 4px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+}
+
+    .button-12:hover {
+        background-color: rgb(255, 110, 90);
+        color: white;
+        cursor: pointer;
+    }
+
+    .button-12:disabled {
+        cursor: default;
+        background-color: rgba(100, 100, 100, 0.25);
+        color: rgb(100,100,100);
+    }
+
 .browser-box {
     left: 200px;
     top: 100px;
@@ -449,13 +515,31 @@ hr {
         box-shadow: rgba(255, 70, 50, 1) 0px 0px 5px;
     }
 
+.input-box-04 {
+    text-align: center;
+    box-sizing: border-box;
+    display: inline-block;
+    width: 100px;
+    height: 45px;
+    border: 1px solid rgb(255, 70, 50);
+    border-radius: 4px;
+    padding: 3px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+    .input-box-04:focus {
+        outline: none;
+        box-shadow: rgba(255, 70, 50, 1) 0px 0px 5px;
+    }
+
 .view-box-01 {
     position: relative;
     padding: 40px;
     box-sizing: border-box;
     /*margin-right: 400px;
     margin-left: 400px;*/
-    margin-top: 50px;
+    margin-top: 40px;
     padding-bottom: 100px;
     display: inline-block;
     width: calc(100% - 800px);
@@ -469,7 +553,7 @@ hr {
     position: relative;
     padding: 40px;
     box-sizing: border-box;
-    margin-top: 50px;
+    margin-top: 40px;
     padding-bottom: 100px;
     display: inline-block;
     width: calc(100% - 200px);
@@ -483,7 +567,7 @@ hr {
     position: relative;
     padding: 40px;
     box-sizing: border-box;
-    margin-top: 50px;
+    margin-top: 40px;
     padding-bottom: 100px;
     display: inline-block;
     width: calc(100% - 400px);
@@ -550,6 +634,33 @@ hr {
     margin-bottom: 10px;
 }
 
+.label-box-09 {
+    display: inline-block;
+    width: auto;
+    margin: 10px;
+}
+
+.label-box-10 {
+    text-align: left;
+    display: block;
+    width: 80px;
+    margin: 10px;
+    margin-left: 0px;
+}
+
+.label-box-11 {
+    box-sizing: border-box;
+    display: block;
+    padding: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 30px;
+    border: none;
+    border-bottom: 1px solid rgb(255, 70, 50);
+    background-color: rgba(100, 100, 100, 0.25);
+}
+
+
 
 
 .default-block-01 {
@@ -585,10 +696,6 @@ hr {
 .table-03 {
     border-collapse: collapse;
     display: inline-block;
-}
-
-.table-04 {
-    width: 100%;
 }
 
 
@@ -721,7 +828,7 @@ hr {
     margin-right: 10px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     color: rgb(50, 50, 50);
     text-decoration: none;
     text-align: center;
@@ -765,6 +872,19 @@ hr {
     margin-right: auto;
 }
 
+.table-box-04 {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0px 10px;
+}
+
+.table-box-05 {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 20px 20px;
+}
+
+
 .table-box-row-01 > td {
 }
 
@@ -773,6 +893,11 @@ hr {
     padding-left: 10px;
     box-sizing: border-box;
 }
+
+.table-box-row-03 {
+    background-color: rgba(200, 200, 200, 0.2);
+}
+
 
 .table-box-cell-01 {
     margin: 0;
@@ -813,6 +938,23 @@ hr {
 
 .table-box-cell-08 {
     width: 20%;
+}
+
+.table-box-cell-09 {
+    padding: 0px;
+    padding-right: 5px;
+    padding-bottom: 10px;
+}
+
+.table-box-cell-10 {
+    vertical-align: top;
+    padding: 15px;
+    width: 50%;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: rgba(0,0,0,0.5) 0 0 10px;
+    height: 400px;
+    box-sizing: border-box;
 }
 
 .announcement-preview-images-container {
@@ -1046,6 +1188,63 @@ hr {
     left: 214px;
 }
 
+.block-03 {
+    overflow-y: hidden;
+    overflow-x: auto;
+    margin-bottom: 10px;
+}
+
+.block-04 {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 40px;
+}
+
+.block-05 {
+    -webkit-transition: all 0.20s ease-in-out;
+    -moz-transition: all 0.20s ease-in-out;
+    -ms-transition: all 0.20s ease-in-out;
+    -o-transition: all 0.20s ease-in-out;
+    display: block;
+    width: 100%;
+    margin-bottom: 5px;
+    background-color: rgba(200, 200, 200, 0.2);
+    border-left: 2px solid rgb(255, 70, 50);
+    box-sizing: border-box;
+    padding: 10px;
+    text-align: left;
+}
+
+    .block-05:hover {
+        background-color: rgba(50, 50, 50, 0.25);
+        color: rgb(50,50,50);
+    }
+
+.block-06 {
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: block;
+    height: 100%;
+}
+
+
+.block-05-disabled {
+    -webkit-transition: all 0.20s ease-in-out;
+    -moz-transition: all 0.20s ease-in-out;
+    -ms-transition: all 0.20s ease-in-out;
+    -o-transition: all 0.20s ease-in-out;
+    display: block;
+    width: 100%;
+    margin-bottom: 5px;
+    border-left: 2px solid rgb(255, 70, 50);
+    box-sizing: border-box;
+    padding: 10px;
+    text-align: left;
+    background-color: rgba(255, 70, 50, 0.66);
+    color: white;
+}
+
 .image-input-box-01 {
     text-align: center;
     -webkit-transition: all 0.20s ease-in-out;
@@ -1087,4 +1286,51 @@ hr {
 
 input[type="file"] {
     display: none;
+}
+
+.image-preview-01 {
+    border-radius: 4px;
+    max-height: 150px;
+    margin-bottom: 5px;
+}
+
+
+.details-item-username {
+    font-weight: 600;
+}
+
+.details-item-first-name {
+    font-weight: 600;
+}
+
+.details-item-last-name {
+    font-weight: 600;
+}
+
+
+.hourly-timetable-schedule-item-from {
+    margin: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 5px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 70, 50, 1);
+}
+
+.hourly-timetable-schedule-item-to {
+    margin: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 5px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 70, 50, 1);
+}
+
+.hourly-timetable-schedule-item-reservations {
+    margin: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 5px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 70, 50, 1);
 }

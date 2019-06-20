@@ -25,15 +25,18 @@ function saveAnnouncement(context, requestSynchronizer) {
  */
 function handlePreviewImageRemoval(buttonNode) {
     // Update maximum amount of inputs for images.
-    var imagesContainer = document.getElementById("images-container");
+	var imagesContainer = document.getElementById("images-container");
+	// Make images container visible if hidde.
+	imagesContainer.hidden = false;
+
     var currentImageInputMax = imagesContainer.children[0].getElementsByTagName("input")[0].getAttribute("onchange");
     currentImageInputMax = currentImageInputMax.split(",")[1];
     currentImageInputMax = parseInt(currentImageInputMax.split(")")[0]);
     for (var i = 0; i < imagesContainer.children.length; i++) {
-        imagesContainer.children[i].getElementsByTagName("input")[0].setAttribute("onchange", "addInput(this," + (currentImageInputMax + 1) + ");");
+        imagesContainer.children[i].getElementsByTagName("input")[0].setAttribute("onchange", "addInput(this," + (currentImageInputMax + 1) + ",\"images-container\");");
     }
     // Call add input to add new empty image slot if possible.
-    addInput(imagesContainer.children[imagesContainer.children.length - 1].getElementsByTagName("input")[0], currentImageInputMax + 1);
+	addInput(imagesContainer.children[imagesContainer.children.length - 1].getElementsByTagName("input")[0], currentImageInputMax + 1,"images-container");
 
     // Remove image node.
     var imagePreviewTable = document.getElementById("images-preview-table");
@@ -615,7 +618,8 @@ function addTimeTableInput(item, maxInputCount) {
 
     // Add empty input at the end if possible.
     if (items.length < maxInputCount) {
-        var newItem = document.createElement("div");
+		var newItem = document.createElement("div");
+		newItem.className = itemClone.className;
         container.appendChild(newItem);
         newItem.innerHTML = itemInnerHTML;
     }
@@ -686,17 +690,36 @@ function handleTimetableVisibility() {
     var perDayReservationsNode = document.getElementById("per-day-timetable-container");
     var perHourReservationsNode = document.getElementById("per-hour-timetable-container");
     switch (parseInt(timetableOptionsNode.value)) {
-        case 0:
-            perDayReservationsNode.hidden = true;
-            perHourReservationsNode.hidden = true;
+		case 0:
+
+			perDayReservationsNode.style.visibility = "hidden";
+			perHourReservationsNode.style.visibility = "hidden";
+
+			perDayReservationsNode.style.position = "static";
+			perHourReservationsNode.style.position = "static";
+
+            //perDayReservationsNode.hidden = true;
+            //perHourReservationsNode.hidden = true;
             break;
-        case 1:
-            perDayReservationsNode.hidden = false;
-            perHourReservationsNode.hidden = true;
+		case 1:
+			perDayReservationsNode.style.visibility = "visible";
+			perHourReservationsNode.style.visibility = "hidden";
+
+			perDayReservationsNode.style.position = "static";
+			perHourReservationsNode.style.position = "absolute";
+
+            //perDayReservationsNode.hidden = false;
+            //perHourReservationsNode.hidden = true;
             break;
-        case 2:
-            perDayReservationsNode.hidden = true;
-            perHourReservationsNode.hidden = false;
+		case 2:
+			perDayReservationsNode.style.visibility = "hidden";
+			perHourReservationsNode.style.visibility = "visible";
+
+			perDayReservationsNode.style.position = "absolute";
+			perHourReservationsNode.style.position = "static";
+
+            //perDayReservationsNode.hidden = true;
+            //perHourReservationsNode.hidden = false;
             break;
     }
     // Perform validation to correct error span value.

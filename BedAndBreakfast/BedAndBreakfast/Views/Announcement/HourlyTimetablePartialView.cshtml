@@ -3,37 +3,32 @@
     ViewData["Title"] = "HourlyTimetablePartialView";
 }
 
-<div>
-    Timetable:
-</div>
-<table border="1">
+
+<table class="table-box-03 text-segue-16">
     <tr>
-        <td rowspan="2"><button onclick="handlePreviousDayButton();">Previous day</button></td>
+        <td rowspan="2"><button class="button-07 text-segue-14" onclick="handlePreviousDayButton();"><</button></td>
         <td>
-            <div id="hourly-timetable-day-container"></div>
+            <div class="indent-05" id="hourly-timetable-day-container"></div>
         </td>
-        <td rowspan="2"><button onclick="handleNextDayButton();">Next day</button></td>
+        <td rowspan="2"><button class="button-07 text-segue-14" onclick="handleNextDayButton();">></button></td>
     </tr>
     <tr>
         <td>
-            <table id="hourly-timetable-schedule-item-container" border="1">
+            <table class="table-box-04" id="hourly-timetable-schedule-item-container">
                 <tr id="hourly-timetable-schedule-item-prototype" hidden>
-                    <td><label>From: </label><div class="hourly-timetable-schedule-item-from"></div></td>
-                    <td><label>To: </label><div class="hourly-timetable-schedule-item-to"></div></td>
-                    <td><label>Reservations: </label><div class="hourly-timetable-schedule-item-reservations"></div></td>
-                    <td><button onclick="handleDetailsButton();">Details</button></td>
+                    <td><p class="hourly-timetable-schedule-item-from"></p></td>
+                    <td><p class="hourly-timetable-schedule-item-to"></p></td>
+                    <td><p class="hourly-timetable-schedule-item-reservations"></p></td>
+                    <td><button class="text-segue-14 button-08" onclick="handleDetailsButton();">Details</button></td>
                 </tr>
             </table>
         </td>
     </tr>
 </table>
-<div>
-    Details
-</div>
 
-<table id="details-items-container" border="1">
-    <tr id="details-item-prototype" hidden>
-        <td>
+<table class="text-segue-16 table-02" id="details-items-container">
+    <tr class="table-box-row-03" id="details-item-prototype" hidden>
+        <td class="table-box-cell-07">
             <label>Username: </label>
             <div class="details-item-username"></div>
         </td>
@@ -47,16 +42,16 @@
         </td>
         <td>
             <label>Reservations: </label>
-            <input type="text" />
+            <input class="input-box-03 text-segue-16" type="text" />
         </td>
         <td>
-            <button onclick="handleReservationsUpdate();">Update</button>
+            <button class="button-05 text-segue-14" onclick="handleReservationsUpdate();">Update</button>
         </td>
         <td>
-            <span></span>
+            <span class="error-span-label-box-01 text-segue-16"></span>
         </td>
     </tr>
 </table>
-<div id="details-message-container">
+<div class="error-span-label-box-01 text-segue-16" id="details-message-container">
     Click one of timetable buttons to display details.
 </div>

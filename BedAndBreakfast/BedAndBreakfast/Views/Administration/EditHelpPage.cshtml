@@ -7,45 +7,35 @@
     string helpTags = (string)ViewData["pageTags"];
 }
 
-<div id="browse_div">
-    <div class="edit_expl" id="edit_head_text">Edit help page</div>
+<div style="text-align:center;">
+    <div class="view-box-01 text-segue-16">
+        <p class="indent-01 text-segue-18">Help page editor</p>
+        <hr />
 
-    <h4>@ViewBag.Message</h4>
+        <p class="error-span-label-box-01">@ViewBag.Message</p>
 
-    <form asp-action="EditHelpPage" method="post">
-        <input type="hidden" name="hPage" value="@helpPage.ID" />
-        <input asp-for="WasEdited" value="true" type="hidden" />
-        <div>
+        <form asp-action="EditHelpPage" method="post">
+            <input type="hidden" name="hPage" value="@helpPage.ID" />
+            <input asp-for="WasEdited" value="true" type="hidden" />
+
+            <div class="block-01">
+                <label class="label-box-10">Tags: </label>
+                <input class="input-box-01 text-segue-16" asp-for="Tags" value="@helpTags" />
+            </div>
+            <div class="block-01">
+                <label class="label-box-10">Title: </label>
+                <input class="input-box-01 text-segue-16" asp-for="Title" value="@helpPage.Title" />
+            </div>
+
             <div>
-                <label asp-for="IsLocked" class="edit_box_bar_ed"></label>
+                <label class="label-box-10">Content: </label>
+                @Html.TextArea("Content", helpPage.Content, new { rows = 25, cols = 50, @class = "textarea-style-02 text-segue-16", @spellcheck = "false" })
             </div>
-            <input asp-for="IsLocked" style=" margin-top: 30px;  margin-left: 120px;" value="true" checked="@helpPage.IsLocked" />
-            <div style="clear:both;"></div>
-        </div>
-        <div>
-            <label asp-for="Tags" class="edit_box_bar_ed"></label>
-            <input asp-for="Tags" class="create_bar_con" value="@helpTags" style="width: 300px;" />
-            <span asp-validation-for="Tags" class="create_text_danger"></span>
-            <div style="clear:both;"></div>
-        </div>
-        <div>
-            <label asp-for="Title" class="edit_box_bar_ed"></label>
-            <input asp-for="Title" class="create_bar_con" value="@helpPage.Title" style="width: 300px;" />
-            <div style="clear:both;"></div>
-        </div>
-
-        <div>
-            <label asp-for="Content" class="edit_box_bar_ed"></label>
-            <div style="clear:both;"></div>
-            <div style="margin-top:15px; margin-left:20px">
-                @Html.TextArea("Content", helpPage.Content, new { rows = 25, cols = 50 });
-                <div style="clear:both;"></div>
+            <div class="block-01">
+                <label asp-for="IsLocked"></label>
+                <input asp-for="IsLocked" value="true" checked="@helpPage.IsLocked" />
             </div>
-            <div>
-                <input type="submit" class="my_button" id="save_button" value="Save" />
-                <div style="clear:both;"></div>
-            </div>
-        </div>
-    </form>
-
+            <input class="button-01 text-segue-14" type="submit" value="Save" />
+        </form>
+    </div>
 </div>
