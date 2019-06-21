@@ -6,66 +6,64 @@
     ViewData["currentUser"] = Model.UserName;
 }
 
-
-<h4>@ViewBag.Message</h4>
-
-<div id="edit_ann_div">
-    <div id="edit_head_text" style="margin-top: 20px; margin-bottom: 20px">Edit user</div>
-    <div class="row">
-
-        <label asp-for="UserName" class="edit_box_bar_ed"></label>
-        <input asp-for="UserName" class="create_bar_con" readonly />
-        <div style="clear:both;"></div>
-    </div>
-    <div>
-        <label asp-for="FirstName" class="edit_box_bar_ed"></label>
-        <input asp-for="FirstName" class="create_bar_con" readonly />
-        <div style="clear:both;"></div>
-    </div>
-    <div>
-        <label asp-for="LastName" class="edit_box_bar_ed"></label>
-        <input asp-for="LastName" class="create_bar_con" readonly />
-        <div style="clear:both;"></div>
-    </div>
-    <div>
-        <label asp-for="Gender" class="edit_box_bar_ed"></label>
-        <input asp-for="Gender" class="create_bar_con" readonly />
-        <div style="clear:both;"></div>
-    </div>
-    <div>
-        <label asp-for="BirthDate" class="edit_box_bar_ed"></label>
-        <input asp-for="BirthDate" class="create_bar_con" readonly />
-        <div style="clear:both;"></div>
-    </div>
-    <div>
-        <label asp-for="FullAddress" class="edit_box_bar_ed"></label>
-        <input asp-for="FullAddress" class="create_bar_con" readonly />
-        <div style="clear:both;"></div>
-    </div>
-    <div>
-        <label asp-for="BackupEmail" class="edit_box_bar_ed"></label>
-        <input asp-for="BackupEmail" class="create_bar_con" readonly />
-        <div style="clear:both;"></div>
-    </div>
-    <div>
-        <label asp-for="IsLocked" class="edit_box_bar_ed"></label>
-        <input asp-for="IsLocked" style="margin-top: 30px; margin-left: 12px;" disabled />
-        <div style="clear:both;"></div>
-    </div>
+<div style="text-align:center;">
 
 
 
-<a asp-action="EditUser" class="edit_expl" asp-route-user="@Model.UserName" asp-route-option="Username">Change Username</a>
-<a asp-action="EditUser" class="edit_expl" asp-route-user="@Model.UserName" asp-route-option="Security">Change Password</a>
-<a asp-action="EditUser" class="edit_expl" asp-route-user="@Model.UserName" asp-route-option="Status">Change Status</a>
+	<div class="view-box-01">
+		<p class="indent-01 text-segue-18">Edit user</p>
+		<hr />
+		<p class="error-span-label-box-01 text-segue-16">@ViewBag.Message</p>
+		<table style="text-align:left;">
+			<tr>
+				<td><label class="label-box-07 text-segue-16">Username</label></td>
+				<td><input asp-for="UserName" class="input-box-02 text-segue-16" readonly /></td>
+			</tr>
+			<tr>
+				<td><label asp-for="FirstName" class="label-box-07 text-segue-16"></label></td>
+				<td><input asp-for="FirstName" class="input-box-02 text-segue-16" readonly /></td>
+			</tr>
+			<tr>
+				<td><label asp-for="LastName" class="label-box-07 text-segue-16"></label></td>
+				<td><input asp-for="LastName" class="input-box-02 text-segue-16" readonly /></td>
+			</tr>
+			<tr>
+				<td><label asp-for="Gender" class="label-box-07 text-segue-16"></label></td>
+				<td><input asp-for="Gender" class="input-box-02 text-segue-16" readonly /></td>
+			</tr>
+			<tr>
+				<td><label asp-for="BirthDate" class="label-box-07 text-segue-16"></label></td>
+				<td><input asp-for="BirthDate" class="input-box-02 text-segue-16" readonly /></td>
+			</tr>
+			<tr>
+				<td><label asp-for="FullAddress" class="label-box-07 text-segue-16"></label></td>
+				<td><input asp-for="FullAddress" class="input-box-02 text-segue-16" readonly /></td>
+			</tr>
+			<tr>
+				<td><label asp-for="IsLocked" class="label-box-07 text-segue-16"></label></td>
+				<td style="text-align:left;"><input asp-for="IsLocked" disabled /></td>
+			</tr>
+		</table>
 
-@if (option == null)
-{
-    <partial name="EditOptions/Username" model="new BedAndBreakfast.Models.EditUserViewModel();" view-data="ViewData" />
-}
-else
-{
-    <partial name="EditOptions/@option" model="new BedAndBreakfast.Models.EditUserViewModel();" view-data="ViewData" />
-}
+		<table>
+			<tr>
+				<td class="table-box-cell-05"><a asp-action="EditUser" class="text-segue-14 button-04" style="margin-left:0px; margin-right:10px;" asp-route-user="@Model.UserName" asp-route-option="Username">Change Username</a></td>
+				<td class="table-box-cell-05"><a asp-action="EditUser" class="text-segue-14 button-04" style="margin-left:0px; margin-right:10px;" asp-route-user="@Model.UserName" asp-route-option="Security">Change Password</a></td>
+				<td class="table-box-cell-05"><a asp-action="EditUser" class="text-segue-14 button-04" style="margin-left:0px; margin-right:10px;" asp-route-user="@Model.UserName" asp-route-option="Status">Change Status</a></td>
+			</tr>
+		</table>
 
+
+
+
+		@if (option == null)
+		{
+			<partial name="EditOptions/Username" model="new BedAndBreakfast.Models.EditUserViewModel();" view-data="ViewData" />
+		}
+		else
+		{
+			<partial name="EditOptions/@option" model="new BedAndBreakfast.Models.EditUserViewModel();" view-data="ViewData" />
+		}
+
+	</div>
 </div>

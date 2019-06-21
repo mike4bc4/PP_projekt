@@ -1,17 +1,21 @@
 ﻿@model BedAndBreakfast.Models.EditUserViewModel
 
 @{
-    ViewData["Title"] = "Status";
+	ViewData["Title"] = "Status";
 }
 
 
 <form asp-action="EditStatus">
-    <input asp-for="UserName" value="@ViewData["currentUser"]" type="hidden" />
+	<input asp-for="UserName" value="@ViewData["currentUser"]" type="hidden" />
+	<table style="text-align:left;">
+		<tr>
+			<td><label asp-for="IsLocked" class="label-box-07 text-segue-16"></label></td>
+			<td><input asp-for="IsLocked" value="true" checked="@Model.IsLocked" /></td>
+		</tr>
+	</table>
+	
+	
 
-    <label asp-for="IsLocked" class="edit_box_bar_ed"></label>
-    <input asp-for="IsLocked" value="true" checked="@Model.IsLocked" style="margin-top: 30px; margin-left: 12px;" />
-    <div style="clear:both;"></div>
-    <div class="edit_box_pr">
-        <input type="submit" value="Change" class="my_button" id="save_button" />
-    </div>
+	<input type="submit" value="Change" class="button-01 text-segue-14" />
+
 </form>

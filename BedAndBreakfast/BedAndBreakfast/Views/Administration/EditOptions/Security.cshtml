@@ -1,24 +1,23 @@
 ﻿@model BedAndBreakfast.Models.EditUserViewModel
 
 @{
-    ViewData["Title"] = "Security";
+	ViewData["Title"] = "Security";
 }
 
 <form asp-action="EditSecurity">
-    <input asp-for="UserName" value="@ViewData["currentUser"]" type="hidden" />
-    <div>
-        <label asp-for="NewPassword" class="edit_box_bar_ed"></label>
-        <input asp-for="NewPassword" class="create_bar_con" />
-        <span asp-validation-for="NewPassword" class="create_text_danger"></span>
-        <div style="clear:both;"></div>
-    </div>
-    <div>
-        <label asp-for="RepeatNewPassword" class="edit_box_bar_ed"></label>
-        <input asp-for="RepeatNewPassword" class="create_bar_con" />
-        <span asp-validation-for="RepeatNewPassword" class="create_text_danger"></span>
-        <div style="clear:both;"></div>
-    </div>
-    <div class="edit_box_pr">
-        <input type="submit" value="Change" class="my_button" id="save_button" />
-    </div>
+	<input asp-for="UserName" value="@ViewData["currentUser"]" type="hidden" />
+	<table>
+		<tr>
+			<td><label asp-for="NewPassword" class="label-box-01 text-segue-16"></label></td>
+			<td><input asp-for="NewPassword" class="input-box-02 text-segue-16" /></td>
+			<td><span asp-validation-for="NewPassword" class="error-span-label-box-01 text-segue-16"></span></td>
+		</tr>
+		<tr>
+			<td><label class="label-box-01 text-segue-16">Repeat password</label></td>
+			<td><input asp-for="RepeatNewPassword" class="input-box-02 text-segue-16" /></td>
+			<td><span asp-validation-for="RepeatNewPassword" class="error-span-label-box-01 text-segue-16"></span></td>
+		</tr>
+	</table>
+
+	<input type="submit" value="Change" class="button-01 text-segue-14" />
 </form>

@@ -2,21 +2,20 @@
 
 
 @{
-    ViewData["Title"] = "Username";
+	ViewData["Title"] = "Username";
 
 }
 
 <form asp-action="EditUsername">
+	<input asp-for="UserName" value="@ViewData["currentUser"]" type="hidden" />
+	<table style="text-align:left;">
+		<tr>
+			<td><label class="label-box-07  text-segue-16">Username</label></td>
+			<td><input asp-for="NewUserName" class="input-box-02 text-segue-16" /></td>
+			<td><span asp-validation-for="NewUserName" class="error-span-label-box-01 text-segue-16"></span></td>
+		</tr>
+	</table>
 
-    <input asp-for="UserName" value="@ViewData["currentUser"]" type="hidden" />
-
-    <label asp-for="NewUserName" class="edit_box_bar_ed"></label>
-    <input asp-for="NewUserName" class="create_bar_con" />
-    <span asp-validation-for="NewUserName" class="create_text_danger"></span>
-    <div style="clear:both;"></div>
-
-    <div class="edit_box_pr">
-        <input type="submit" value="Change" class="my_button" id="save_button" />
-    </div>
+	<input type="submit" value="Change" class="button-01 text-segue-14" />
 </form>
 
