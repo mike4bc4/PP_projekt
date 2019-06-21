@@ -692,34 +692,16 @@ function handleTimetableVisibility() {
     switch (parseInt(timetableOptionsNode.value)) {
 		case 0:
 
-			perDayReservationsNode.style.visibility = "hidden";
-			perHourReservationsNode.style.visibility = "hidden";
-
-			perDayReservationsNode.style.position = "static";
-			perHourReservationsNode.style.position = "static";
-
-            //perDayReservationsNode.hidden = true;
-            //perHourReservationsNode.hidden = true;
+			perDayReservationsNode.style.display = "none";
+			perHourReservationsNode.style.display = "none";
             break;
 		case 1:
-			perDayReservationsNode.style.visibility = "visible";
-			perHourReservationsNode.style.visibility = "hidden";
-
-			perDayReservationsNode.style.position = "static";
-			perHourReservationsNode.style.position = "absolute";
-
-            //perDayReservationsNode.hidden = false;
-            //perHourReservationsNode.hidden = true;
+			perDayReservationsNode.style.display = "block";
+			perHourReservationsNode.style.display = "none";
             break;
 		case 2:
-			perDayReservationsNode.style.visibility = "hidden";
-			perHourReservationsNode.style.visibility = "visible";
-
-			perDayReservationsNode.style.position = "absolute";
-			perHourReservationsNode.style.position = "static";
-
-            //perDayReservationsNode.hidden = true;
-            //perHourReservationsNode.hidden = false;
+			perDayReservationsNode.style.display = "none";
+			perHourReservationsNode.style.display = "block";
             break;
     }
     // Perform validation to correct error span value.
@@ -756,44 +738,44 @@ function handleTypeVisibility() {
    //         sharedPartLabelElement.hidden = true;
 			//break;
 		case 0:
-			houseSubtypeElement.style.visibility = "visible";
-			entertainmentSubtypeElement.style.visibility = "hidden";
-			foodSubtypeElement.style.visibility = "hidden";
-			sharedPartElement.style.visibility = "visible";
-			sharedPartLabelElement.style.visibility = "visible";
+			houseSubtypeElement.style.display = "inline-block";
+			entertainmentSubtypeElement.style.display = "none";
+			foodSubtypeElement.style.display = "none";
+			sharedPartElement.style.display = "inline-block";
+			sharedPartLabelElement.style.display = "inline-block";
 
-			houseSubtypeElement.style.position = "static";
-			entertainmentSubtypeElement.style.position = "absolute";
-			foodSubtypeElement.style.position = "absolute";
-			sharedPartElement.style.position = "static";
-			sharedPartLabelElement.style.position = "static";
+			//houseSubtypeElement.style.position = "static";
+			//entertainmentSubtypeElement.style.position = "absolute";
+			//foodSubtypeElement.style.position = "absolute";
+			//sharedPartElement.style.position = "static";
+			//sharedPartLabelElement.style.position = "static";
 
 			break;
 		case 1:
-			houseSubtypeElement.style.visibility = "hidden";
-			entertainmentSubtypeElement.style.visibility = "visible";
-			foodSubtypeElement.style.visibility = "hidden";
-			sharedPartElement.style.visibility = "hidden";
-			sharedPartLabelElement.style.visibility = "hidden";
+			houseSubtypeElement.style.display = "none";
+			entertainmentSubtypeElement.style.display = "inline-block";
+			foodSubtypeElement.style.display = "none";
+			sharedPartElement.style.display = "none";
+			sharedPartLabelElement.style.display = "none";
 
-			houseSubtypeElement.style.position = "absolute";
-			entertainmentSubtypeElement.style.position = "static";
-			foodSubtypeElement.style.position = "absolute";
-			sharedPartElement.style.position = "absolute";
-			sharedPartLabelElement.style.position = "absolute";
+			//houseSubtypeElement.style.position = "absolute";
+			//entertainmentSubtypeElement.style.position = "static";
+			//foodSubtypeElement.style.position = "absolute";
+			//sharedPartElement.style.position = "absolute";
+			//sharedPartLabelElement.style.position = "absolute";
 			break;
 		case 2:
-			houseSubtypeElement.style.visibility = "hidden";
-			entertainmentSubtypeElement.style.visibility = "hidden";
-			foodSubtypeElement.style.visibility = "visible";
-			sharedPartElement.style.visibility = "hidden";
-			sharedPartLabelElement.style.visibility = "hidden";
+			houseSubtypeElement.style.display = "none";
+			entertainmentSubtypeElement.style.display = "none";
+			foodSubtypeElement.style.display = "inline-block";
+			sharedPartElement.style.display = "none";
+			sharedPartLabelElement.style.display = "none";
 
-			houseSubtypeElement.style.position = "absolute";
-			entertainmentSubtypeElement.style.position = "absolute";
-			foodSubtypeElement.style.position = "static";
-			sharedPartElement.style.position = "absolute";
-			sharedPartLabelElement.style.position = "absolute";
+			//houseSubtypeElement.style.position = "absolute";
+			//entertainmentSubtypeElement.style.position = "absolute";
+			//foodSubtypeElement.style.position = "static";
+			//sharedPartElement.style.position = "absolute";
+			//sharedPartLabelElement.style.position = "absolute";
 			break;
     }
 }

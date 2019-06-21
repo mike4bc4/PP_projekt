@@ -246,7 +246,6 @@ namespace BedAndBreakfast.Controllers
         /// currently logged in user is not in database. This function returns Json object.
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = Role.User + "," + Role.Admin)]
         public async Task<IActionResult> GetCurrentUserName() {
             User currentUser = await userManager.GetUserAsync(HttpContext.User);
             if (currentUser == null) {

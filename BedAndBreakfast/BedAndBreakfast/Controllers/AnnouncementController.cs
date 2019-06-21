@@ -349,7 +349,6 @@ namespace BedAndBreakfast.Controllers
         /// </summary>
         /// <param name="announcementID"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.User)]
         public async Task<IActionResult> GetReviews(int announcementID)
         {
             Announcement announcement = await context.Announcements.Where(a => a.ID == announcementID).SingleOrDefaultAsync();

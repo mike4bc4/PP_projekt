@@ -1,9 +1,11 @@
 ﻿
 
 function announcementViewInit() {
+	
     // Get announcement view model.
     var announcementViewModel = getAnnouncementViewModel();
     // Create announcement library.
+	window.clientNamespace = {};
     window.AnnouncementLibrary = {};
     window.RequestLibrary = {};
     AnnouncementLibrary["announcementID"] = announcementViewModel.announcementPreviewModel.announcementID;
@@ -36,8 +38,16 @@ function announcementViewInit() {
         },
         function () {
             getReviews(requestSynchronizer);
-        },
-        function () {
+		},
+		function () {
+			// Get currently logged in user.
+			getCurrentUserName(clientNamespace, requestSynchronizer);
+		},
+		function () {
+			isUserInAdminRole(clientNamespace, requestSynchronizer);
+		},
+		function () {
+			handleReviewContainerCreatorVisiblity();
             if (RequestLibrary["getAnnouncementReservationsResponse"] == null || RequestLibrary["getReviewsResponse"] == null) {
                 // error
                 return;
@@ -508,7 +518,32 @@ function drawAnnouncementTimetable(timetableContainer) {
         else {
             return integer + ":00";
         }
-    }
+	}
+
+	if (!clientNamespace.userNames[0] || clientNamespace.userNames[0] == null) {
+		// Currently no user is logged in.
+		document.getElementById("submit-reservations-button").style.display = "none";
+		document.getElementById("division-line-01").style.display = "none";
+		var p = document.createElement("p");
+		p.className = "text-segue-16";
+		p.innerText = "You have to be logged in to make reservation.";
+		timetableContainer.appendChild(p);
+		return;
+	}
+	else if (clientNamespace.isUserInAdminRole) {
+		// Currently admin is logged in.
+		document.getElementById("submit-reservations-button").style.display = "none";
+		document.getElementById("division-line-01").style.display = "none";
+		var p = document.createElement("p");
+		p.className = "text-segue-16";
+		p.innerText = "You cannot make reservation as administrator.";
+		timetableContainer.appendChild(p);
+		return;
+	}
+	else {
+		document.getElementById("submit-reservations-button").style.display = "initial";
+		document.getElementById("division-line-01").style.display = "initial";
+	}
 
     timetableContainer.innerHTML = "";
     switch (parseInt(AnnouncementLibrary["announcementTimetable"])) {
@@ -796,4 +831,13 @@ function drawReservationItem(dateString, itemClickedIndex) {
     newNodeRemoveButton.setAttribute("onclick", "handleReservationsItemRemoveButtonClick(\"" + newNode.id + "\");");
     reservationsContainer.appendChild(newNode);
     return newNode;
+}
+
+function handleReviewContainerCreatorVisiblity() {
+	if (clientNamespace.isUserInAdminRole || !clientNamespace.userNames[0] || clientNamespace.userNames[0] == null) {
+		document.getElementById("review-creator-container").style.display = "none";
+	}
+	else {
+		document.getElementById("review-creator-container").style.display = "auto";
+	}
 }
