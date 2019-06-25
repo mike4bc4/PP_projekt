@@ -66,7 +66,7 @@ namespace BedAndBreakfast
                 options.Password.RequireDigit = false;
                 options.Password.RequiredLength = config.Get<DbSettings>().PasswordMinLength;
                 options.Password.RequiredUniqueChars = 0;
-                options.Password.RequireLowercase = true;
+                options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
             });

@@ -306,9 +306,9 @@ function handleChangeStatusButton(selectedAnnouncementsIDs) {
 		function () {
 			if (context.changeAnnouncementsStatusResponse.result != 0) {
 				setGlobalMessage(1);
-				if (context.changeAnnouncementsStatusResponse.error == true) {
-					setGlobalMessage(3);
-				}
+			}
+			else if (context.changeAnnouncementsStatusResponse.error == true) {
+				setGlobalMessage(3);
 			}
 			else {
 				setGlobalMessage(-1);

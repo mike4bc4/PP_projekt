@@ -179,7 +179,7 @@ namespace BedAndBreakfast.Controllers
             }
             else
             {
-                TempData["message"] = "Password change error.";
+                TempData["message"] = "Password does not meet security rules.";
             }
 
             return RedirectToAction("EditUser", new { user = viewModel.UserName, option = "Security" });

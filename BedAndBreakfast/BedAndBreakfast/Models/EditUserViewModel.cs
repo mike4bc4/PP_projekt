@@ -28,7 +28,7 @@ namespace BedAndBreakfast.Models
         [Display(Name = "New password")]
         [DataType(DataType.Password)]
         [Required(ErrorMessage = "Required")]
-        [Remote(controller: "Validation", action: "ValidPasswordLenght")]
+        [Remote(controller: "Validation", action: "ValidNewPasswordLength")]
         public string NewPassword { get; set; }
 
         [Compare("NewPassword", ErrorMessage = "PassNotMatch")]

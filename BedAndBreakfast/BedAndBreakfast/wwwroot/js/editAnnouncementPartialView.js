@@ -65,7 +65,7 @@ function handlePartialViewInitialLoad(announcementID) {
  * proper global message if announcement has been stored in database.
  */
 function handleSubmitButton(announcementID) {
-    var errorSpan = document.getElementById("from-error-span");
+    var errorSpan = document.getElementById("form-error-span");
     // Get images and store them in form data object.
     var formData = new FormData();
     var images = getImageFiles();

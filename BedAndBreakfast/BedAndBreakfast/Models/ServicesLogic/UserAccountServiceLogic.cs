@@ -24,7 +24,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
 				FirstName = viewModel.FirstName,
 				LastName = viewModel.LastName,
 				BirthDate = viewModel.BirthDate,
-				//Address = new Address()
+				Address = new Address(),
                 
             };
             return profile;
