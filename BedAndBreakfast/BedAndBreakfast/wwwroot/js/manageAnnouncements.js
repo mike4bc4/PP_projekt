@@ -412,8 +412,8 @@ function hideAdditionalButtons() {
 function drawUserAnnouncements(userAnnouncements) {
 	var container = document.getElementById("manage-announcements-view-container");
 	if (userAnnouncements == 0) {
-		container.innerHTML = "<p>You have no announcements yet. Would you like to become a host?</p>";
-		container.innerHTML += "<button onclick='handleCreateAnnouncementButton();'>Become a host</button>";
+		container.innerHTML = "<p class='text-segue-16'>You have no announcements yet. Would you like to become a host?</p>";
+		container.innerHTML += "<button class='button-12 text-segue-14' onclick='handleCreateAnnouncementButton();'>Become a host</button>";
 		return;
 	}
 	container.innerHTML = "<table class='table-02 text-segue-16' id='announcements-container'>\

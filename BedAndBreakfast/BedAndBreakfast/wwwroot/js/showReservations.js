@@ -23,7 +23,7 @@ function drawMakeReservationsResponse(reservations) {
     }
     container.empty();
     if (reservations.length == 0) {
-        container.append('<p>You have no reservations yet.</p>');
+        container.append('<p class="text-segue-16">You have no reservations yet.</p>');
         return;
     }
     container.append('<table id="user-reservation-table" class="table-02 text-segue-16"></table>');

@@ -40,7 +40,13 @@
                         </a>
                     }
                     <div class="text-segue-16">
-                        <p>@(helpPage.Content.Substring(0,200) + "...")</p>
+                        @if (helpPage.Content.Count() > 200)
+                        {
+                            <p>@(helpPage.Content.Substring(0, 200) + "...")</p>
+                        }
+                        else {
+                            <p>@helpPage.Content</p>
+                        }
                     </div>
                     @*If administrator uses help browser he can edit pages.*@
                     @if (User.IsInRole(Role.Admin))
