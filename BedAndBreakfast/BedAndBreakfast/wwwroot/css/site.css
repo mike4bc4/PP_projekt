@@ -957,6 +957,17 @@ hr {
     box-sizing: border-box;
 }
 
+.table-box-cell-11 {
+    position: relative;
+    width: 50%;
+    height: 500px;
+    min-height: 500px;
+}
+
+.table-box-cell-12 {
+    width: 120px;
+}
+
 .announcement-preview-images-container {
     width: 300px;
 }
@@ -1243,7 +1254,7 @@ hr {
     overflow-y: auto;
     overflow-x: hidden;
     display: block;
-    height: 100%;
+    height: calc(100% - 35px);
 }
 
 .block-07 {
@@ -1262,6 +1273,12 @@ hr {
     overflow-y: auto;
 }
 
+.block-09 {
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: block;
+    height: calc(100% - 95px);
+}
 
 .image-input-box-01 {
     text-align: center;

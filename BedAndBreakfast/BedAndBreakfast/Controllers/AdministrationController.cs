@@ -196,8 +196,35 @@ namespace BedAndBreakfast.Controllers
             //Update page before refresh.
             if (viewModel.WasEdited && ModelState.IsValid)
             {
-                await AdministrationServiceLogic.UpdateHelpPage(hPage, viewModel, context);
-                ViewBag.Message = "Help page saved.";
+                int result = await AdministrationServiceLogic.UpdateHelpPage(hPage, viewModel, context);
+                if (result > 0)
+                {
+                    ViewBag.Message = "Help page saved.";
+                }
+                else
+                {
+                    switch (result)
+                    {
+                        case 0:
+                            ViewBag.Message = "An error occurred while updating help page";
+                            break;
+                        case -1:
+                            ViewBag.Message = "Help page data is invalid";
+                            break;
+                        case -2:
+                            ViewBag.Message = "Help page title is invalid (it should be character string shorter than " +
+                                IoCContainer.DbSettings.Value.MaxHelpPageTitleSize + ").";
+                            break;
+                        case -3:
+                            ViewBag.Message = "Help page content is invalid (it should be character string shorter than " +
+                                IoCContainer.DbSettings.Value.MaxHelpPageSize + ").";
+                            break;
+                        case -4:
+                            ViewBag.Message = "One of tags is invalid (it should be character string shorter than " +
+                                IoCContainer.DbSettings.Value.MaxTagLength + ").";
+                            break;
+                    }
+                }
             }
 
             HelpPage helpPage = await context.HelpPages.FindAsync(hPage);
@@ -270,10 +297,12 @@ namespace BedAndBreakfast.Controllers
             return Json(topUsers);
         }
 
-        public async Task<IActionResult> GetAllUsers() {
+        public async Task<IActionResult> GetAllUsers()
+        {
             List<User> users = await context.Users.Include(u => u.Profile).ToListAsync();
             List<FindUserViewModel> usersFound = new List<FindUserViewModel>();
-            foreach (User user in users) {
+            foreach (User user in users)
+            {
                 usersFound.Add(new FindUserViewModel()
                 {
                     FirstName = user.Profile?.FirstName,

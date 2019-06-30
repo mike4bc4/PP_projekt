@@ -1,4 +1,5 @@
 ﻿using BedAndBreakfast.Data;
+using BedAndBreakfast.Settings;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -175,12 +176,25 @@ namespace BedAndBreakfast.Models.ServicesLogic
         /// <param name="newContent"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static async Task<bool> UpdateHelpPage(int pageId, EditHelpPageViewModel viewModel, AppDbContext context)
+        public static async Task<int> UpdateHelpPage(int pageId, EditHelpPageViewModel viewModel, AppDbContext context)
         {
+            // Perform validation
             if (viewModel == null)
             {
-                return false;
+                return -1;
             }
+            else if (string.IsNullOrEmpty(viewModel.Title) ||
+                viewModel.Title.Count() > IoCContainer.DbSettings.Value.MaxHelpPageTitleSize)
+            {
+                return -2;
+            }
+            else if (string.IsNullOrEmpty(viewModel.Content) ||
+               viewModel.Content.Count() > IoCContainer.DbSettings.Value.MaxHelpPageSize)
+            {
+                return -3;
+            }
+
+
 
             HelpPage helpPage = await context.HelpPages.FindAsync(pageId);
             helpPage.Title = viewModel.Title;
@@ -197,9 +211,14 @@ namespace BedAndBreakfast.Models.ServicesLogic
             context.HelpPageHelpTags.RemoveRange(deleteRange);
 
             List<HelpPageHelpTag> relationsToAdd = new List<HelpPageHelpTag>();
-            
+
             foreach (string tag in newTagsList)
             {
+                if (tag.Count() > IoCContainer.DbSettings.Value.MaxTagLength)
+                {
+                    return -4;
+                }
+
                 HelpTag existingTag = (from ht in context.HelpTags
                                        where ht.Value.ToUpper() == tag
                                        select ht).SingleOrDefault();
@@ -212,7 +231,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
                     });
                 }
                 else
-                {       
+                {
                     HelpTag newTag = new HelpTag
                     {
                         Value = tag
@@ -238,11 +257,7 @@ namespace BedAndBreakfast.Models.ServicesLogic
             // because then it would be necessary to check if title or 
             // context has been changed. Note that content may be very large
             // and comparing could have huge performance impact.
-            if (updateResult == 0)
-            {
-                return false;
-            }
-            return true;
+            return updateResult;
         }
 
     }

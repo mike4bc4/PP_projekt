@@ -135,6 +135,9 @@
   <data name="Male" xml:space="preserve">
     <value>Male</value>
   </data>
+  <data name="NotMatch" xml:space="preserve">
+    <value>Password and repeat password fields do not match.</value>
+  </data>
   <data name="Required" xml:space="preserve">
     <value>This field is required.</value>
   </data>

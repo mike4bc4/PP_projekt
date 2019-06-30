@@ -968,10 +968,10 @@ namespace BedAndBreakfast.Controllers
             List<Announcement> announcementsFound = SearchEngine
                 .FindAnnoucements(announcementBrowserQuery, context);
             // Leave only non removed and active announcements.
-            announcementsFound = announcementsFound
-                .Where(a => a.IsActive == true)
-                .Where(a => a.Removed == false)
-                .ToList();
+            //announcementsFound = announcementsFound
+            //    .Where(a => a.IsActive == true)
+            //    .Where(a => a.Removed == false)
+            //    .ToList();
             // Parse announcements to view model.
             List<AnnouncementPreviewModel> announcementPreviewModels = new List<AnnouncementPreviewModel>();
             foreach (Announcement announcement in announcementsFound)

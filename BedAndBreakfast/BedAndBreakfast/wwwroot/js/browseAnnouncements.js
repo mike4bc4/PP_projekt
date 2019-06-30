@@ -319,7 +319,7 @@ function drawAnnouncementList(announcements) {
 
     // If there are no announcement provided display message.
     if (announcements.length == 0) {
-        announcementPreviewMessageContainer.innerText = "No results";
+        announcementPreviewMessageContainer.innerText = "There are no results. Try different search query.";
         announcementPreviewMessageContainer.hidden = false;
         return;
     }

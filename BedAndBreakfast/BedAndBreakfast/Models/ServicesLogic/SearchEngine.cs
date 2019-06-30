@@ -282,11 +282,25 @@ namespace BedAndBreakfast.Models
             // If query is empty take announcements from top database table.
             if (string.IsNullOrEmpty(query))
             {
-                return context.Announcements
-                    .Include(a => a.Address)
-                    .Include(a => a.AnnouncementToContacts)
-                    .Include(a => a.AnnouncementToPayments)
-                    .Take(IoCContainer.DbSettings.Value.DefAnnouncementsDisplayed).ToList();
+                // Take some announcements for each type in database.
+                int filtersCount = Enum.GetNames(typeof(EnumeratedDbValues.AnnouncementType)).Count();
+                int perTypeCount = IoCContainer.DbSettings.Value.DefAnnouncementsDisplayed /
+                    filtersCount + (IoCContainer.DbSettings.Value.DefAnnouncementsDisplayed % filtersCount == 0 ? 0 : 1);
+                List<Announcement> ann = new List<Announcement>();
+
+                for (int i = 0; i < filtersCount; i++)
+                {
+                    var data = context.Announcements
+                        .Include(a => a.Address)
+                        .Include(a => a.AnnouncementToContacts)
+                        .Include(a => a.AnnouncementToPayments)
+                        .Where(a => a.IsActive == true)
+                        .Where(a => a.Removed == false)
+                        .Where(a=> a.Type == i)
+                        .Take(perTypeCount).ToList();
+                    ann.AddRange(data);
+                }
+                return ann;
             }
 
             List<string> queryTags = StringExtensions.RemoveSpecials(query.ToUpper()).Split(' ').ToList();
@@ -331,7 +345,8 @@ namespace BedAndBreakfast.Models
         /// <param name="maxReservations"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static ScheduleItem FindScheduleItem(byte from, byte to, int maxReservations, AppDbContext context) {
+        public static ScheduleItem FindScheduleItem(byte from, byte to, int maxReservations, AppDbContext context)
+        {
             return context.ScheduleItems
                 .Where(s => s.From == from)
                 .Where(s => s.To == to)

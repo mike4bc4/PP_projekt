@@ -176,15 +176,15 @@ function drawMessagesList(messages, currentUserName) {
         return;
     }
     var index = 0;
-    for (var message of messages) {
-		var className = 'message-style-02 text-segue-16';
-        // Use different style for messages from currently logged in user.
-        if (message.senderUserName == currentUserName) {
-			className = 'message-style-01 text-segue-16';
-        }
+	for (var message of messages) {
+		
+		var userFirstNameString = message.senderFirstName == null ? "" : message.senderFirstName;
+		var userLastNameString = message.senderLastName == null ? "" : message.senderLastName;
+		var className = message.senderUserName == currentUserName ? 'message-style-01 text-segue-16' : 'message-style-02 text-segue-16';
+
         var dateSend = new Date(message.dateSend);
         html = '<div id="message-' + index + '" class="' + className + '"><table><tr><td>';
-		html += '<p class="message-header-style-01 text-segue-14">' + message.senderFirstName + ' ' + message.senderLastName +
+		html += '<p class="message-header-style-01 text-segue-14">' + userFirstNameString + ' ' + userLastNameString +
             ' (' + message.senderUserName + ') ' + dateSend.toLocaleDateString('en-US') + ' '
             + dateSend.toLocaleTimeString('en-US') + '</p></td></tr>';
 		html += '<tr><td><p class="message-content-style-01">' + message.content + '</p></td></tr></table></div>';
@@ -245,12 +245,12 @@ function drawConversationsList(conversations, hidden = false) {
 			html += '<td>None</td>'
 		}
 		html += '<td>' + dateStarted.toLocaleDateString() + ' ' + dateStarted.toLocaleTimeString() + '</td>';
-		html += '<td><button class="button-05 text-segue-14" onclick="handleShowMessagesButton(' + conversation.conversationID + ',' + conversation.readOnly + ');">Show</button></td>';
+		html += '<td class="table-box-cell-12"><button class="button-05 text-segue-14" onclick="handleShowMessagesButton(' + conversation.conversationID + ',' + conversation.readOnly + ');">Show</button></td>';
         if (hidden == false) {
-			html += '<td><button class="button-05 text-segue-14" onclick="handleHideRevertConversationButton(' + conversation.conversationID + ', true);">Hide</button></td></tr>';
+			html += '<td class="table-box-cell-12"><button class="button-05 text-segue-14" onclick="handleHideRevertConversationButton(' + conversation.conversationID + ', true);">Hide</button></td></tr>';
         }
         else {
-			html += '<td><button class="button-05 text-segue-14" onclick="handleHideRevertConversationButton(' + conversation.conversationID + ', false);">Revert</button></td></tr>';
+			html += '<td class="table-box-cell-12"><button class="button-05 text-segue-14" onclick="handleHideRevertConversationButton(' + conversation.conversationID + ', false);">Revert</button></td></tr>';
         }
         $('#conversations-table').append(html);
     }

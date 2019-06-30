@@ -164,24 +164,24 @@ function handleSearchClicked() {
 
 function drawReceiver(user) {
     var container = $('#receivers-list-container');
-    var lockedString = '';
-    if (user.isLocked == true) {
-        lockedString == 'Locked';
-    }
+	var lockedString = user.isLocked == true ? "Locked" : "";
+	var userFirstNameString = user.firstName == null ? "" : user.firstName;
+	var userLastNameString = user.lastName == null ? "" : user.lastName;
+
 	container.append('<div class="block-05 text-segue-16" id="receiver-' + user.userName + '" class="user-select-box" onclick="handleReceiverClicked(\'' + user.userName + '\');">' +
-        user.userName + ' ' + user.firstName + ' ' + user.lastName + ' ' + lockedString + '</div>');
+		user.userName + ' ' + userFirstNameString + ' ' + userLastNameString + ' ' + lockedString + '</div>');
 }
 
 function drawUsers(users) {
     var container = $('#users-list-container');
     container.empty();
-    for (var user of users) {
-        var lockedString = '';
-        if (user.isLocked == true) {
-            lockedString == 'Locked';
-        }
+	for (var user of users) {
+		var lockedString = user.isLocked == true ? "Locked" : "";
+		var userFirstNameString = user.firstName == null ? "" : user.firstName;
+		var userLastNameString = user.lastName == null ? "" : user.lastName;
+	
 		container.append("<div class='block-05 text-segue-16' id='user-" + user.userName + "' onclick='handleUserClicked(" + JSON.stringify(user) + ");' \
-        class='user-select-box' data-selected='false'>"+ user.userName + " " + user.firstName + " " + user.lastName +
+        class='user-select-box' data-selected='false'>"+ user.userName + " " + userFirstNameString + " " + userLastNameString +
             " " + lockedString + "</div>");
         var receiver = document.getElementById("receiver-" + user.userName);
         if (receiver != null) {
