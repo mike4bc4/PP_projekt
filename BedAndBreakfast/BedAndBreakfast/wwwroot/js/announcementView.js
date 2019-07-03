@@ -666,8 +666,8 @@ function drawAnnouncementTimetable(timetableContainer) {
 						button.className = "button-07 text-segue-14";
                         button.innerText = "<";
                         button.onclick = function () { handleTimetablePreviousButtonClick() };
-                        td.appendChild(button);
-                        td.rowSpan = window.AnnouncementLibrary["scheduleItems"].length + 1;
+						td.appendChild(button);
+						td.rowSpan = window.RequestLibrary["getAnnouncementReservationsResponse"].scheduleItems.length + 1;
                         break;
                     case 2:
 						var button = document.createElement("button");
@@ -675,7 +675,7 @@ function drawAnnouncementTimetable(timetableContainer) {
                         button.innerText = ">";
                         button.onclick = function () { handleTimetableNextButtonClick() };
                         td.appendChild(button);
-                        td.rowSpan = window.AnnouncementLibrary["scheduleItems"].length + 1;
+						td.rowSpan = window.RequestLibrary["getAnnouncementReservationsResponse"].scheduleItems.length + 1;
                         break;
                     default:
                         var correctedDate = AnnouncementLibrary["middleDate"];
@@ -701,7 +701,7 @@ function drawAnnouncementTimetable(timetableContainer) {
             }
             table.appendChild(tr1);
             // Create rows for schedule items.
-            for (var i = 0; i < window.AnnouncementLibrary["scheduleItems"].length; i++) {
+			for (var i = 0; i < window.RequestLibrary["getAnnouncementReservationsResponse"].scheduleItems.length; i++) {
 
                 var tr = document.createElement("tr");
                 var td = document.createElement("td");
@@ -713,15 +713,15 @@ function drawAnnouncementTimetable(timetableContainer) {
 
                 var p1 = document.createElement("p");
                 p1.id = "timetable-schedule-item-container-" + i;
-                p1.innerText = parseIntToTimeString(AnnouncementLibrary["scheduleItems"][i].from) + " - " +
-					parseIntToTimeString(AnnouncementLibrary["scheduleItems"][i].to);
+				p1.innerText = parseIntToTimeString(window.RequestLibrary["getAnnouncementReservationsResponse"].scheduleItems[i].from) + " - " +
+					parseIntToTimeString(window.RequestLibrary["getAnnouncementReservationsResponse"].scheduleItems[i].to);
 				p1.className = "indent-06";
 
                 var p2 = document.createElement("p");
-                var reservationString = "0/" + window.AnnouncementLibrary["scheduleItems"][i].maxReservations;
+				var reservationString = "0/" + window.RequestLibrary["getAnnouncementReservationsResponse"].scheduleItems[i].maxReservations;
                 if (window.RequestLibrary["getAnnouncementReservationsResponse"].reservations[i] != null) {
                     reservationString = window.RequestLibrary["getAnnouncementReservationsResponse"].reservations[i] +
-                        "/" + window.AnnouncementLibrary["scheduleItems"][i].maxReservations;
+						"/" + window.RequestLibrary["getAnnouncementReservationsResponse"].scheduleItems[i].maxReservations;
                 }
                 p2.innerText = "Current reservations: " + reservationString;
 				p2.className = "indent-06";
