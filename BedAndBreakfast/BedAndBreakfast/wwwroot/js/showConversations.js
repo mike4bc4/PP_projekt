@@ -164,7 +164,7 @@ function drawMessageCreator(conversationID, senderUserName) {
     cols="100" data-valid="false"></textarea>';
 	html += '<span class="counter-style-01 text-segue-16" id="message-textarea-counter">Characters: 0/' + MaxConversationMessageLength + '</span>';
 	html += '<span class="counter-style-01 text-segue-16" id="message-textarea-error"></span>';
-    html += '<br /><button class="button-01" onclick="handleSendMessageButton(' + conversationID + ',\'' + senderUserName + '\');">Send</button>';
+    html += '<br /><button class="button-01 text-segue-14" onclick="handleSendMessageButton(' + conversationID + ',\'' + senderUserName + '\');">Send</button>';
     container.append(html);
 }
 
